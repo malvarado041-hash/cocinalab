@@ -1,0 +1,36 @@
+.buscador{
+    border-radius: 25px;    
+    margin-left: 200px; 
+    width: 50%;
+}
+.btnlist {
+    list-style-type: none;
+    display: inline-flex;
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+    margin: 0; padding: 0;
+}
+.boton {
+    display: block;
+    font-family: Arial;
+    font-weight: bold;
+    padding: 16px 60px;
+    text-decoration: none;
+    background: linear-gradient(#a66328, #7d420f);
+    border-left: 1px solid #f6f6f6;
+    border-right: 1px solid #e4e4e4;
+    color: black;
+    text-align: center;
+    margin: 0;
+    text-shadow: 0 0 2px rgba(,0,0,.1);
+}
+.boton:hover {
+    box-shadow: inset 1px 4px 6px 2px rgba(0,0,0,.1);
+    background: #58a3e0;
+}
+.btnlist li:first-child .boton {
+    border-radius: 5px 0 0 5px;
+}
+.btnlist li:last-child .boton {
+    border-radius: 0 5px 5px 0;
+}
