@@ -9,15 +9,27 @@
             <p>Ingresa para explorar las mejores recetas</p>
         </div>
         @if($errors->any())
-        <div class="auth-alert">{{ $errors->first() }}</div>
+        @include('genericos.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
         @endif
         <form class="auth-form" action="{{ route('login.post') }}" method="POST">
             @csrf
-            <label for="Usuario">Usuario</label>
-            <input type="text" name="Usuario" id="Usuario" placeholder="Tu usuario" required value="{{ old('Usuario') }}">
-            <label for="contrasena">Contraseña</label>
-            <input type="password" name="contrasena" id="contrasena" placeholder="••••••••" required>
-            <input class="auth-submit" type="submit" value="Acceder">
+            @include('genericos.inputsgenerico', [
+                'name' => 'Usuario',
+                'label' => 'Usuario',
+                'value' => old('Usuario'),
+                'required' => true,
+            ])
+            @include('genericos.inputsgenerico', [
+                'type' => 'password',
+                'name' => 'contrasena',
+                'label' => 'Contraseña',
+                'required' => true,
+            ])
+            @include('genericos.btnicongenerico', [
+                'type' => 'submit',
+                'label' => 'Acceder',
+                'icon' => asset('img/logo.png'),
+            ])
         </form>
         <p class="auth-switch">¿No tienes cuenta? <a href="{{ route('register') }}">Regístrate</a></p>
     </div>

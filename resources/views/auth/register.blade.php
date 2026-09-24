@@ -9,19 +9,37 @@
             <p>Únete a CocinaLab y descubre nuevas recetas cada día</p>
         </div>
         @if($errors->any())
-        <div class="auth-alert">
-            @foreach($errors->all() as $e)<div>{{ $e }}</div>@endforeach
+        <div class="gen-alert gen-alert-danger">
+            @foreach($errors->all() as $e)
+            <div>{{ $e }}</div>
+            @endforeach
         </div>
         @endif
         <form class="auth-form" action="{{ route('register.post') }}" method="POST">
             @csrf
-            <label for="txtNombre">Nombre</label>
-            <input type="text" name="txtNombre" id="txtNombre" placeholder="Tu nombre" value="{{ old('txtNombre') }}" required>
-            <label for="txtCorreo">Correo</label>
-            <input type="email" name="txtCorreo" id="txtCorreo" placeholder="correo@ejemplo.com" value="{{ old('txtCorreo') }}" required>
-            <label for="contrasena">Contraseña</label>
-            <input type="password" name="contrasena" id="contrasena" placeholder="••••••••" required>
-            <input class="auth-submit" type="submit" value="Registrarme">
+            @include('genericos.inputsgenerico', [
+                'name' => 'txtNombre',
+                'label' => 'Nombre',
+                'value' => old('txtNombre'),
+                'required' => true,
+            ])
+            @include('genericos.inputsgenerico', [
+                'type' => 'email',
+                'name' => 'txtCorreo',
+                'label' => 'Correo',
+                'value' => old('txtCorreo'),
+                'required' => true,
+            ])
+            @include('genericos.inputsgenerico', [
+                'type' => 'password',
+                'name' => 'contrasena',
+                'label' => 'Contraseña',
+                'required' => true,
+            ])
+            @include('genericos.btnsgenerico', [
+                'type' => 'submit',
+                'label' => 'Registrarme',
+            ])
         </form>
         <p class="auth-switch">¿Ya tienes cuenta? <a href="{{ route('login') }}">Inicia sesión</a></p>
     </div>
