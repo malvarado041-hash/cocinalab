@@ -14,22 +14,19 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // Login con Usuario
     public function login(Request $request)
     {
-        $data = $request->validate([
+        $credentials = $request->validate([
             'Usuario' => 'required|string',
             'contrasena' => 'required|string',
         ]);
 
-        $user = User::where('name', $data['Usuario'])->first();
+        $user = User::where('name', $credentials['Usuario'])->first();
 
-        if (! $user) {
-            return redirect()->route('login.fail.user');
-        }
-
-        if (! Hash::check($data['contrasena'], $user->password)) {
-            return redirect()->route('login.fail.pass');
+        if (! $user || ! Hash::check($credentials['contrasena'], $user->password)) {
+            return back()
+                ->withErrors(['Usuario' => 'Usuario o contraseña incorrectos.'])
+                ->onlyInput('Usuario');
         }
 
         Auth::login($user, true);

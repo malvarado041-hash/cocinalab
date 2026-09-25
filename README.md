@@ -53,3 +53,25 @@ php artisan serve
 
 - `vendor/`, `.env` y la BD no van en git: se reconstruyen con los pasos de arriba.
 - Login con campo `Usuario` (columna `users.name`).
+
+## cambios de enfoque de la app
+
+anteriormente la app estaba pensada para ser un proyecto con un enfoque de "login" y "registro" de usuarios que no necesariamente tenia una funcion clara ya que la app estaba pensada para ser un proyecto de catalogo de recetas de cocina en base a tipos categorias [desayuno, comida, cena, postres] y en base a los ingredientes que el usuario tenga en su casa, la app le recomendaria recetas que pueda hacer con esos ingredientes.
+
+### nuevo enfoque
+
+ahora la app tiene un enfoque mas claro,ya que ahora no esta pensada para usuarios comunes si no mas bien para la gestion de un restaurante permitiendo tener diferentes usuarios con diferentes roles y permisos, permitiendo a los administradores del restaurante gestionar las recetas, ingredientes y procedimientos de manera mas eficiente y organizada asi como la parte de la administración de mesas,meseros etc,para los cocineros el sistema servira de ayuda mediante guias de recetas echas por el administrador para que el cocinero con o sin experiencia pueda seguir las instrucciones sin problemas ni confusiones.
+
+### cambios principales por hacer
+- [ ] crear un sistema de roles y permisos para los usuarios del restaurante (administrador, mesero, cocinero)
+- [ ] crear un sistema de gestion de vistas en base al rol del usuario (por ejemplo, los meseros no podran ver la parte de administracion de recetas)
+- [ ] crear un sistema de gestion de mesas y reservas para el restaurante
+- [ ] crear un sistema de gestion de pedidos para los meseros y cocineros
+- [ ] crear un sistema de gestion de inventario para los ingredientes y productos del restaurante
+- [ ] crear un sistema de reportes y estadisticas para el administrador del restaurante(
+    - ventas, ingresos, recetas mas populares, etc.
+    - estadisticas de los meseros
+    - inventario de ingredientes y productos
+    - ganancias y perdidas del restaurante
+)
+

@@ -13,8 +13,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::view('/error-contrasena', 'auth.error-pass')->name('login.fail.pass');
-Route::view('/error-usuario', 'auth.error-user')->name('login.fail.user');
 
 // Zona privada
 Route::middleware('auth')->group(function () {

@@ -9,23 +9,23 @@
             <p>Ingresa para explorar las mejores recetas</p>
         </div>
         @if($errors->any())
-        @include('genericos.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
+        @include('genericos.feedback.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
         @endif
         <form class="auth-form" action="{{ route('login.post') }}" method="POST">
             @csrf
-            @include('genericos.inputsgenerico', [
+            @include('genericos.formularios.inputsgenerico', [
                 'name' => 'Usuario',
                 'label' => 'Usuario',
                 'value' => old('Usuario'),
                 'required' => true,
             ])
-            @include('genericos.inputsgenerico', [
+            @include('genericos.formularios.inputsgenerico', [
                 'type' => 'password',
                 'name' => 'contrasena',
                 'label' => 'Contraseña',
                 'required' => true,
             ])
-            @include('genericos.btnicongenerico', [
+            @include('genericos.formularios.btnicongenerico', [
                 'type' => 'submit',
                 'label' => 'Acceder',
                 'icon' => asset('img/logo.png'),

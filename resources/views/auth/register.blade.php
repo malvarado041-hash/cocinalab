@@ -9,36 +9,33 @@
             <p>Únete a CocinaLab y descubre nuevas recetas cada día</p>
         </div>
         @if($errors->any())
-        <div class="gen-alert gen-alert-danger">
-            @foreach($errors->all() as $e)
-            <div>{{ $e }}</div>
-            @endforeach
-        </div>
+        @include('genericos.feedback.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
         @endif
         <form class="auth-form" action="{{ route('register.post') }}" method="POST">
             @csrf
-            @include('genericos.inputsgenerico', [
+            @include('genericos.formularios.inputsgenerico', [
                 'name' => 'txtNombre',
                 'label' => 'Nombre',
                 'value' => old('txtNombre'),
                 'required' => true,
             ])
-            @include('genericos.inputsgenerico', [
+            @include('genericos.formularios.inputsgenerico', [
                 'type' => 'email',
                 'name' => 'txtCorreo',
                 'label' => 'Correo',
                 'value' => old('txtCorreo'),
                 'required' => true,
             ])
-            @include('genericos.inputsgenerico', [
+            @include('genericos.formularios.inputsgenerico', [
                 'type' => 'password',
                 'name' => 'contrasena',
                 'label' => 'Contraseña',
                 'required' => true,
             ])
-            @include('genericos.btnsgenerico', [
+            @include('genericos.formularios.btnicongenerico', [
                 'type' => 'submit',
                 'label' => 'Registrarme',
+                'icon' => asset('img/logo.png'),
             ])
         </form>
         <p class="auth-switch">¿Ya tienes cuenta? <a href="{{ route('login') }}">Inicia sesión</a></p>
