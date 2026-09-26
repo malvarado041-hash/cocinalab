@@ -35,12 +35,60 @@ php artisan migrate --seed
 ```
 
 El seeder (`database/seeders/CocinaLabSeeder.php`) carga desde
-`database/seeders/data/cocinalab_data.sql`: 98 ingredientes, 40 recetas,
-194 relaciones receta-ingrediente y 3 usuarios (`registros` → `users`,
-hashes bcrypt compatibles con `Hash::check`).
+`database/seeders/data/cocinalab_data.sql`: ingredientes, recetas,
+relaciones receta-ingrediente y usuarios (con rol, estado y
+`codigo_empleado`; hashes bcrypt compatibles con `Hash::check`).
+El admin por defecto es `Administrador` / `admin123`.
 
 Para ver la BD en DbGate: conexión MySQL → `127.0.0.1:3306`,
 user `root`, password vacía, base `login`.
+
+## Compartir la base de datos con el equipo
+
+La **estructura** viaja en git como migraciones; los **datos** se
+comparten con un volcado SQL versionado en
+`database/seeders/data/cocinalab_data.sql`.
+
+### Si tienes datos nuevos (o cambiaste la BD)
+
+```bash
+php artisan db:export        # mysqldump → database/seeders/data/cocinalab_data.sql
+git add database/seeders/data/cocinalab_data.sql
+git commit -m "actualiza datos de la BD"
+git push
+```
+
+Opciones del comando:
+
+- `--path=ruta/otro.sql` → exporta a otra ruta.
+- `--data-only` → solo `INSERT`s (sin `DROP`/`CREATE TABLE`).
+
+El export excluye tablas volátiles (`sessions`, `cache`, `jobs`,
+`failed_jobs`) y usa la configuración de `.env` (la contraseña nunca
+aparece en el comando del proceso).
+
+### Si eres el compañero que recibe los cambios
+
+```bash
+git pull
+php artisan migrate           # estructura nueva (p.ej. codigo_empleado)
+php artisan db:seed           # refresca los datos del volcado
+
+# o si tu BD está desactualizada / vacía:
+php artisan migrate:fresh --seed
+```
+
+Qué hace el seed al correr:
+
+- **Restaura completas**: `ingredientes`, `recetas`,
+  `receta_ingrediente`, `pago` (se limpian y se re-importan).
+- **Importa `users` sin borrar**: no pierdes cuentas locales; las que
+  ya existen se omiten (idempotente, sin duplicados).
+- Crea/actualiza el admin por defecto si no existe.
+- Es seguro correr `db:seed` más de una vez.
+
+> **Nota:** `migrate:fresh` **borra** todas las tablas locales. Usa
+> `db:seed` si solo quieres actualizar los datos sin destruir nada.
 
 ## Ejecución (sin XAMPP)
 
@@ -51,7 +99,7 @@ php artisan serve
 
 ## Notas
 
-- `vendor/`, `.env` y la BD no van en git: se reconstruyen con los pasos de arriba.
+- `vendor/`, `.env` y la BD en sí no van en git: se reconstruyen con los pasos de arriba. Lo que sí va en git son las migraciones y el volcado `database/seeders/data/cocinalab_data.sql` (se actualiza con `php artisan db:export`).
 - Login con campo `Usuario` (columna `users.name`).
 
 ## cambios de enfoque de la app
