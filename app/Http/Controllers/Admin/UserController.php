@@ -10,13 +10,31 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Roles que el editor actual puede asignar.
+     * El admin solo gestiona roles operativos; sistemas gestiona todos.
+     */
+    private function assignableRoles(): array
+    {
+        $base = ['cocinero', 'mesero', 'capitan', 'almacen', 'cajero'];
+
+        if (Auth::user()->isSistemas()) {
+            return array_merge($base, ['admin', 'sistemas']);
+        }
+
+        return $base;
+    }
+
     public function index()
     {
         $users = User::where('id', '!=', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(7);
 
-        return view('admin.users.index', compact('users'));
+        // Solo sistemas puede ver y restaurar bajas lógicas.
+        $canRestore = Auth::user()->isSistemas();
+
+        return view('admin.users.index', compact('users', 'canRestore'));
     }
 
     public function edit(User $user)
@@ -25,10 +43,15 @@ class UserController extends Controller
             abort(403, 'No puedes editar tu propia cuenta desde aquí.');
         }
 
-        $roles = ['cocinero', 'mesero', 'capitan', 'almacen', 'cajero', 'admin'];
-        $statuses = ['pendiente', 'activo', 'inactivo'];
+        if ($user->isPrivileged() && !Auth::user()->isSistemas()) {
+            abort(403, 'No puedes editar cuentas administradoras o de sistemas.');
+        }
 
-        return view('admin.users.edit', compact('user', 'roles', 'statuses'));
+        $roles = $this->assignableRoles();
+        $statuses = ['pendiente', 'activo', 'inactivo'];
+        $canAssignPrivileged = Auth::user()->isSistemas();
+
+        return view('admin.users.edit', compact('user', 'roles', 'statuses', 'canAssignPrivileged'));
     }
 
     public function update(Request $request, User $user)
@@ -37,10 +60,16 @@ class UserController extends Controller
             abort(403, 'No puedes editar tu propia cuenta desde aquí.');
         }
 
+        if ($user->isPrivileged() && !Auth::user()->isSistemas()) {
+            abort(403, 'No puedes editar cuentas administradoras o de sistemas.');
+        }
+
+        $roles = $this->assignableRoles();
+
         $data = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100', 'unique:users,name,' . $user->id],
             'codigo_empleado' => ['required', 'digits:6', 'unique:users,codigo_empleado,' . $user->id],
-            'role' => 'required|in:cocinero,mesero,capitan,almacen,cajero,admin',
+            'role' => 'required|in:' . implode(',', $roles),
             'status' => 'required|in:pendiente,activo,inactivo',
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
@@ -71,13 +100,53 @@ class UserController extends Controller
             abort(403, 'No puedes eliminar tu propia cuenta.');
         }
 
-        if ($user->isAdmin()) {
-            abort(403, 'No puedes eliminar a otro administrador.');
+        // El admin solo puede dar de baja roles operativos.
+        if ($user->isPrivileged() && !Auth::user()->isSistemas()) {
+            abort(403, 'No puedes dar de baja a otro administrador o de sistemas.');
         }
 
         $user->delete();
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Usuario eliminado correctamente.');
+            ->with('success', 'Usuario dado de baja correctamente.');
+    }
+
+    public function trashed()
+    {
+        if (!Auth::user()->isSistemas()) {
+            abort(403, 'Solo sistemas puede ver los usuarios dados de baja.');
+        }
+
+        $users = User::onlyTrashed()
+            ->orderBy('deleted_at', 'desc')
+            ->paginate(7);
+
+        return view('admin.users.trashed', compact('users'));
+    }
+
+    public function restore($id)
+    {
+        if (!Auth::user()->isSistemas()) {
+            abort(403, 'Solo sistemas puede restaurar usuarios.');
+        }
+
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+
+        return redirect()->route('admin.users.trashed')
+            ->with('success', 'Usuario restaurado correctamente.');
+    }
+
+    public function forceDestroy($id)
+    {
+        if (!Auth::user()->isSistemas()) {
+            abort(403, 'Solo sistemas puede eliminar usuarios definitivamente.');
+        }
+
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->forceDelete();
+
+        return redirect()->route('admin.users.trashed')
+            ->with('success', 'Usuario eliminado definitivamente de la base de datos.');
     }
 }

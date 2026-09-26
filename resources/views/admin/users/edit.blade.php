@@ -4,12 +4,6 @@
 
 @section('header-title', 'Editar Usuario')
 
-@section('header-actions')
-<a href="{{ route('admin.users.index') }}" class="btn-secondary">
-    <i class="fas fa-arrow-left mr-2"></i> Volver
-</a>
-@endsection
-
 @section('content')
 <div class="w-full max-w-none">
 
@@ -17,6 +11,10 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6 fade-in">
         <div class="bg-gradient-to-r from-primary-500 to-primary-600 px-6 py-6">
             <div class="flex items-center gap-4">
+                <a href="{{ route('admin.users.index') }}" title="Volver" aria-label="Volver"
+                   class="w-16 h-16 rounded-2xl bg-white/20 hover:bg-white/30 flex items-center justify-center flex-shrink-0 transition">
+                    <i class="fas fa-arrow-left text-white text-2xl"></i>
+                </a>
                 @php
                     $avatarIcons = [
                         'admin' => 'fa-user-shield',
@@ -25,24 +23,23 @@
                         'capitan' => 'fa-user-tie',
                         'almacen' => 'fa-boxes',
                         'cajero' => 'fa-cash-register',
+                        'sistemas' => 'fa-laptop-code',
                     ];
                     $avatarIcon = $avatarIcons[$user->role ?? ''] ?? 'fa-user';
                 @endphp
                 <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
                     <i class="fas {{ $avatarIcon }} text-white text-2xl"></i>
                 </div>
-                <div>
+                <div class="flex-1 min-w-0">
                     <h2 class="text-xl font-bold text-white">{{ $user->name }}</h2>
                     @if ($user->codigo_empleado)
                         <p class="text-primary-100">Código: {{ $user->codigo_empleado }}</p>
                     @endif
                 </div>
-                <a href="{{ route('admin.users.index') }}" class="btn-secondary px-6 py-2.5 text-center">
-                Cancelar
-            </a>
-            <button type="submit" class="btn-primary px-6 py-2.5">
-                <i class="fas fa-save mr-2"></i> Guardar cambios
-            </button>
+                <button type="submit" form="edit-user-form" title="Guardar cambios" aria-label="Guardar cambios"
+                    class="w-16 h-16 rounded-2xl bg-white/20 hover:bg-white/30 flex items-center justify-center flex-shrink-0 transition ml-auto">
+                    <i class="fas fa-save text-white text-2xl"></i>
+                </button>
             </div>
         </div>
         <div class="p-6 flex flex-wrap items-center justify-between gap-4 border-t border-gray-100 bg-gray-50">
@@ -61,6 +58,7 @@
                         'capitan' => ['bg' => 'indigo-100', 'text' => 'indigo-700', 'icon' => 'fa-user-tie'],
                         'almacen' => ['bg' => 'green-100', 'text' => 'green-700', 'icon' => 'fa-boxes'],
                         'cajero' => ['bg' => 'teal-100', 'text' => 'teal-700', 'icon' => 'fa-cash-register'],
+                        'sistemas' => ['bg' => 'gray-100', 'text' => 'gray-700', 'icon' => 'fa-laptop-code'],
                     ];
                     $r = $roleColors[$user->role ?? ''] ?? ['bg' => 'gray-100', 'text' => 'gray-700', 'icon' => 'fa-user'];
                 @endphp
@@ -80,7 +78,7 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.users.update', $user) }}" method="POST" class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
+    <form id="edit-user-form" action="{{ route('admin.users.update', $user) }}" method="POST" class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
         @csrf
         @method('PUT')
 
@@ -109,8 +107,11 @@
                                     'capitan' => ['label' => 'Capitán', 'icon' => 'fa-user-tie', 'color' => 'indigo', 'desc' => 'Supervisa sala'],
                                     'almacen' => ['label' => 'Almacén', 'icon' => 'fa-boxes', 'color' => 'green', 'desc' => 'Gestiona inventario'],
                                     'cajero' => ['label' => 'Cajero', 'icon' => 'fa-cash-register', 'color' => 'teal', 'desc' => 'Procesa pagos'],
-                                    'admin' => ['label' => 'Admin', 'icon' => 'fa-user-shield', 'color' => 'purple', 'desc' => 'Acceso total'],
                                 ];
+                                if (($canAssignPrivileged ?? false)) {
+                                    $roleOptions['admin'] = ['label' => 'Admin', 'icon' => 'fa-user-shield', 'color' => 'purple', 'desc' => 'Gestión de usuarios'];
+                                    $roleOptions['sistemas'] = ['label' => 'Sistemas', 'icon' => 'fa-laptop-code', 'color' => 'gray', 'desc' => 'Acceso total'];
+                                }
                             @endphp
                             @foreach ($roleOptions as $key => $opt)
                                 @php

@@ -8,6 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -28,9 +29,15 @@
             }
         }
     </script>
+    <link rel="stylesheet" href="{{ asset('css/admin-dark.css') }}?v=2">
     <script>
+        // Pre-pintado: aplica 'dark' antes del primer render para evitar parpadeo.
         (function() {
             try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                }
                 if (localStorage.getItem('sidebarCollapsed') === 'true') {
                     document.documentElement.classList.add('sidebar-collapsed');
                 }
@@ -45,6 +52,7 @@
         .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
+    @stack('styles')
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="flex">
@@ -73,6 +81,7 @@
         </div>
     </div>
 
+    <script src="{{ asset('js/theme.js') }}?v=1"></script>
     @stack('scripts')
 </body>
 </html>

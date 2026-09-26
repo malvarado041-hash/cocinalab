@@ -44,7 +44,7 @@ class AuthController extends Controller
         Auth::login($user, true);
         $request->session()->regenerate();
 
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isSistemas()) {
             return redirect()->route('admin.dashboard');
         }
 

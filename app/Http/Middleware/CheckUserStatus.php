@@ -27,7 +27,7 @@ class CheckUserStatus
             return redirect()->route('login')->with('error', 'Tu cuenta ha sido desactivada. Contacta al administrador.');
         }
 
-        if (!empty($roles) && !$user->hasRole($roles[0]) && !$user->isAdmin()) {
+        if (!empty($roles) && !$user->hasRole($roles[0]) && !$user->isAdmin() && !$user->isSistemas()) {
             abort(403, 'No tienes permisos para acceder a esta sección.');
         }
 

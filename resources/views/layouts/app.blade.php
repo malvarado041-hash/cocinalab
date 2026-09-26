@@ -9,6 +9,19 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}?v=2">
     <link rel="stylesheet" href="{{ asset('css/genericos.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site-dark.css') }}?v=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // Pre-pintado: aplica 'dark' antes del primer render para evitar parpadeo.
+        (function() {
+            try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch (error) {}
+        })();
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
@@ -36,9 +49,11 @@
                 </form>
             </li>
             @endauth
+            <li><button type="button" class="theme-toggle-public" data-theme-toggle title="Cambiar tema"><i data-theme-icon class="fas fa-moon"></i></button></li>
         </ul>
     </center>
 </div>
 @yield('content')
+<script src="{{ asset('js/theme.js') }}?v=1"></script>
 </body>
 </html>

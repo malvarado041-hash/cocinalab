@@ -1,9 +1,9 @@
 /*M!999999\- enable the sandbox mode */ 
--- MariaDB dump 10.19  Distrib 10.11.18-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19-11.8.6-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: 127.0.0.1    Database: login
 -- ------------------------------------------------------
--- Server version	10.11.18-MariaDB-0+deb12u1
+-- Server version	11.8.6-MariaDB-0+deb13u1 from Debian
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,7 +14,7 @@
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
 -- Table structure for table `cache_locks`
@@ -35,10 +35,13 @@ CREATE TABLE `cache_locks` (
 -- Dumping data for table `cache_locks`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `cache_locks` WRITE;
 /*!40000 ALTER TABLE `cache_locks` DISABLE KEYS */;
 /*!40000 ALTER TABLE `cache_locks` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `ingredientes`
@@ -59,6 +62,7 @@ CREATE TABLE `ingredientes` (
 -- Dumping data for table `ingredientes`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `ingredientes` WRITE;
 /*!40000 ALTER TABLE `ingredientes` DISABLE KEYS */;
 INSERT INTO `ingredientes` (`id`, `Nombre`, `Tipo`) VALUES (1,'tomate verde','\" \"');
@@ -161,6 +165,8 @@ INSERT INTO `ingredientes` (`id`, `Nombre`, `Tipo`) VALUES (97,'Harina','\" \"')
 INSERT INTO `ingredientes` (`id`, `Nombre`, `Tipo`) VALUES (98,'Polvo para hornear','\" \"');
 /*!40000 ALTER TABLE `ingredientes` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `job_batches`
@@ -188,10 +194,13 @@ CREATE TABLE `job_batches` (
 -- Dumping data for table `job_batches`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `job_batches` WRITE;
 /*!40000 ALTER TABLE `job_batches` DISABLE KEYS */;
 /*!40000 ALTER TABLE `job_batches` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `migrations`
@@ -205,13 +214,14 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `migrations`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (1,'0001_01_01_000000_create_users_table',1);
@@ -219,10 +229,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (2,'0001_01_01_0000
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (3,'0001_01_01_000002_create_jobs_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (4,'2026_09_24_042022_create_cocinalab_tables',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (5,'2026_09_25_220411_add_role_and_status_to_users_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (6,'2026_09_25_223210_add_cajero_role_to_users_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (7,'2026_09_26_010720_add_codigo_empleado_to_users_table',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (6,'2026_09_25_223210_add_cajero_role_to_users_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (7,'2026_09_26_010720_add_codigo_empleado_to_users_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (8,'2026_09_26_120000_add_deleted_at_to_users_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (9,'2026_09_26_130000_add_sistemas_role_to_users_table',3);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `pago`
@@ -245,10 +259,13 @@ CREATE TABLE `pago` (
 -- Dumping data for table `pago`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `pago` WRITE;
 /*!40000 ALTER TABLE `pago` DISABLE KEYS */;
 /*!40000 ALTER TABLE `pago` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `password_reset_tokens`
@@ -269,10 +286,13 @@ CREATE TABLE `password_reset_tokens` (
 -- Dumping data for table `password_reset_tokens`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `password_reset_tokens` WRITE;
 /*!40000 ALTER TABLE `password_reset_tokens` DISABLE KEYS */;
 /*!40000 ALTER TABLE `password_reset_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `receta_ingrediente`
@@ -298,6 +318,7 @@ CREATE TABLE `receta_ingrediente` (
 -- Dumping data for table `receta_ingrediente`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `receta_ingrediente` WRITE;
 /*!40000 ALTER TABLE `receta_ingrediente` DISABLE KEYS */;
 INSERT INTO `receta_ingrediente` (`id`, `receta_id`, `ingrediente_id`, `cantidad`) VALUES (1,1,1,'3');
@@ -496,6 +517,8 @@ INSERT INTO `receta_ingrediente` (`id`, `receta_id`, `ingrediente_id`, `cantidad
 INSERT INTO `receta_ingrediente` (`id`, `receta_id`, `ingrediente_id`, `cantidad`) VALUES (200,40,30,'y pimienta, al gusto');
 /*!40000 ALTER TABLE `receta_ingrediente` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `recetas`
@@ -518,6 +541,7 @@ CREATE TABLE `recetas` (
 -- Dumping data for table `recetas`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `recetas` WRITE;
 /*!40000 ALTER TABLE `recetas` DISABLE KEYS */;
 INSERT INTO `recetas` (`id`, `Imagenes`, `Nombre`, `Procedimiento`, `TipoC`) VALUES (1,'','Chilaquiles Verdes','1. Hierve tomates, chile y ajo en agua por 5 min. Licúa con cilantro y sal.\n2. En sartén con aceite, cocínala 3 min hasta espesar ligeramente.\n3. Mezcla los totopos con la salsa caliente.\n4. Añade pollo, crema, queso y cebolla.','Desayuno');
@@ -562,6 +586,8 @@ INSERT INTO `recetas` (`id`, `Imagenes`, `Nombre`, `Procedimiento`, `TipoC`) VAL
 INSERT INTO `recetas` (`id`, `Imagenes`, `Nombre`, `Procedimiento`, `TipoC`) VALUES (40,NULL,'Omelette de jamon y queso','1.	Batir huevos con sal/pimienta. \\n\r\n2.	Cocinar en sartén con 1 cucharada de aceite. \\n\r\n3.	Cuando esté casi cocinado por completo añadir jamón y queso y doblar.\r\n','Desayuno');
 /*!40000 ALTER TABLE `recetas` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `users`
@@ -575,7 +601,7 @@ CREATE TABLE `users` (
   `name` varchar(255) NOT NULL,
   `codigo_empleado` varchar(6) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
-  `role` enum('cocinero','mesero','capitan','almacen','cajero','admin') DEFAULT NULL,
+  `role` enum('cocinero','mesero','capitan','almacen','cajero','admin','sistemas') DEFAULT NULL,
   `status` enum('pendiente','activo','inactivo') NOT NULL DEFAULT 'pendiente',
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
@@ -584,6 +610,7 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `approved_by` bigint(20) unsigned DEFAULT NULL,
   `approved_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`),
   UNIQUE KEY `users_codigo_empleado_unique` (`codigo_empleado`),
@@ -596,15 +623,17 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (`id`, `name`, `codigo_empleado`, `email`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `approved_by`, `approved_at`) VALUES (1,'miguel','100002','malvarado041@gmail.com','cocinero','activo',NULL,'$2y$10$Edf6MrBFqmf9uVVAck.2oedBB3uDCHHL9CaBtcVfTeNyTCb/LXWJ.',NULL,'2026-09-26 05:09:48','2026-09-26 08:09:13',NULL,NULL);
-INSERT INTO `users` (`id`, `name`, `codigo_empleado`, `email`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `approved_by`, `approved_at`) VALUES (2,'mitch','100003','mitch@gmail.com','cocinero','activo',NULL,'$2y$10$mrpbjUizeAo420.JD2jgWOPh3csTzv4gPlZkzgiNL57skOf/ZmDdC',NULL,'2026-09-26 05:09:48','2026-09-26 08:09:13',NULL,NULL);
-INSERT INTO `users` (`id`, `name`, `codigo_empleado`, `email`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `approved_by`, `approved_at`) VALUES (4,'Administrador','100005','admin@cocinalab.com','admin','activo',NULL,'$2y$12$QA1li5tRWeoB3jV2Yd5gqu3xoasyjfJKNLkEFW4uB60kbwA4HSCHu','9W7ZKRhF7sRVzvpeSmJhlTpu80NTvm31cHV7NdxOCYkSf8uq22GYoXOE1vF7','2026-09-26 05:09:48','2026-09-26 08:09:13',NULL,NULL);
-INSERT INTO `users` (`id`, `name`, `codigo_empleado`, `email`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `approved_by`, `approved_at`) VALUES (5,'aldahir','100006','vicente@gmail.com','admin','activo',NULL,'$2y$12$MvPMP.nmq11MR0Q0LplyGej4uHD8ap5gfRn8BXvSlHURdIuCbmCmK','7PsD7qejH7YJsBpwWQvbXHlzKYdZ4BDPiWU8znUDJ8eYvCAjcbhzBlnMnqXY','2026-09-26 05:12:32','2026-09-26 08:09:13',NULL,NULL);
-INSERT INTO `users` (`id`, `name`, `codigo_empleado`, `email`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `approved_by`, `approved_at`) VALUES (7,'testuser2','100008','testuser2@example.com','almacen','activo',NULL,'$2y$12$0gZYAvK1d2QALEXCVSkvi.TANgizpPaHm4pUKSRpk63KuBJHcZPGG',NULL,'2026-09-26 05:15:50','2026-09-26 08:09:13',5,'2026-09-26 05:28:54');
+INSERT INTO `users` (`id`, `name`, `codigo_empleado`, `email`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `approved_by`, `approved_at`, `deleted_at`) VALUES (1,'miguel','100002','malvarado041@gmail.com','almacen','activo',NULL,'$2y$10$Edf6MrBFqmf9uVVAck.2oedBB3uDCHHL9CaBtcVfTeNyTCb/LXWJ.',NULL,'2026-09-26 12:09:48','2026-09-26 12:36:57',5,'2026-09-26 12:10:25',NULL);
+INSERT INTO `users` (`id`, `name`, `codigo_empleado`, `email`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `approved_by`, `approved_at`, `deleted_at`) VALUES (4,'Administrador','100005','admin@cocinalab.com','admin','activo',NULL,'$2y$12$23J7BhPWxDlDbTsL8Dp46uI.XMFDtFhVVkT10kD7aHaczmds8OsTe','H0FeCO3ez0ru1BEgQARn12RjU5RP1Gb2c1BwVmBt9pEoDBUCDnanIxfqenlY','2026-09-26 11:37:58','2026-09-26 11:37:58',NULL,NULL,NULL);
+INSERT INTO `users` (`id`, `name`, `codigo_empleado`, `email`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `approved_by`, `approved_at`, `deleted_at`) VALUES (5,'aldahir','100006','vicente@gmail.com','sistemas','activo',NULL,'$2y$12$MvPMP.nmq11MR0Q0LplyGej4uHD8ap5gfRn8BXvSlHURdIuCbmCmK','7PsD7qejH7YJsBpwWQvbXHlzKYdZ4BDPiWU8znUDJ8eYvCAjcbhzBlnMnqXY','2026-09-26 12:12:32','2026-09-26 12:34:48',NULL,NULL,NULL);
+INSERT INTO `users` (`id`, `name`, `codigo_empleado`, `email`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `approved_by`, `approved_at`, `deleted_at`) VALUES (7,'testuser2','100008','testuser2@example.com','almacen','activo',NULL,'$2y$12$0gZYAvK1d2QALEXCVSkvi.TANgizpPaHm4pUKSRpk63KuBJHcZPGG',NULL,'2026-09-26 12:15:50','2026-09-26 12:37:02',5,'2026-09-26 12:28:54','2026-09-26 12:37:02');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -613,6 +642,6 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-09-25 18:23:57
+-- Dump completed on 2026-09-25 22:49:20

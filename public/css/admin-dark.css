@@ -1,0 +1,191 @@
+/* ============================================================
+   CocinaLab Admin - Botones base + Modo oscuro (html.dark)
+   ============================================================ */
+
+/* ---------- Botones base (no existían en el proyecto) ---------- */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    background-color: #ed7d1e;
+    color: #fff;
+    font-weight: 600;
+    font-size: .875rem;
+    padding: .625rem 1.25rem;
+    border-radius: .75rem;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background-color .15s, box-shadow .15s, filter .15s;
+}
+.btn-primary:hover { background-color: #de6319; box-shadow: 0 4px 12px rgba(237, 125, 30, .35); }
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    background-color: #fff;
+    color: #374151;
+    font-weight: 600;
+    font-size: .875rem;
+    padding: .625rem 1.25rem;
+    border-radius: .75rem;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: background-color .15s, border-color .15s, color .15s;
+}
+.btn-secondary:hover { background-color: #f9fafb; border-color: #d1d5db; }
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    background-color: #fef2f2;
+    color: #dc2626;
+    font-weight: 600;
+    font-size: .875rem;
+    padding: .625rem 1.25rem;
+    border-radius: .75rem;
+    border: 1px solid #fecaca;
+    cursor: pointer;
+    transition: background-color .15s, border-color .15s;
+}
+.btn-danger:hover { background-color: #fee2e2; }
+.btn-danger:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---------- Transiciones suaves de tema ---------- */
+body, header, #sidebar, main, main .bg-white, main input, main select, main textarea {
+    transition: background-color .25s ease, border-color .25s ease, color .25s ease;
+}
+
+/* ---------- Base ---------- */
+html.dark { color-scheme: dark; }
+html.dark body { background-color: #0f172a !important; color: #e2e8f0; }
+
+/* ---------- Header ---------- */
+html.dark header { background-color: #1e293b !important; border-bottom: 1px solid #334155; box-shadow: none !important; }
+html.dark header h2 { color: #f1f5f9 !important; }
+html.dark header p { color: #cbd5e1 !important; }
+html.dark header .text-gray-500 { color: #94a3b8 !important; }
+html.dark header a[href*="perfil"]:hover { background-color: #334155 !important; }
+html.dark header [data-theme-toggle]:hover { background-color: #334155 !important; }
+
+/* ---------- Sidebar ---------- */
+html.dark #sidebar { background-color: #1e293b !important; border-right: 1px solid #334155; box-shadow: none !important; }
+html.dark #sidebar h1 { color: #f1f5f9 !important; }
+html.dark #sidebar .text-gray-500 { color: #94a3b8 !important; }
+html.dark #sidebar .sidebar-link { color: #cbd5e1 !important; }
+html.dark #sidebar .sidebar-link:hover { background-color: #334155 !important; color: #fff !important; }
+html.dark #sidebar .sidebar-link.bg-primary-50 { background-color: rgba(237, 125, 30, .16) !important; color: #fdba74 !important; }
+html.dark #sidebar .sidebar-footer { border-top: 1px solid #334155; }
+html.dark #sidebar-tooltip { background-color: #f1f5f9 !important; color: #0f172a !important; }
+html.dark #sidebar .bg-gray-100 { background-color: #334155 !important; }
+html.dark #sidebar .text-gray-600 { color: #cbd5e1 !important; }
+html.dark #sidebar .text-gray-700 { color: #e2e8f0 !important; }
+
+/* ---------- Superficies y texto en main ---------- */
+html.dark main .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
+html.dark main .shadow-sm { box-shadow: 0 1px 2px rgba(0, 0, 0, .4) !important; }
+html.dark main .text-gray-800,
+html.dark main .text-gray-900 { color: #f1f5f9 !important; }
+html.dark main .text-gray-700 { color: #cbd5e1 !important; }
+html.dark main .text-gray-600,
+html.dark main .text-gray-500 { color: #94a3b8 !important; }
+html.dark main .text-gray-400 { color: #64748b !important; }
+html.dark main .bg-gray-50 { background-color: #334155 !important; }
+html.dark main .bg-gray-100 { background-color: #334155 !important; }
+html.dark main .border-gray-100,
+html.dark main .border-gray-200,
+html.dark main .border-gray-300 { border-color: #334155 !important; }
+html.dark main .divide-gray-100 > * { border-color: #334155 !important; }
+html.dark main .hover\:bg-gray-50:hover { background-color: #334155 !important; }
+
+/* ---------- Tablas ---------- */
+html.dark main thead.bg-gray-50 { background-color: #0f172a !important; }
+html.dark main thead th { color: #94a3b8 !important; }
+html.dark main tbody tr:hover { background-color: rgba(51, 65, 85, .6) !important; }
+html.dark main td .font-mono { color: #cbd5e1 !important; }
+
+/* ---------- Formularios ---------- */
+html.dark main input,
+html.dark main select,
+html.dark main textarea { background-color: #0f172a !important; border-color: #475569 !important; color: #f1f5f9 !important; }
+html.dark main input::placeholder { color: #64748b !important; }
+html.dark main input:disabled { background-color: #334155 !important; color: #94a3b8 !important; opacity: .8; }
+html.dark main input:focus,
+html.dark main select:focus,
+html.dark main textarea:focus { border-color: #ed7d1e !important; }
+
+/* ---------- Tiles de iconos pastel -> translúcidos ---------- */
+html.dark main .bg-purple-100, html.dark #sidebar .bg-purple-100 { background-color: rgba(168, 85, 247, .18) !important; }
+html.dark main .bg-orange-100 { background-color: rgba(249, 115, 22, .18) !important; }
+html.dark main .bg-blue-100 { background-color: rgba(59, 130, 246, .18) !important; }
+html.dark main .bg-indigo-100 { background-color: rgba(99, 102, 241, .18) !important; }
+html.dark main .bg-green-100 { background-color: rgba(34, 197, 94, .16) !important; }
+html.dark main .bg-teal-100 { background-color: rgba(45, 212, 191, .16) !important; }
+html.dark main .bg-yellow-100 { background-color: rgba(234, 179, 8, .18) !important; }
+html.dark main .bg-red-100 { background-color: rgba(239, 68, 68, .18) !important; }
+html.dark main .bg-amber-100 { background-color: rgba(245, 158, 11, .18) !important; }
+html.dark main .bg-primary-100 { background-color: rgba(237, 125, 30, .18) !important; }
+html.dark main .text-purple-600 { color: #c084fc !important; }
+html.dark main .text-orange-600 { color: #fb923c !important; }
+html.dark main .text-blue-600 { color: #60a5fa !important; }
+html.dark main .text-indigo-600 { color: #a5b4fc !important; }
+html.dark main .text-green-600 { color: #4ade80 !important; }
+html.dark main .text-teal-600 { color: #2dd4bf !important; }
+html.dark main .text-yellow-600 { color: #facc15 !important; }
+html.dark main .text-red-600 { color: #f87171 !important; }
+html.dark main .text-amber-600 { color: #fbbf24 !important; }
+html.dark main .text-primary-600 { color: #fdba74 !important; }
+html.dark main .bg-primary-50 { background-color: rgba(237, 125, 30, .14) !important; }
+
+/* ---------- Badges de estado/rol ---------- */
+html.dark main .bg-purple-100.text-purple-700 { background-color: rgba(168, 85, 247, .18) !important; color: #d8b4fe !important; }
+html.dark main .bg-blue-100.text-blue-700 { background-color: rgba(59, 130, 246, .18) !important; color: #93c5fd !important; }
+html.dark main .bg-green-100.text-green-700 { background-color: rgba(34, 197, 94, .16) !important; color: #86efac !important; }
+html.dark main .bg-yellow-100.text-yellow-700 { background-color: rgba(234, 179, 8, .18) !important; color: #fde047 !important; }
+html.dark main .bg-red-100.text-red-700 { background-color: rgba(239, 68, 68, .18) !important; color: #fca5a5 !important; }
+html.dark main .bg-orange-100.text-orange-700 { background-color: rgba(249, 115, 22, .18) !important; color: #fdba74 !important; }
+html.dark main .bg-indigo-100.text-indigo-700 { background-color: rgba(99, 102, 241, .18) !important; color: #a5b4fc !important; }
+html.dark main .bg-teal-100.text-teal-700 { background-color: rgba(45, 212, 191, .16) !important; color: #5eead4 !important; }
+html.dark main .bg-gray-100.text-gray-600 { background-color: #334155 !important; color: #cbd5e1 !important; }
+html.dark main .bg-gray-100.text-gray-700 { background-color: #334155 !important; color: #e2e8f0 !important; }
+
+/* ---------- Barras de progreso ---------- */
+html.dark main .bg-gray-100.rounded-full { background-color: #334155 !important; }
+
+/* ---------- Alertas ---------- */
+html.dark main .bg-green-50 { background-color: rgba(34, 197, 94, .12) !important; border-color: rgba(34, 197, 94, .35) !important; color: #86efac !important; }
+html.dark main .bg-red-50 { background-color: rgba(239, 68, 68, .12) !important; border-color: rgba(239, 68, 68, .35) !important; color: #fca5a5 !important; }
+html.dark main .bg-amber-50 { background-color: rgba(245, 158, 11, .12) !important; border-color: rgba(245, 158, 11, .35) !important; }
+html.dark main .text-amber-700 { color: #fcd34d !important; }
+html.dark main .border-amber-200 { border-color: rgba(245, 158, 11, .35) !important; }
+html.dark main .text-green-500 { color: #4ade80 !important; }
+html.dark main .text-green-800 { color: #86efac !important; }
+html.dark main .text-red-800 { color: #fca5a5 !important; }
+html.dark main .border-green-200 { border-color: rgba(34, 197, 94, .35) !important; }
+html.dark main .border-red-200 { border-color: rgba(239, 68, 68, .35) !important; }
+
+/* ---------- Paginación Laravel ---------- */
+html.dark main nav[role="navigation"] { color: #94a3b8; }
+html.dark main nav[role="navigation"] a,
+html.dark main nav[role="navigation"] span[aria-current] span,
+html.dark main nav[role="navigation"] button { background-color: #1e293b !important; border-color: #334155 !important; color: #cbd5e1 !important; }
+html.dark main nav[role="navigation"] a:hover { background-color: #334155 !important; }
+html.dark main nav[role="navigation"] span[aria-disabled="true"] span { background-color: transparent !important; color: #475569 !important; }
+
+/* ---------- Botones en oscuro ---------- */
+html.dark main .btn-secondary { background-color: #334155 !important; border-color: #475569 !important; color: #f1f5f9 !important; }
+html.dark main .btn-secondary:hover { background-color: #475569 !important; }
+html.dark main .btn-danger { background-color: rgba(239, 68, 68, .14) !important; border-color: rgba(239, 68, 68, .4) !important; color: #fca5a5 !important; }
+html.dark main .btn-danger:hover { background-color: rgba(239, 68, 68, .24) !important; }
+
+/* ---------- Encabezado degradado (se mantiene, con mejor contraste) ---------- */
+html.dark main .from-primary-500 { --tw-gradient-from: #9a3412 !important; }
+html.dark main .to-primary-600 { --tw-gradient-to: #7c2d12 !important; }
+
+/* ---------- Scrollbar ---------- */
+html.dark ::-webkit-scrollbar { width: 10px; height: 10px; }
+html.dark ::-webkit-scrollbar-track { background: #0f172a; }
+html.dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
+html.dark ::-webkit-scrollbar-thumb:hover { background: #475569; }

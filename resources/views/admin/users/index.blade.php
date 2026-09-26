@@ -4,22 +4,21 @@
 
 @section('header-title', 'Gestión de Usuarios')
 
-@section('header-actions')
-<div class="flex items-center gap-3">
-    <div class="relative hidden md:block">
-        <i class="fas fa-search text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-        <input type="text" id="search-users" placeholder="Buscar usuarios..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent w-64 transition">
-    </div>
-    <a href="{{ route('admin.users.index') }}" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i> Nuevo Usuario
-    </a>
-</div>
-@endsection
-
 @section('content')
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in">
-    <div class="overflow-x-auto">
-        <table class="w-full" id="users-table">
+    <div class="px-6 py-4 flex items-center justify-end gap-3">
+        @if ($canRestore ?? false)
+        <a href="{{ route('admin.users.trashed') }}" class="btn-secondary text-sm px-4 py-2">
+            <i class="fas fa-user-slash mr-2"></i> Dados de baja
+        </a>
+        @endif
+        <div class="relative w-full sm:w-64">
+            <i class="fas fa-search text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="search-users" placeholder="Buscar usuarios..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent w-full transition">
+        </div>
+    </div>
+    <div class="overflow-x-auto users-table-fixed">
+        <table class="w-full table-fixed-users" id="users-table">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</th>
@@ -28,7 +27,7 @@
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aprobado por</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Registro</th>
-                    <th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100" id="users-tbody">
@@ -44,6 +43,7 @@
                                         'capitan' => ['bg' => 'indigo-100', 'text' => 'indigo-600', 'icon' => 'fa-user-tie'],
                                         'almacen' => ['bg' => 'green-100', 'text' => 'green-600', 'icon' => 'fa-boxes'],
                                         'cajero' => ['bg' => 'teal-100', 'text' => 'teal-600', 'icon' => 'fa-cash-register'],
+                                        'sistemas' => ['bg' => 'gray-100', 'text' => 'gray-600', 'icon' => 'fa-laptop-code'],
                                     ];
                                     $avatar = $avatarColors[$user->role ?? ''] ?? ['bg' => 'gray-100', 'text' => 'gray-400', 'icon' => 'fa-user'];
                                 @endphp
@@ -70,6 +70,7 @@
                                     'capitan' => 'indigo',
                                     'almacen' => 'green',
                                     'cajero' => 'teal',
+                                    'sistemas' => 'gray',
                                 ];
                                 $roleIcons = [
                                     'admin' => 'fa-user-shield',
@@ -78,6 +79,7 @@
                                     'capitan' => 'fa-user-tie',
                                     'almacen' => 'fa-boxes',
                                     'cajero' => 'fa-cash-register',
+                                    'sistemas' => 'fa-laptop-code',
                                 ];
                                 $color = $roleColors[$user->role ?? ''] ?? 'gray';
                                 $icon = $roleIcons[$user->role ?? ''] ?? 'fa-user';
@@ -122,8 +124,8 @@
                         <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                             {{ $user->created_at->format('d/m/Y H:i') }}
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
                                 <a href="{{ route('admin.users.edit', $user) }}" 
                                    class="btn-secondary text-sm px-3 py-1.5"
                                    @if ($user->id === Auth::id()) style="pointer-events: none; opacity: 0.5;" @endif
@@ -137,9 +139,9 @@
                                         @method('DELETE')
                                         <button type="submit" 
                                                 class="btn-danger text-sm px-3 py-1.5"
-                                                @if ($user->isAdmin()) disabled @endif
-                                                title="Eliminar"
-                                                onclick="return confirm('¿Estás seguro de eliminar a {{ $user->name }}? Esta acción no se puede deshacer.')">
+                                                @if ($user->isPrivileged() && !Auth::user()->isSistemas()) disabled @endif
+                                                title="Dar de baja"
+                                                onclick="return confirm('¿Estás seguro de dar de baja a {{ $user->name }}? El usuario dejará de aparecer en el sistema.')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
@@ -156,11 +158,7 @@
                                 </div>
                                 <div>
                                     <p class="text-lg font-medium text-gray-800">No hay usuarios registrados</p>
-                                    <p class="text-gray-500 mt-1">Comienza agregando un nuevo usuario</p>
                                 </div>
-                                <a href="{{ route('admin.users.index') }}" class="btn-primary">
-                                    <i class="fas fa-plus mr-2"></i> Agregar Usuario
-                                </a>
                             </div>
                         </td>
                     </tr>
@@ -169,15 +167,29 @@
         </table>
     </div>
 
-    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-4">
         <div class="text-sm text-gray-500">
             Mostrando {{ $users->firstItem() ?? 0 }} a {{ $users->lastItem() ?? 0 }} de {{ $users->total() }} usuarios
         </div>
-        <div class="flex items-center gap-2">
+        <div class="ml-auto flex items-center justify-end gap-2">
             {{ $users->links() }}
         </div>
     </div>
 </div>
+
+@push('styles')
+<style>
+    .users-table-fixed {
+        min-height: 511px;
+    }
+    #users-table tbody tr.user-row {
+        height: 73px;
+    }
+    #users-table tbody tr.user-row td {
+        vertical-align: middle;
+    }
+</style>
+@endpush
 @endsection
 
 @push('scripts')

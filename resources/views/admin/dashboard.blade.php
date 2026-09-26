@@ -5,11 +5,6 @@
 @section('header-title', 'Dashboard')
 
 @section('header-actions')
-<div class="flex items-center gap-2">
-    <a href="{{ route('admin.users.index') }}" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i> Nuevo Usuario
-    </a>
-</div>
 @endsection
 
 @section('content')

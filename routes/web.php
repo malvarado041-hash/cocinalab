@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -28,11 +29,17 @@ Route::middleware('auth')->group(function () {
 // Panel Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', fn () => view('admin.dashboard', [
-        'totalUsers' => \App\Models\User::count(),
-        'pendingUsers' => \App\Models\User::where('status', 'pendiente')->count(),
-        'activeUsers' => \App\Models\User::where('status', 'activo')->count(),
-        'recentUsers' => \App\Models\User::latest()->take(5)->get(),
+        'totalUsers' => \App\Models\User::where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
+        'pendingUsers' => \App\Models\User::where('status', 'pendiente')->where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
+        'activeUsers' => \App\Models\User::where('status', 'activo')->where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
+        'recentUsers' => \App\Models\User::where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->latest()->take(5)->get(),
     ]))->name('dashboard');
     
+    Route::get('users/dados-de-baja', [UserController::class, 'trashed'])->name('users.trashed');
+    Route::put('users/{id}/restaurar', [UserController::class, 'restore'])->name('users.restore');
+    Route::delete('users/{id}/eliminar-definitivo', [UserController::class, 'forceDestroy'])->name('users.forceDestroy');
     Route::resource('users', UserController::class)->except(['show', 'create', 'store']);
+
+    Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/perfil', [ProfileController::class, 'update'])->name('profile.update');
 });

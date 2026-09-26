@@ -1,5 +1,5 @@
 <aside id="sidebar" class="w-64 bg-white shadow-lg h-screen fixed inset-y-0 left-0 z-10 sidebar-transition">
-    <div class="p-4 border-b flex items-center justify-between">
+    <div class="p-4 flex items-center justify-between">
         <button id="sidebar-toggle" type="button" class="flex items-center gap-3 min-w-0 text-left focus:outline-none" aria-label="Colapsar sidebar">
             <div class="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center flex-shrink-0 transition hover:scale-105">
                 <i class="fas fa-utensils text-white text-xl"></i>
