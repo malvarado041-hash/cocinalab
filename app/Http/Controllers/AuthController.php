@@ -29,8 +29,24 @@ class AuthController extends Controller
                 ->onlyInput('Usuario');
         }
 
+        if ($user->isPending()) {
+            return back()
+                ->withErrors(['Usuario' => 'Tu cuenta está pendiente de aprobación por un administrador.'])
+                ->onlyInput('Usuario');
+        }
+
+        if (! $user->isActive()) {
+            return back()
+                ->withErrors(['Usuario' => 'Tu cuenta ha sido desactivada. Contacta al administrador.'])
+                ->onlyInput('Usuario');
+        }
+
         Auth::login($user, true);
         $request->session()->regenerate();
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
 
         return redirect()->route('home');
     }
@@ -40,7 +56,6 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    // Registro validado
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -53,10 +68,10 @@ class AuthController extends Controller
             'name' => $data['txtNombre'],
             'email' => $data['txtCorreo'],
             'password' => Hash::make($data['contrasena']),
+            'status' => 'pendiente',
         ]);
 
-        Auth::login($user);
-        return redirect()->route('home');
+        return redirect()->route('login')->with('success', 'Registro exitoso. Tu cuenta está pendiente de aprobación por un administrador.');
     }
 
     public function logout(Request $request)

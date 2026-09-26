@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RecetaController;
@@ -22,4 +23,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/procedimiento', [RecetaController::class, 'show'])->name('recetas.show');
     Route::get('/usuario', [HomeController::class, 'usuario'])->name('usuario');
     Route::get('/info', [HomeController::class, 'info'])->name('info');
+});
+
+// Panel Admin
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', fn () => view('admin.dashboard', [
+        'totalUsers' => \App\Models\User::count(),
+        'pendingUsers' => \App\Models\User::where('status', 'pendiente')->count(),
+        'activeUsers' => \App\Models\User::where('status', 'activo')->count(),
+        'recentUsers' => \App\Models\User::latest()->take(5)->get(),
+    ]))->name('dashboard');
+    
+    Route::resource('users', UserController::class)->except(['show', 'create', 'store']);
 });

@@ -11,6 +11,9 @@
         @if($errors->any())
         @include('genericos.feedback.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
         @endif
+        @if(session('success'))
+        @include('genericos.feedback.alertgenerico', ['type' => 'success', 'message' => session('success'), 'dismiss' => true])
+        @endif
         <form class="auth-form" action="{{ route('login.post') }}" method="POST">
             @csrf
             @include('genericos.formularios.inputsgenerico', [

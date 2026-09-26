@@ -5,10 +5,10 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class CocinaLabSeeder extends Seeder
 {
-    // Carga datos semilla
     public function run(): void
     {
         $sqlFile = database_path('seeders/data/cocinalab_data.sql');
@@ -36,6 +36,8 @@ class CocinaLabSeeder extends Seeder
                     [
                         'name' => str_replace("''", "'", $r[2]),
                         'password' => str_replace("''", "'", $r[4]),
+                        'role' => 'cocinero',
+                        'status' => 'activo',
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]
@@ -43,6 +45,21 @@ class CocinaLabSeeder extends Seeder
             }
             $this->command->info('Seed users (desde registros) OK: ' . count($rows));
         }
+
+        // Admin por defecto
+        DB::table('users')->updateOrInsert(
+            ['email' => 'admin@cocinalab.com'],
+            [
+                'name' => 'Administrador',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
+                'status' => 'activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+        $this->command->info('Admin user created: admin@cocinalab.com / admin123');
+
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
