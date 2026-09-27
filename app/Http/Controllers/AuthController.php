@@ -41,7 +41,10 @@ class AuthController extends Controller
                 ->onlyInput('Usuario');
         }
 
-        Auth::login($user, true);
+        // Sin "remember me": la sesión vive solo en la cookie de sesión,
+        // que expira al cerrar el navegador / apagar el equipo.
+        Auth::login($user, false);
+        $user->forceFill(['remember_token' => null])->save();
         $request->session()->regenerate();
 
         if ($user->isAdmin() || $user->isSistemas()) {
@@ -79,6 +82,11 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login');
+
+        // Borra también la cookie "remember me" si existía de sesiones anteriores.
+        $rememberCookie = Auth::getRecallerName();
+        $response = redirect()->route('login');
+
+        return $response->withCookie(\Illuminate\Support\Facades\Cookie::forget($rememberCookie));
     }
 }

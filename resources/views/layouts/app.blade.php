@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" @if(request()->routeIs('login', 'register')) data-force-light="1" @endif>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'CocinaLab')</title>
     <link rel="stylesheet" href="{{ asset('css/boton.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -13,8 +14,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         // Pre-pintado: aplica 'dark' antes del primer render para evitar parpadeo.
+        // En login/registro se fuerza modo claro (data-force-light).
         (function() {
             try {
+                if (document.documentElement.hasAttribute('data-force-light')) {
+                    document.documentElement.classList.remove('dark');
+                    return;
+                }
                 var theme = localStorage.getItem('theme');
                 if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');
@@ -49,7 +55,9 @@
                 </form>
             </li>
             @endauth
+            @unless(request()->routeIs('login', 'register'))
             <li><button type="button" class="theme-toggle-public" data-theme-toggle title="Cambiar tema"><i data-theme-icon class="fas fa-moon"></i></button></li>
+            @endunless
         </ul>
     </center>
 </div>

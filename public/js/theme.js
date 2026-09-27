@@ -20,7 +20,21 @@
         }
     }
 
+    function isForceLight() {
+        try {
+            return document.documentElement.hasAttribute('data-force-light');
+        } catch (e) {
+            return false;
+        }
+    }
+
     function applyTheme(mode) {
+        // Login/registro siempre en modo claro: no aplicar ni guardar 'dark'.
+        if (isForceLight()) {
+            document.documentElement.classList.remove('dark');
+            syncToggles();
+            return;
+        }
         try {
             if (mode === 'dark') {
                 localStorage.setItem('theme', 'dark');
@@ -39,6 +53,7 @@
     }
 
     function toggleTheme() {
+        if (isForceLight()) return;
         applyTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark');
     }
 
@@ -70,13 +85,19 @@
 
     // Sincroniza entre pestañas y con cambios del sistema en modo auto.
     window.addEventListener('storage', function (e) {
-        if (e.key === 'theme') applyTheme(getTheme());
+        if (e.key === 'theme' && !isForceLight()) applyTheme(getTheme());
     });
     try {
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-            if (getTheme() === 'auto') applyTheme('auto');
+            if (getTheme() === 'auto' && !isForceLight()) applyTheme('auto');
         });
     } catch (e) {}
+
+    // En páginas con modo claro forzado, asegura quitar 'dark' aunque
+    // otra pestaña lo haya activado antes de cargar este script.
+    if (isForceLight()) {
+        document.documentElement.classList.remove('dark');
+    }
 
     document.addEventListener('DOMContentLoaded', syncToggles);
 
