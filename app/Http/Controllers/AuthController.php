@@ -57,9 +57,7 @@ class AuthController extends Controller
     public function showRegister()
     {
         return view('auth.register');
-    }
-
-    public function register(Request $request)
+    }    public function register(Request $request)
     {
         $data = $request->validate([
             'txtNombre' => 'required|string|max:200|unique:users,name',
@@ -75,6 +73,30 @@ class AuthController extends Controller
         ]);
 
         return redirect()->route('login')->with('success', 'Registro exitoso. Tu cuenta está pendiente de aprobación por un administrador.');
+    }
+
+    public function showForgot()
+    {
+        return view('auth.forgot');
+    }
+
+    public function forgot(Request $request)
+    {
+        $data = $request->validate([
+            'Usuario' => 'required|string',
+        ]);
+
+        $user = User::where('name', $data['Usuario'])->first();
+
+        // Respuesta genérica para no revelar qué usuarios existen.
+        if ($user) {
+            $user->forceFill(['password_reset_requested_at' => now()])->save();
+        }
+
+        return redirect()->route('login')->with(
+            'success',
+            'Si el usuario existe, se habilitó la recuperación. Un administrador podrá cambiar tu contraseña.'
+        );
     }
 
     public function logout(Request $request)

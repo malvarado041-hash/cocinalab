@@ -83,6 +83,7 @@
     </div>
 
     <script src="{{ asset('js/theme.js') }}?v=1"></script>
+    <script src="{{ asset('js/password-toggle.js') }}?v=1"></script>
     @stack('scripts')
 </body>
 </html>

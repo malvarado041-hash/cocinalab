@@ -55,6 +55,11 @@
                                     @if ($user->id === Auth::id())
                                         <span class="text-xs text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">Tú</span>
                                     @endif
+                                    @if ($user->password_reset_requested_at)
+                                        <span class="text-xs text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full" title="Solicitó recuperación de contraseña">
+                                            <i class="fas fa-key mr-1"></i>Solicitó cambio
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                         </td>

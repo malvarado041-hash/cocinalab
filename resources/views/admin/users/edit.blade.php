@@ -82,6 +82,13 @@
         @csrf
         @method('PUT')
 
+        @if ($user->hasPendingPasswordReset())
+        <div class="xl:col-span-2 flex items-start gap-3 rounded-2xl bg-amber-50 border border-amber-200 px-5 py-4 fade-in" role="alert">
+            <i class="fas fa-key text-amber-500 mt-0.5"></i>
+            <p class="text-sm text-amber-800">Este usuario solicitó recuperación de contraseña{{ $user->password_reset_requested_at ? ' el ' . $user->password_reset_requested_at->format('d/m/Y H:i') : '' }}. El cambio de contraseña está habilitado por esta ocasión.</p>
+        </div>
+        @endif
+
         <!-- Permisos -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in" style="animation-delay: 0.1s;">
             <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
@@ -193,28 +200,49 @@
                     </div>
                     <div class="flex-1">
                         <h3 class="text-lg font-semibold text-gray-800">Contraseña</h3>
+                        @if ($canEditPassword ?? true)
                         <p class="text-sm text-gray-500">Opcional: establece una nueva contraseña para el usuario</p>
+                        @endif
                     </div>
+                    @if ($canEditPassword ?? true)
                     <label class="relative inline-flex cursor-pointer select-none items-center gap-3">
                         <span class="text-sm font-medium text-gray-600">Cambiar</span>
                         <input type="checkbox" id="togglePassword" class="peer sr-only">
                         <span class="relative h-6 w-11 rounded-full bg-gray-200 transition-colors peer-checked:bg-primary-500 after:absolute after:left-[3px] after:top-[3px] after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow after:transition-transform after:content-[''] peer-checked:after:translate-x-5"></span>
                     </label>
+                    @else
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-500">
+                        <i class="fas fa-lock"></i> Bloqueado
+                    </span>
+                    @endif
                 </div>
 
+                @if ($canEditPassword ?? true)
                 <div id="passwordFields" class="hidden p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">Nueva contraseña</label>
-                            <input type="password" id="password" name="password" autocomplete="new-password"
-                                   disabled placeholder="Mínimo 8 caracteres"
-                                   class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none disabled:bg-gray-50 disabled:text-gray-400">
+                            <div class="relative">
+                                <input type="password" id="password" name="password" autocomplete="new-password"
+                                       disabled placeholder="Mínimo 8 caracteres"
+                                       class="w-full rounded-xl border border-gray-300 pl-4 pr-11 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none disabled:bg-gray-50 disabled:text-gray-400">
+                                <button type="button" data-password-toggle data-target="#password" aria-label="Mostrar contraseña" title="Mostrar contraseña" tabindex="-1"
+                                        class="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-gray-400 hover:text-primary-500">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1.5">Confirmar contraseña</label>
-                            <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password"
-                                   disabled placeholder="Repite la contraseña"
-                                   class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none disabled:bg-gray-50 disabled:text-gray-400">
+                            <div class="relative">
+                                <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password"
+                                       disabled placeholder="Repite la contraseña"
+                                       class="w-full rounded-xl border border-gray-300 pl-4 pr-11 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none disabled:bg-gray-50 disabled:text-gray-400">
+                                <button type="button" data-password-toggle data-target="#password_confirmation" aria-label="Mostrar contraseña" title="Mostrar contraseña" tabindex="-1"
+                                        class="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-gray-400 hover:text-primary-500">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
@@ -225,6 +253,7 @@
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+                @endif
             </div>
 
             <!-- Datos del Usuario -->
@@ -294,6 +323,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const toggle = document.getElementById('togglePassword');
         const wrap = document.getElementById('passwordFields');
+        if (!toggle || !wrap) return;
         const inputs = wrap.querySelectorAll('input[type="password"]');
 
         toggle.addEventListener('change', function() {

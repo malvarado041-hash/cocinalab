@@ -21,6 +21,7 @@ class User extends Authenticatable
         'status',
         'approved_by',
         'approved_at',
+        'password_reset_requested_at',
     ];
 
     protected $hidden = [
@@ -34,6 +35,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'approved_at' => 'datetime',
+            'password_reset_requested_at' => 'datetime',
         ];
     }
 
@@ -65,6 +67,11 @@ class User extends Authenticatable
     public function isPending(): bool
     {
         return $this->status === 'pendiente';
+    }
+
+    public function hasPendingPasswordReset(): bool
+    {
+        return $this->password_reset_requested_at !== null;
     }
 
     public function approver()

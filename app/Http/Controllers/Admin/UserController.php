@@ -27,14 +27,36 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::where('id', '!=', Auth::id())
-            ->orderBy('created_at', 'desc')
+        $query = User::where('id', '!=', Auth::id());
+
+        // El admin solo gestiona roles operativos; sistemas ve todas las cuentas.
+        if (!Auth::user()->isSistemas()) {
+            $query->where(function ($q) {
+                $q->whereNotIn('role', ['admin', 'sistemas'])->orWhereNull('role');
+            });
+        }
+
+        $users = $query->orderBy('created_at', 'desc')
             ->paginate(7);
 
         // Solo sistemas puede ver y restaurar bajas lógicas.
         $canRestore = Auth::user()->isSistemas();
 
         return view('admin.users.index', compact('users', 'canRestore'));
+    }
+
+    /**
+     * ¿Puede el editor actual cambiar la contraseña de este usuario?
+     * Sistemas: sin cambio, siempre puede.
+     * Admin: solo si el usuario solicitó recuperación ("Olvidé mi contraseña").
+     */
+    private function canEditPassword(User $user): bool
+    {
+        if (Auth::user()->isSistemas()) {
+            return true;
+        }
+
+        return $user->hasPendingPasswordReset();
     }
 
     public function edit(User $user)
@@ -50,8 +72,9 @@ class UserController extends Controller
         $roles = $this->assignableRoles();
         $statuses = ['pendiente', 'activo', 'inactivo'];
         $canAssignPrivileged = Auth::user()->isSistemas();
+        $canEditPassword = $this->canEditPassword($user);
 
-        return view('admin.users.edit', compact('user', 'roles', 'statuses', 'canAssignPrivileged'));
+        return view('admin.users.edit', compact('user', 'roles', 'statuses', 'canAssignPrivileged', 'canEditPassword'));
     }
 
     public function update(Request $request, User $user)
@@ -66,6 +89,8 @@ class UserController extends Controller
 
         $roles = $this->assignableRoles();
 
+        $canEditPassword = $this->canEditPassword($user);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100', 'unique:users,name,' . $user->id],
             'codigo_empleado' => ['required', 'digits:6', 'unique:users,codigo_empleado,' . $user->id],
@@ -73,6 +98,10 @@ class UserController extends Controller
             'status' => 'required|in:pendiente,activo,inactivo',
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
+
+        if (!empty($data['password']) && !$canEditPassword) {
+            abort(403, 'No puedes cambiar la contraseña hasta que el usuario use "Olvidé mi contraseña".');
+        }
 
         $wasPending = $user->isPending();
         $update = [
@@ -86,6 +115,8 @@ class UserController extends Controller
 
         if (!empty($data['password'])) {
             $update['password'] = Hash::make($data['password']);
+            // Una vez editada, se deshabilita hasta una nueva solicitud.
+            $update['password_reset_requested_at'] = null;
         }
 
         $user->update($update);

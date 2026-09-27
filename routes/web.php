@@ -14,6 +14,8 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+Route::get('/olvide-mi-contrasena', [AuthController::class, 'showForgot'])->name('password.forgot');
+Route::post('/olvide-mi-contrasena', [AuthController::class, 'forgot'])->name('password.forgot.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Zona privada

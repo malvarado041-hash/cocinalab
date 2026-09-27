@@ -10,7 +10,7 @@
     $class = $class ?? '';
     $icon = $icon ?? '';
 @endphp
-<div class="gen-field {{ $icon !== '' ? 'gen-field-icon' : '' }} {{ $class }}">
+<div class="gen-field {{ $icon !== '' ? 'gen-field-icon' : '' }} {{ $type === 'password' ? 'gen-field-password' : '' }} {{ $class }}">
     <input type="{{ $type }}" name="{{ $name }}" id="{{ $id }}" value="{{ $value }}"
            placeholder=" " class="gen-input"
            @if($required) required @endif
@@ -20,5 +20,10 @@
     @endif
     @if($placeholder !== '')
     <label for="{{ $id }}">{{ $placeholder }}</label>
+    @endif
+    @if($type === 'password')
+    <button type="button" class="gen-password-toggle" data-password-toggle data-target="#{{ $id }}" aria-label="Mostrar contraseña" title="Mostrar contraseña" tabindex="-1">
+        <i class="fas fa-eye"></i>
+    </button>
     @endif
 </div>

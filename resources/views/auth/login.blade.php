@@ -34,6 +34,7 @@
                 'icon' => asset('img/logo.png'),
             ])
         </form>
+        <p class="auth-switch">¿Olvidaste tu contraseña? <a href="{{ route('password.forgot') }}">Recupérala aquí</a></p>
         <p class="auth-switch">¿No tienes cuenta? <a href="{{ route('register') }}">Regístrate</a></p>
     </div>
 </div>

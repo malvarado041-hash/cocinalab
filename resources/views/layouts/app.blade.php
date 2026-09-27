@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" @if(request()->routeIs('login', 'register')) data-force-light="1" @endif>
+<html lang="es" @if(request()->routeIs('login', 'register', 'password.forgot')) data-force-light="1" @endif>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -55,7 +55,7 @@
                 </form>
             </li>
             @endauth
-            @unless(request()->routeIs('login', 'register'))
+            @unless(request()->routeIs('login', 'register', 'password.forgot'))
             <li><button type="button" class="theme-toggle-public" data-theme-toggle title="Cambiar tema"><i data-theme-icon class="fas fa-moon"></i></button></li>
             @endunless
         </ul>
@@ -63,5 +63,6 @@
 </div>
 @yield('content')
 <script src="{{ asset('js/theme.js') }}?v=1"></script>
+<script src="{{ asset('js/password-toggle.js') }}?v=1"></script>
 </body>
 </html>

@@ -102,13 +102,25 @@
                 <div class="p-6 space-y-4">
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">Nueva contraseña</label>
-                        <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres"
-                               class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none">
+                        <div class="relative">
+                            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres"
+                                   class="w-full rounded-xl border border-gray-300 pl-4 pr-11 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none">
+                            <button type="button" data-password-toggle data-target="#password" aria-label="Mostrar contraseña" title="Mostrar contraseña" tabindex="-1"
+                                    class="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-gray-400 hover:text-primary-500">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1.5">Confirmar contraseña</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Repite la contraseña"
-                               class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none">
+                        <div class="relative">
+                            <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Repite la contraseña"
+                                   class="w-full rounded-xl border border-gray-300 pl-4 pr-11 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none">
+                            <button type="button" data-password-toggle data-target="#password_confirmation" aria-label="Mostrar contraseña" title="Mostrar contraseña" tabindex="-1"
+                                    class="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-gray-400 hover:text-primary-500">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
                     @error('password')
                         <p class="text-sm text-red-600">{{ $message }}</p>

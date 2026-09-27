@@ -236,3 +236,30 @@
     border-top: 1px solid #eee;
     background: #fafafa;
 }
+
+/* Ojo ver/ocultar contraseña */
+.gen-field-password .gen-input,
+.auth-form .gen-field-password input.gen-input {
+    padding-right: 3rem;
+}
+.gen-password-toggle {
+    position: absolute;
+    right: .9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: 0;
+    padding: .25rem;
+    color: #a0a0a0;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+}
+.gen-password-toggle:hover {
+    color: #EB8F25;
+}
+.gen-password-toggle:focus {
+    outline: none;
+    color: #EB8F25;
+}
