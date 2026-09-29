@@ -106,6 +106,12 @@
                     <!-- Role Selector -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-3">Rol del Usuario</label>
+                        @if ($roleLocked ?? false)
+                            <div class="flex items-start gap-3 rounded-xl bg-gray-50 border border-gray-200 px-4 py-3">
+                                <i class="fas fa-lock text-gray-400 mt-0.5"></i>
+                                <p class="text-sm text-gray-600"><span class="font-semibold text-gray-800">Sistemas.</span> Este rol no se puede asignar ni modificar desde el sistema.</p>
+                            </div>
+                        @else
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-3" role="radiogroup" aria-label="Seleccionar rol">
                             @php
                                 $roleOptions = [
@@ -117,7 +123,6 @@
                                 ];
                                 if (($canAssignPrivileged ?? false)) {
                                     $roleOptions['admin'] = ['label' => 'Admin', 'icon' => 'fa-user-shield', 'color' => 'purple', 'desc' => 'Gestión de usuarios'];
-                                    $roleOptions['sistemas'] = ['label' => 'Sistemas', 'icon' => 'fa-laptop-code', 'color' => 'gray', 'desc' => 'Acceso total'];
                                 }
                             @endphp
                             @foreach ($roleOptions as $key => $opt)
@@ -145,6 +150,7 @@
                         @error('role')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
+                        @endif
                     </div>
 
                     <!-- Status Selector -->

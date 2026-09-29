@@ -12,14 +12,15 @@ class UserController extends Controller
 {
     /**
      * Roles que el editor actual puede asignar.
-     * El admin solo gestiona roles operativos; sistemas gestiona todos.
+     * El admin solo gestiona roles operativos; sistemas gestiona todos
+     * menos 'sistemas', que no se puede asignar a nadie desde el sistema.
      */
     private function assignableRoles(): array
     {
         $base = ['cocinero', 'mesero', 'capitan', 'almacen', 'cajero'];
 
         if (Auth::user()->isSistemas()) {
-            return array_merge($base, ['admin', 'sistemas']);
+            return array_merge($base, ['admin']);
         }
 
         return $base;
@@ -73,8 +74,10 @@ class UserController extends Controller
         $statuses = ['pendiente', 'activo', 'inactivo'];
         $canAssignPrivileged = Auth::user()->isSistemas();
         $canEditPassword = $this->canEditPassword($user);
+        // El rol sistemas no se puede asignar ni retirar desde el sistema.
+        $roleLocked = $user->isSistemas();
 
-        return view('admin.users.edit', compact('user', 'roles', 'statuses', 'canAssignPrivileged', 'canEditPassword'));
+        return view('admin.users.edit', compact('user', 'roles', 'statuses', 'canAssignPrivileged', 'canEditPassword', 'roleLocked'));
     }
 
     public function update(Request $request, User $user)
@@ -91,13 +94,24 @@ class UserController extends Controller
 
         $canEditPassword = $this->canEditPassword($user);
 
-        $data = $request->validate([
+        // El rol sistemas no se puede asignar ni retirar desde el sistema:
+        // la validación `in:` ya rechaza 'sistemas' en peticiones manipuladas,
+        // y si el usuario editado es sistemas se conserva su rol intacto.
+        $roleLocked = $user->isSistemas();
+
+        $rules = [
             'name' => ['required', 'string', 'min:3', 'max:100', 'unique:users,name,' . $user->id],
             'codigo_empleado' => ['required', 'digits:6', 'unique:users,codigo_empleado,' . $user->id],
             'role' => 'required|in:' . implode(',', $roles),
             'status' => 'required|in:pendiente,activo,inactivo',
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-        ]);
+        ];
+
+        if ($roleLocked) {
+            unset($rules['role']);
+        }
+
+        $data = $request->validate($rules);
 
         if (!empty($data['password']) && !$canEditPassword) {
             abort(403, 'No puedes cambiar la contraseña hasta que el usuario use "Olvidé mi contraseña".');
@@ -107,7 +121,7 @@ class UserController extends Controller
         $update = [
             'name' => $data['name'],
             'codigo_empleado' => $data['codigo_empleado'],
-            'role' => $data['role'],
+            'role' => $roleLocked ? $user->role : $data['role'],
             'status' => $data['status'],
             'approved_by' => $data['status'] === 'activo' && $wasPending ? Auth::id() : $user->approved_by,
             'approved_at' => $data['status'] === 'activo' && $wasPending ? now() : $user->approved_at,
