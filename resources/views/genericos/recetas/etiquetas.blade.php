@@ -70,9 +70,10 @@
 
     @if($editable && !$interactivo)
         <div class="mt-3">
-            <x-genericos.inputsgenerico 
-                name="nueva_etiqueta" 
-                placeholder="Añadir etiqueta..." 
+            {{-- Componente x-genericos.inputsgenerico aún no existe: input estándar --}}
+            <input type="text"
+                name="nueva_etiqueta"
+                placeholder="Añadir etiqueta..."
                 wire:model.debounce.300ms="nuevaEtiqueta"
                 wire:keydown.enter="agregarEtiqueta"
                 class="w-full sm:w-64" />

@@ -36,13 +36,15 @@
                        {{ $colores[$color ?? 'gray'] ?? 'bg-gray-100 text-gray-600' }}
                        {{ $borde ? 'ring-2 ring-white ring-' . $borde . '-200' : 'ring-2 ring-white ring-gray-200' }}">
             @if($icono)
-                <x-genericos.icon :nombre="$icono" :tamano="$tamano" clase="text-current" />
+                {{-- Componente x-genericos.icon aún no existe: icono de usuario genérico --}}
+                <svg class="w-1/2 h-1/2 text-current" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
             @elseif($iniciales)
                 {{ $iniciales }}
             @elseif($nombre)
                 {{ Str::upper(collect(explode(' ', $nombre))->map(fn($p) => $p[0])->take(2)->implode('')) }}
             @else
-                <x-genericos.icon nombre="user" :tamano="$tamano" clase="text-current" />
+                {{-- Componente x-genericos.icon aún no existe: icono de usuario genérico --}}
+                <svg class="w-1/2 h-1/2 text-current" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
             @endif
         </div>
     @endif
@@ -60,14 +62,10 @@
 @if($grupo)
     <div class="flex -space-x-2" role="group" aria-label="{{ $grupoLabel ?? 'Grupo de avatares' }}">
         @foreach($avatares ?? [] as $index => $avatar)
-            <x-genericos.avatar 
-                :imagen="$avatar['imagen'] ?? null"
-                :nombre="$avatar['nombre'] ?? null"
-                :iniciales="$avatar['iniciales'] ?? null"
-                :tamano="$tamano"
-                :estado="$avatar['estado'] ?? null"
-                class="z-{{ count($avatares) - $index }}"
-                {{ $index >= ($maxVisibles ?? 4) ? 'hidden sm:inline-flex' : '' }} />
+            @if($index < ($maxVisibles ?? 4))
+            {{-- Reutiliza este mismo parcial sin grupo para evitar recursión infinita --}}
+            @include('genericos.utilidades.avatar', ['imagen' => $avatar['imagen'] ?? null, 'nombre' => $avatar['nombre'] ?? null, 'iniciales' => $avatar['iniciales'] ?? null, 'tamano' => $tamano ?? 'md', 'estado' => $avatar['estado'] ?? null, 'grupo' => false])
+            @endif
         @endforeach
         
         @if(count($avatares ?? []) > ($maxVisibles ?? 4))

@@ -68,7 +68,8 @@
      x-transition:leave-start="opacity-100"
      x-transition:leave-end="opacity-0">
     <div class="bg-white p-6 rounded-xl shadow-lg">
-        <x-genericos.spinner tipo="{{ $tipo }}" tamano="{{ $tamano }}" color="{{ $color }}" label="{{ $label }}" mostrar-label="true" />
+        {{-- Reutiliza este mismo parcial sin overlay para evitar recursión infinita --}}
+        @include('genericos.feedback.spinner', ['tipo' => $tipo ?? 'spinner', 'tamano' => $tamano ?? 8, 'color' => $color ?? 'orange', 'label' => $label ?? null, 'mostrarLabel' => true, 'overlay' => false])
     </div>
 </div>
 @endif
