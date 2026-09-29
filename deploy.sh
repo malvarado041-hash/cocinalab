@@ -8,6 +8,9 @@ set -euo pipefail
 
 FROM="${1:-tercera}"
 DEPLOY="deploy"
+# Remote donde vive la rama `deploy` (tu fork). Se configura con:
+#   git config deploy.remote fork
+REMOTE="$(git config deploy.remote || echo origin)"
 
 # Evita desplegar dejando trabajo sin commitear por accidente
 if [ -n "$(git status --porcelain)" ]; then
@@ -16,6 +19,10 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 git fetch origin
-echo "🚀 Desplegando origin/$FROM → $DEPLOY ..."
-git push origin "origin/$FROM:$DEPLOY"
+git show-ref --verify --quiet "refs/heads/$FROM" || {
+  echo "❌ No tienes la rama local '$FROM'. Corre: git checkout $FROM && git pull"
+  exit 1
+}
+echo "🚀 Desplegando $FROM → $REMOTE/$DEPLOY ..."
+git push "$REMOTE" "$FROM:$DEPLOY"
 echo "✅ Deploy lanzado. Railway redesplegará la rama '$DEPLOY' en unos minutos."
