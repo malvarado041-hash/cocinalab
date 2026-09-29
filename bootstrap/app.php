@@ -11,6 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Railway termina TLS en su proxy: confiar en él para que
+        // asset() y url() generen https:// y no haya contenido mixto.
+        $middleware->trustProxies(at: '*');
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckUserStatus::class,
         ]);
