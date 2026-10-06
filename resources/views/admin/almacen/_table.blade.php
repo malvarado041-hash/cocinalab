@@ -1,6 +1,6 @@
 @php $qs = request()->query(); @endphp
 <div class="overflow-x-auto">
-    <table class="w-full">
+    <table class="w-full min-w-[860px] admin-table">
         <thead class="bg-gray-50">
             <tr>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto</th>
@@ -8,7 +8,7 @@
                 <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock</th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Unidad</th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Precio</th>
-                <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider" sticky-col">Acciones</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -48,7 +48,7 @@
                             —
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-center">
+                    <td class="px-6 py-4 text-center sticky-col">
                         <div class="flex items-center justify-center gap-2">
                             <a href="{{ route('admin.almacen.edit', array_merge(['almacen' => $p->id], $qs)) }}" class="btn-secondary text-sm px-3 py-1.5" title="Editar">
                                 <i class="fas fa-edit"></i>

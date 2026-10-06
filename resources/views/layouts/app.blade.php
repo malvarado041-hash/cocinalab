@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'CocinaLab')</title>
-    <link rel="stylesheet" href="{{ asset('css/boton.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/boton.css') }}?v=2">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=3">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}?v=2">
-    <link rel="stylesheet" href="{{ asset('css/genericos.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/genericos.css') }}?v=2">
     <link rel="stylesheet" href="{{ asset('css/site-dark.css') }}?v=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -50,22 +50,51 @@
             <div class="nav-overlay" data-nav-overlay aria-hidden="true"></div>
 
             <ul class="btnlist" id="nav-menu" role="list">
-                <li><a class="boton nav-link" href="{{ auth()->check() ? route('home') : route('login') }}">Inicio</a></li>
-                <li><a class="boton nav-link" href="{{ auth()->check() ? route('recetas.index') : route('login') }}">Recetas</a></li>
-                <li><a class="boton nav-link" href="{{ auth()->check() ? route('usuario') : route('login') }}">Usuario</a></li>
-                <li><a class="boton nav-link" href="{{ auth()->check() ? route('info') : route('login') }}">Información</a></li>
+                <li class="drawer-only" aria-hidden="false">
+                    <div class="drawer-head">
+                        <span class="drawer-brand">
+                            <img src="{{ asset('img/logo.png') }}" alt="">
+                            CocinaLab
+                        </span>
+                        <button type="button" class="drawer-close" data-nav-close aria-label="Cerrar menú">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </li>
+                <li>
+                    <a class="boton nav-link" href="{{ auth()->check() ? route('home') : route('login') }}">
+                        <i class="fas fa-home nav-link-icon" aria-hidden="true"></i><span>Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="boton nav-link" href="{{ auth()->check() ? route('recetas.index') : route('login') }}">
+                        <i class="fas fa-utensils nav-link-icon" aria-hidden="true"></i><span>Recetas</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="boton nav-link" href="{{ auth()->check() ? route('usuario') : route('login') }}">
+                        <i class="fas fa-user nav-link-icon" aria-hidden="true"></i><span>Usuario</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="boton nav-link" href="{{ auth()->check() ? route('info') : route('login') }}">
+                        <i class="fas fa-circle-info nav-link-icon" aria-hidden="true"></i><span>Información</span>
+                    </a>
+                </li>
                 @auth
                 <li>
                     <form action="{{ route('logout') }}" method="POST" style="display:inline;">
                         @csrf
-                        <button class="boton nav-link" type="submit">Salir ({{ auth()->user()->name }})</button>
+                        <button class="boton nav-link" type="submit">
+                            <i class="fas fa-sign-out-alt nav-link-icon" aria-hidden="true"></i><span>Salir ({{ auth()->user()->name }})</span>
+                        </button>
                     </form>
                 </li>
                 @endauth
                 @unless(request()->routeIs('login', 'register', 'password.forgot'))
                 <li>
                     <button type="button" class="theme-toggle-public boton nav-link" data-theme-toggle title="Cambiar tema" aria-label="Cambiar tema">
-                        <i data-theme-icon class="fas fa-moon"></i>
+                        <i data-theme-icon class="fas fa-moon nav-link-icon" aria-hidden="true"></i><span class="drawer-only">Tema</span>
                     </button>
                 </li>
                 @endunless
@@ -74,13 +103,14 @@
     </header>
 </div>
 @yield('content')
-<script src="{{ asset('js/theme.js') }}?v=1"></script>
+<script src="{{ asset('js/theme.js') }}?v=2"></script>
 <script src="{{ asset('js/password-toggle.js') }}?v=1"></script>
 <script>
     (function() {
         const toggle = document.querySelector('[data-nav-toggle]');
         const menu = document.getElementById('nav-menu');
         const overlay = document.querySelector('[data-nav-overlay]');
+        const closeBtn = document.querySelector('[data-nav-close]');
         if (!toggle || !menu || !overlay) return;
 
         function closeMenu() {
@@ -103,6 +133,10 @@
         });
 
         overlay.addEventListener('click', closeMenu);
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeMenu);
+        }
 
         menu.querySelectorAll('a, button').forEach(el => {
             el.addEventListener('click', () => {

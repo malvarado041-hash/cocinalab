@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in">
-    <div class="px-6 py-4 flex items-center justify-end gap-3">
+    <div class="px-6 py-4 flex flex-wrap items-center justify-end gap-3">
         @if ($canRestore ?? false)
         <a href="{{ route('admin.users.trashed') }}" class="btn-secondary text-sm px-4 py-2">
             <i class="fas fa-user-slash mr-2"></i> Dados de baja
@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="overflow-x-auto users-table-fixed">
-        <table class="w-full table-fixed-users" id="users-table">
+        <table class="w-full min-w-[780px] table-fixed-users admin-table" id="users-table">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</th>
@@ -27,7 +27,7 @@
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aprobado por</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Registro</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider" sticky-col">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100" id="users-tbody">
@@ -129,7 +129,7 @@
                         <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                             {{ $user->created_at->format('d/m/Y H:i') }}
                         </td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="px-6 py-4 text-center sticky-col">
                             <div class="flex items-center justify-center gap-2">
                                 <a href="{{ route('admin.users.edit', $user) }}" 
                                    class="btn-secondary text-sm px-3 py-1.5"

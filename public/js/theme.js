@@ -64,9 +64,13 @@
             btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
             btn.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
             if (icon) {
-                icon.className = isDark
-                    ? 'fas fa-sun text-amber-400'
-                    : 'fas fa-moon text-gray-500';
+                // Preserva clases extra del icono (ej. nav-link-icon).
+                var keep = Array.from(icon.classList).filter(function (c) {
+                    return c !== 'fas' && c !== 'far' && c !== 'fab' &&
+                        c.indexOf('fa-') !== 0 && c.indexOf('text-') !== 0;
+                });
+                icon.className = ['fas', isDark ? 'fa-sun' : 'fa-moon', isDark ? 'text-amber-400' : 'text-gray-500']
+                    .concat(keep).join(' ');
             }
         });
         var checkbox = document.getElementById('toggleTheme');

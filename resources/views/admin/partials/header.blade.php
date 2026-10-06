@@ -1,7 +1,11 @@
 <header class="bg-white shadow-sm sticky top-0 z-20">
-    <div class="flex items-center justify-between px-6 py-4">
-        <div class="flex items-center gap-4">
-            <h2 class="text-xl font-semibold text-gray-800">@yield('header-title', 'Panel de Administración')</h2>
+    <div class="flex items-center justify-between gap-2 flex-wrap px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+            <button type="button" id="sidebar-mobile-toggle" aria-expanded="false" aria-label="Abrir menú"
+                    class="lg:hidden w-10 h-10 rounded-xl flex items-center justify-center text-gray-600 hover:bg-gray-100 transition flex-shrink-0">
+                <i class="fas fa-bars text-lg"></i>
+            </button>
+            <h2 class="text-lg sm:text-xl font-semibold text-gray-800 truncate">@yield('header-title', 'Panel de Administración')</h2>
             @yield('header-actions')
         </div>
 

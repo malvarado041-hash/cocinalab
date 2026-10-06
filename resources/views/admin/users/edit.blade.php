@@ -156,7 +156,7 @@
                     <!-- Status Selector -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-3">Estado de la Cuenta</label>
-                        <div class="grid grid-cols-3 gap-3" role="radiogroup" aria-label="Seleccionar estado">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" role="radiogroup" aria-label="Seleccionar estado">
                             @php
                                 $statusOptions = [
                                     'activo' => ['label' => 'Activo', 'icon' => 'fa-check-circle', 'color' => 'green', 'desc' => 'Acceso completo al sistema'],

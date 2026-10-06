@@ -30,7 +30,7 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="{{ asset('css/admin-dark.css') }}?v=2">
+    <link rel="stylesheet" href="{{ asset('css/admin-dark.css') }}?v=3">
     <script>
         // Pre-pintado: aplica 'dark' antes del primer render para evitar parpadeo.
         (function() {
@@ -62,7 +62,7 @@
         <div id="main-content" class="flex-1 flex flex-col min-w-0 ml-64">
             @include('admin.partials.header')
 
-            <main class="flex-1 p-6 lg:p-8">
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">
                 @if (session('success'))
                     <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg flex items-center gap-3 fade-in" role="alert">
                         <i class="fas fa-check-circle text-green-500 text-xl"></i>
@@ -82,7 +82,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/theme.js') }}?v=1"></script>
+    <script src="{{ asset('js/theme.js') }}?v=2"></script>
     <script src="{{ asset('js/password-toggle.js') }}?v=1"></script>
     @stack('scripts')
 </body>

@@ -13,13 +13,13 @@
         </a>
     </div>
     <div class="overflow-x-auto">
-        <table class="w-full">
+        <table class="w-full min-w-[640px] admin-table">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Categoría</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Baja</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider" sticky-col">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -28,7 +28,7 @@
                         <td class="px-6 py-4 font-medium text-gray-800">{{ $p->nombre }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $p->categoria_label }} / {{ str_replace('_', ' ', $p->subcategoria) }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $p->deleted_at->format('d/m/Y H:i') }}</td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="px-6 py-4 text-center sticky-col">
                             <div class="flex items-center justify-center gap-2">
                                 <form action="{{ route('admin.almacen.restore', $p->id) }}" method="POST" class="inline">
                                     @csrf

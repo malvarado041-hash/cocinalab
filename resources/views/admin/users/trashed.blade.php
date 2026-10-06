@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in">
-    <div class="px-6 py-4 flex items-center gap-4">
+    <div class="px-6 py-4 flex flex-wrap items-center gap-4">
         <a href="{{ route('admin.users.index') }}" title="Volver" aria-label="Volver"
            class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center flex-shrink-0 transition">
             <i class="fas fa-arrow-left text-gray-600"></i>
@@ -17,14 +17,14 @@
         </div>
     </div>
     <div class="overflow-x-auto users-table-fixed">
-        <table class="w-full table-fixed-users" id="users-table">
+        <table class="w-full min-w-[680px] table-fixed-users admin-table" id="users-table">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Código</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rol</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Baja</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider" sticky-col">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100" id="users-tbody">
@@ -49,7 +49,7 @@
                         <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                             {{ $user->deleted_at->format('d/m/Y H:i') }}
                         </td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="px-6 py-4 text-center sticky-col">
                             <div class="flex items-center justify-center gap-2">
                             <form action="{{ route('admin.users.restore', $user->id) }}" method="POST" class="inline">
                                 @csrf

@@ -90,6 +90,30 @@
 <!-- Tooltip element for collapsed sidebar -->
 <div id="sidebar-tooltip" class="fixed z-50 hidden px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg pointer-events-none"></div>
 
+<!-- Overlay solo móvil -->
+<div id="sidebar-mobile-overlay" class="fixed inset-0 z-[5] hidden bg-gray-900/50 lg:hidden"></div>
+
+<style>
+    /* ---------- Drawer en móvil (< lg): sidebar fuera de pantalla ---------- */
+    @media (max-width: 1023.98px) {
+        #sidebar {
+            width: 16rem !important;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease !important;
+        }
+        html.sidebar-mobile-open #sidebar {
+            transform: translateX(0);
+        }
+        html.sidebar-mobile-open #sidebar-mobile-overlay {
+            display: block;
+        }
+        #main-content,
+        #main-content.ml-64,
+        #main-content.ml-20 {
+            margin-left: 0 !important;
+        }
+    }
+
 <style>
     .sidebar-transition { 
         transition: none; 
@@ -263,5 +287,45 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Drawer móvil: hamburguesa del header abre/cierra el sidebar.
+    const mobileToggle = document.getElementById('sidebar-mobile-toggle');
+    const mobileOverlay = document.getElementById('sidebar-mobile-overlay');
+    const mqMobile = window.matchMedia('(max-width: 1023.98px)');
+
+    const isMobileOpen = () => document.documentElement.classList.contains('sidebar-mobile-open');
+    const openMobile = () => {
+        document.documentElement.classList.add('sidebar-mobile-open');
+        if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+    };
+    const closeMobile = () => {
+        if (!isMobileOpen()) return;
+        document.documentElement.classList.remove('sidebar-mobile-open');
+        if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+    };
+
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', () => {
+            isMobileOpen() ? closeMobile() : openMobile();
+        });
+    }
+    if (mobileOverlay) {
+        mobileOverlay.addEventListener('click', closeMobile);
+    }
+
+    // Cierra al navegar, con Escape o al pasar a escritorio.
+    document.querySelectorAll('#sidebar-nav a[href]:not([href="#"])').forEach(function(link) {
+        link.addEventListener('click', () => {
+            if (mqMobile.matches) closeMobile();
+        });
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeMobile();
+    });
+    const syncMobile = () => { if (!mqMobile.matches) closeMobile(); };
+    if (mqMobile.addEventListener) mqMobile.addEventListener('change', syncMobile);
+    else mqMobile.addListener(syncMobile);
 });
 </script>

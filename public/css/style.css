@@ -207,6 +207,8 @@ body {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
     z-index: 998;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -215,6 +217,11 @@ body {
 .nav-overlay.nav-overlay-visible {
     display: block;
     opacity: 1;
+}
+
+/* Items solo visibles dentro del drawer móvil */
+.drawer-only {
+    display: none;
 }
 
 /* Mobile drawer */
@@ -259,6 +266,99 @@ body {
         transform: translateX(0);
     }
 
+    /* Entrada escalonada de los items del drawer */
+    .btnlist.nav-open > li {
+        animation: drawer-item-in 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    }
+
+    .btnlist.nav-open > li:nth-child(1) { animation-delay: 0.03s; }
+    .btnlist.nav-open > li:nth-child(2) { animation-delay: 0.06s; }
+    .btnlist.nav-open > li:nth-child(3) { animation-delay: 0.09s; }
+    .btnlist.nav-open > li:nth-child(4) { animation-delay: 0.12s; }
+    .btnlist.nav-open > li:nth-child(5) { animation-delay: 0.15s; }
+    .btnlist.nav-open > li:nth-child(6) { animation-delay: 0.18s; }
+    .btnlist.nav-open > li:nth-child(7) { animation-delay: 0.21s; }
+    .btnlist.nav-open > li:nth-child(8) { animation-delay: 0.24s; }
+
+    @keyframes drawer-item-in {
+        from {
+            opacity: 0;
+            transform: translateX(24px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .btnlist,
+        .btnlist.nav-open > li {
+            animation: none;
+            transition: none;
+        }
+    }
+
+    /* Cabecera y cierre solo dentro del drawer */
+    .drawer-only {
+        display: block;
+    }
+
+    .drawer-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0 0.25rem 1rem;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid #f0e2d2;
+    }
+
+    .drawer-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 800;
+        font-size: 1.15rem;
+        color: #7d420f;
+    }
+
+    .drawer-brand img {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .drawer-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: 12px;
+        background: #fef3e7;
+        color: #7d420f;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+        flex-shrink: 0;
+    }
+
+    .drawer-close:hover {
+        background: #fde6d0;
+    }
+
+    .drawer-close:active {
+        transform: scale(0.94);
+    }
+
+    .drawer-close:focus-visible {
+        outline: 3px solid #ed7d1e;
+        outline-offset: 2px;
+    }
+
     .nav-link {
         width: 100%;
         text-align: left;
@@ -266,6 +366,21 @@ body {
         border-radius: 10px;
         justify-content: flex-start;
         font-size: 1.1rem;
+    }
+
+    /* Iconos pegados a la izquierda, nombre al lado */
+    .nav-link-icon {
+        flex-shrink: 0;
+        width: 1.75rem;
+        text-align: center;
+        font-size: 1.15rem;
+        color: #a66328;
+        margin-right: 0.25rem;
+    }
+
+    .btnlist > li > form {
+        display: block !important;
+        width: 100%;
     }
 
     .nav-link:hover {
@@ -515,7 +630,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.75rem;
     width: 100%;
+    min-height: 52px;
     padding: 1rem 1.25rem;
     border: none;
     background: linear-gradient(135deg, #fef3e7 0%, #fde6d0 100%);
@@ -543,7 +660,19 @@ body {
     border-top: 8px solid #a66328;
     transition: transform 0.2s;
     flex-shrink: 0;
-    margin-left: 1rem;
+    margin-left: auto;
+}
+
+.ingredient-count {
+    flex-shrink: 0;
+    min-width: 2rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: #a66328;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-align: center;
 }
 
 .ingredient-group[open] .ingredient-type::after {
@@ -563,16 +692,26 @@ body {
 }
 
 .ingredient-list {
-    list-style: none;
+    display: grid;
+    grid-template-rows: 0fr;
     margin: 0;
-    padding: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    transition: grid-template-rows 0.3s ease-out;
 }
 
 .ingredient-group[open] .ingredient-list {
-    max-height: 500px;
+    grid-template-rows: 1fr;
+}
+
+.ingredient-list-inner {
+    overflow: hidden;
+    min-height: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0 1rem;
+    transition: padding 0.3s ease-out;
+}
+
+.ingredient-group[open] .ingredient-list-inner {
     padding: 0.75rem 1rem 1rem;
 }
 
@@ -585,7 +724,9 @@ body {
 }
 
 .ingredient-list a {
-    display: block;
+    display: flex;
+    align-items: center;
+    min-height: 48px;
     padding: 0.625rem 1rem;
     border-radius: 8px;
     background: #fafafa;
@@ -626,7 +767,7 @@ body {
         font-size: 1rem;
     }
 
-    .ingredient-group[open] .ingredient-list {
+    .ingredient-group[open] .ingredient-list-inner {
         padding: 0.5rem 0.75rem 0.875rem;
     }
 
@@ -646,4 +787,167 @@ body {
     .ingredient-group {
         margin-bottom: 0;
     }
+}
+
+/* ---------- Detalle de receta (recetas/show) ---------- */
+.receta-detalle {
+    background-color: #fff;
+    width: min(760px, 94%);
+    margin: clamp(1.5rem, 5vw, 3rem) auto;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+.receta-detalle h2 {
+    margin: 0 0 1rem;
+    font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+    color: #7d420f;
+    line-height: 1.25;
+    overflow-wrap: break-word;
+}
+
+.receta-detalle p {
+    line-height: 1.7;
+    color: #333;
+    overflow-wrap: break-word;
+}
+
+.receta-volver {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #a66328;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.15s, transform 0.1s;
+}
+
+.receta-volver:hover {
+    background-color: #7d420f;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ---------- Resultado del filtro (recetas/filtrar) ---------- */
+.recetas-resultado {
+    width: min(900px, 94%);
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+    text-align: center;
+}
+
+.recetas-resultado h2 {
+    font-size: clamp(1.2rem, 3.5vw, 1.7rem);
+    color: #7d420f;
+    margin: 0 0 1.5rem;
+    overflow-wrap: break-word;
+}
+
+.recetas-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.receta-chip {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: #a66328;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.15s, transform 0.1s;
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.receta-chip:hover {
+    background-color: #7d420f;
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+/* ---------- Tarjeta de usuario (usuario) ---------- */
+.usuario-card {
+    width: min(560px, 94%);
+    margin: clamp(1.5rem, 5vw, 3rem) auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.usuario-card h1 {
+    margin: 0 0 0.25rem;
+    font-size: clamp(1.4rem, 4vw, 1.9rem);
+    color: #7d420f;
+    text-align: center;
+}
+
+.usuario-card h2 {
+    margin: 0 0 1.25rem;
+    font-size: clamp(1.05rem, 3vw, 1.3rem);
+    color: #4a536e;
+    text-align: center;
+    font-weight: 600;
+}
+
+.usuario-dato {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    padding: 0.875rem 0;
+    border-top: 1px solid #eee;
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+}
+
+.usuario-dato dt {
+    font-weight: 700;
+    color: #4a536e;
+    min-width: 90px;
+}
+
+.usuario-dato dd {
+    margin: 0;
+    color: #2b2b2b;
+    overflow-wrap: anywhere;
+    flex: 1;
+}
+
+/* ---------- Tarjeta de información (info) ---------- */
+.info-card {
+    width: min(560px, 94%);
+    margin: clamp(1.5rem, 5vw, 3rem) auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    text-align: center;
+}
+
+.info-card h1 {
+    margin: 0 0 1rem;
+    font-size: clamp(1.4rem, 4vw, 1.9rem);
+    color: #7d420f;
+}
+
+.info-card p {
+    margin: 0.5rem 0;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    overflow-wrap: break-word;
+}
+
+.info-card h2 {
+    margin: 1.5rem 0 0.5rem;
+    font-size: clamp(1.15rem, 3vw, 1.4rem);
+    color: #4a536e;
 }

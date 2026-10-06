@@ -106,6 +106,43 @@ html.dark main thead th { color: #94a3b8 !important; }
 html.dark main tbody tr:hover { background-color: rgba(51, 65, 85, .6) !important; }
 html.dark main td .font-mono { color: #cbd5e1 !important; }
 
+/* ---------- Tablas admin responsive ---------- */
+.admin-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Columna de acciones fija al hacer scroll horizontal */
+.admin-table .sticky-col {
+    position: sticky;
+    right: 0;
+    background-color: #fff;
+    box-shadow: -8px 0 12px -8px rgba(0, 0, 0, 0.12);
+    z-index: 1;
+}
+
+.admin-table thead .sticky-col {
+    z-index: 2;
+}
+
+html.dark main .admin-table .sticky-col {
+    background-color: #1e293b !important;
+    box-shadow: -8px 0 12px -8px rgba(0, 0, 0, 0.5);
+}
+
+/* Modo compacto en móvil: menos padding y sin avatar */
+@media (max-width: 640px) {
+    .admin-table th,
+    .admin-table td {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+
+    .admin-table td:first-child .w-10 {
+        display: none;
+    }
+}
+
 /* ---------- Formularios ---------- */
 html.dark main input,
 html.dark main select,

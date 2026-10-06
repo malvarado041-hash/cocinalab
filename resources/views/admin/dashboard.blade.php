@@ -109,7 +109,7 @@
         </div>
         <div class="divide-y divide-gray-100">
             @forelse ($recentUsers as $user)
-                <div class="px-6 py-4 flex items-center gap-4 hover:bg-gray-50 transition-colors">
+                <div class="px-6 py-4 flex items-center gap-3 sm:gap-4 hover:bg-gray-50 transition-colors">
                     @php
                         $avatarColors = [
                             'admin' => ['bg' => 'purple-100', 'text' => 'purple-600', 'icon' => 'fa-user-shield'],
@@ -136,7 +136,7 @@
                             {{ ucfirst($user->status) }}
                         </span>
                     </div>
-                    <time class="text-sm text-gray-400 whitespace-nowrap">{{ $user->created_at->format('d/m/Y H:i') }}</time>
+                    <time class="hidden md:block text-sm text-gray-400 whitespace-nowrap">{{ $user->created_at->format('d/m/Y H:i') }}</time>
                 </div>
             @empty
                 <div class="px-6 py-12 text-center text-gray-500">
@@ -164,7 +164,7 @@
                 @endphp
                 <div>
                     <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 flex-wrap justify-end">
                             <div class="w-8 h-8 bg-{{ $roleColors[$key] }}-100 rounded-lg flex items-center justify-center">
                                 <i class="fas {{ $roleIcons[$key] }} text-{{ $roleColors[$key] }}-600 text-sm"></i>
                             </div>
