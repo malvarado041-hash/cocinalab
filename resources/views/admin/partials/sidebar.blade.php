@@ -31,6 +31,14 @@
                         <span class="sidebar-text">Usuarios</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.almacen.index') }}"
+                       class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.almacen*') ? 'bg-primary-50 text-primary-600' : '' }}"
+                       data-tooltip="Almacén">
+                        <i class="fas fa-boxes sidebar-icon w-6 text-center text-lg"></i>
+                        <span class="sidebar-text">Almacén</span>
+                    </a>
+                </li>
             </ul>
         </div>
 

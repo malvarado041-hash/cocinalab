@@ -1,0 +1,131 @@
+@extends('admin.layout')
+
+@section('title', 'Almacén')
+
+@section('header-title', 'Control de Almacén')
+
+@section('header-actions')
+<a href="{{ route('admin.almacen.create', request()->query()) }}" id="btn-nuevo-producto" class="btn-primary text-sm px-4 py-2">
+    <i class="fas fa-plus mr-2"></i> Nuevo producto
+</a>
+@endsection
+
+@section('content')
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in">
+    <div class="px-6 py-4 flex flex-col lg:flex-row lg:items-center gap-3">
+        <form id="filtros-form" method="GET" action="{{ route('admin.almacen.index') }}" class="flex flex-col sm:flex-row gap-3 flex-1">
+            <div class="relative w-full sm:w-64">
+                <i class="fas fa-search text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="filtro-q" name="q" value="{{ $filtros['q'] ?? '' }}" placeholder="Buscar producto..." autocomplete="off"
+                    class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent w-full transition">
+            </div>
+            <select id="filtro-categoria" name="categoria"
+                class="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="">Todas las categorías</option>
+                @foreach ($categorias as $key => $label)
+                    <option value="{{ $key }}" @selected(($filtros['categoria'] ?? '') === $key)>{{ $label }}</option>
+                @endforeach
+            </select>
+            <select id="filtro-subcategoria" name="subcategoria" onchange="this.form.submit()"
+                class="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="">Todas las subcategorías</option>
+                @foreach ($subcategorias as $sub)
+                    <option value="{{ $sub }}" @selected(($filtros['subcategoria'] ?? '') === $sub)>{{ str_replace('_', ' ', $sub) }}</option>
+                @endforeach
+            </select>
+            <label class="inline-flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                <input type="checkbox" name="bajo_stock" value="1" onchange="this.form.submit()"
+                    @checked(!empty($filtros['bajo_stock'])) class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                Solo bajo stock ({{ $bajoStockCount }})
+            </label>
+            @if (!empty($filtros['q']) || !empty($filtros['categoria']) || !empty($filtros['subcategoria']) || !empty($filtros['bajo_stock']))
+                <a href="{{ route('admin.almacen.index') }}" class="text-sm text-gray-500 hover:text-gray-700 px-2 py-2">Limpiar</a>
+            @endif
+        </form>
+        @if ($canRestore ?? false)
+            <a href="{{ route('admin.almacen.trashed') }}" class="btn-secondary text-sm px-4 py-2 whitespace-nowrap">
+                <i class="fas fa-box-open mr-2"></i> Dados de baja
+            </a>
+        @endif
+    </div>
+
+    <div id="almacen-tabla" class="transition-opacity duration-150">
+        @include('admin.almacen._table')
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const MAPA = @json($mapa);
+    const cat = document.getElementById('filtro-categoria');
+    const sub = document.getElementById('filtro-subcategoria');
+    const currentSub = @json($filtros['subcategoria'] ?? '');
+
+    cat.addEventListener('change', function() {
+        // Reconstruye subcategorías según la categoría y envía el filtro.
+        sub.innerHTML = '<option value="">Todas las subcategorías</option>';
+        Object.keys(MAPA[cat.value] || {}).forEach(function(s) {
+            const o = document.createElement('option');
+            o.value = s;
+            o.textContent = s.replace(/_/g, ' ');
+            sub.appendChild(o);
+        });
+        sub.value = '';
+        cat.form.submit();
+    });
+
+    // Búsqueda en vivo: filtra mientras escribes, sin recargar ni dar Enter.
+    const searchInput = document.getElementById('filtro-q');
+    const tabla = document.getElementById('almacen-tabla');
+    const btnNuevo = document.getElementById('btn-nuevo-producto');
+    const baseNuevo = btnNuevo.getAttribute('href').split('?')[0];
+    let timer = null;
+    let ctrl = null;
+
+    function filtrosQuery() {
+        const params = new URLSearchParams(new FormData(cat.form));
+        for (const [k, v] of [...params]) {
+            if (v === '') params.delete(k);
+        }
+        return params.toString();
+    }
+
+    async function liveSearch(url) {
+        if (ctrl) ctrl.abort();
+        ctrl = new AbortController();
+        const target = url || (cat.form.action + '?' + filtrosQuery());
+        tabla.style.opacity = '0.5';
+        try {
+            const res = await fetch(target, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                signal: ctrl.signal,
+            });
+            const data = await res.json();
+            tabla.innerHTML = data.html;
+            history.replaceState(null, '', target);
+            btnNuevo.setAttribute('href', baseNuevo + (filtrosQuery() ? '?' + filtrosQuery() : ''));
+        } catch (e) {
+            if (e.name !== 'AbortError') throw e;
+        } finally {
+            tabla.style.opacity = '';
+        }
+    }
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(function() { liveSearch(); }, 350);
+    });
+
+    // La paginación también funciona sin recargar.
+    tabla.addEventListener('click', function(e) {
+        const link = e.target.closest('#almacen-pagination a');
+        if (link) {
+            e.preventDefault();
+            liveSearch(link.href);
+        }
+    });
+});
+</script>
+@endpush

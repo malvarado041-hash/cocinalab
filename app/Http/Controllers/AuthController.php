@@ -19,6 +19,9 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'Usuario' => 'required|string',
             'contrasena' => 'required|string',
+        ], [], [
+            'Usuario' => 'usuario',
+            'contrasena' => 'contraseña',
         ]);
 
         $user = User::where('name', $credentials['Usuario'])->first();
@@ -63,6 +66,10 @@ class AuthController extends Controller
             'txtNombre' => 'required|string|max:200|unique:users,name',
             'txtCorreo' => 'required|email|max:200|unique:users,email',
             'contrasena' => 'required|string|min:4',
+        ], [], [
+            'txtNombre' => 'nombre',
+            'txtCorreo' => 'correo',
+            'contrasena' => 'contraseña',
         ]);
 
         $user = User::create([
@@ -84,6 +91,8 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'Usuario' => 'required|string',
+        ], [], [
+            'Usuario' => 'usuario',
         ]);
 
         $user = User::where('name', $data['Usuario'])->first();

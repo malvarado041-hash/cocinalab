@@ -1,6 +1,16 @@
 @extends('layouts.app')
 @section('title', 'Login')
 @section('content')
+@if($errors->any() || session('success'))
+<div class="auth-toast" role="alert" aria-live="polite">
+    @if($errors->any())
+    @include('genericos.feedback.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
+    @endif
+    @if(session('success'))
+    @include('genericos.feedback.alertgenerico', ['type' => 'success', 'message' => session('success'), 'dismiss' => true])
+    @endif
+</div>
+@endif
 <div class="window-notice">
     <div class="content">
         <div class="auth-brand">
@@ -8,12 +18,6 @@
             <h1>Bienvenido a CocinaLab</h1>
             <p>Ingresa para explorar las mejores recetas</p>
         </div>
-        @if($errors->any())
-        @include('genericos.feedback.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
-        @endif
-        @if(session('success'))
-        @include('genericos.feedback.alertgenerico', ['type' => 'success', 'message' => session('success'), 'dismiss' => true])
-        @endif
         <form class="auth-form" action="{{ route('login.post') }}" method="POST">
             @csrf
             @include('genericos.formularios.inputsgenerico', [

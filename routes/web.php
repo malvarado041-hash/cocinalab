@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AlmacenController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -35,8 +36,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'pendingUsers' => \App\Models\User::where('status', 'pendiente')->where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
         'activeUsers' => \App\Models\User::where('status', 'activo')->where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
         'recentUsers' => \App\Models\User::where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->latest()->take(5)->get(),
+        'bajoStockCount' => \App\Models\AlmacenProducto::bajoStock()->count(),
+        'totalProductos' => \App\Models\AlmacenProducto::count(),
     ]))->name('dashboard');
     
+    Route::get('almacen/dados-de-baja', [AlmacenController::class, 'trashed'])->name('almacen.trashed');
+    Route::put('almacen/{id}/restaurar', [AlmacenController::class, 'restore'])->name('almacen.restore');
+    Route::delete('almacen/{id}/eliminar-definitivo', [AlmacenController::class, 'forceDestroy'])->name('almacen.forceDestroy');
+    Route::resource('almacen', AlmacenController::class)->except(['show']);
+
     Route::get('users/dados-de-baja', [UserController::class, 'trashed'])->name('users.trashed');
     Route::put('users/{id}/restaurar', [UserController::class, 'restore'])->name('users.restore');
     Route::delete('users/{id}/eliminar-definitivo', [UserController::class, 'forceDestroy'])->name('users.forceDestroy');

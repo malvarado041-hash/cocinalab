@@ -64,6 +64,43 @@
     </article>
 </div>
 
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <article class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow fade-in">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Productos en almacén</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">{{ $totalProductos ?? 0 }}</p>
+            </div>
+            <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-boxes text-blue-600 text-2xl"></i>
+            </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+            <a href="{{ route('admin.almacen.index') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+                Ver almacén <i class="fas fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+    </article>
+
+    <article class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow fade-in">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Bajo stock</p>
+                <p class="text-3xl font-bold text-red-600 mt-1">{{ $bajoStockCount ?? 0 }}</p>
+            </div>
+            <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+            </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+            <a href="{{ route('admin.almacen.index') }}?bajo_stock=1" class="text-sm text-red-600 hover:text-red-700 font-medium flex items-center gap-1">
+                Revisar <i class="fas fa-arrow-right text-xs"></i>
+            </a>
+            <span class="text-xs text-gray-400">Stock ≤ mínimo</span>
+        </div>
+    </article>
+</div>
+
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">

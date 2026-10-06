@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Schema;
 class CocinaLabSeeder extends Seeder
 {
     /** Tablas de datos que se restauran completas desde el dump. */
-    private array $dataTables = ['ingredientes', 'recetas', 'receta_ingrediente', 'pago'];
+    private array $dataTables = ['ingredientes', 'recetas', 'receta_ingrediente', 'pago', 'almacen_productos'];
 
     public function run(): void
     {

@@ -5,27 +5,30 @@
     right: 0;
     top: 0;
     display: flex;
+    align-items: center;
+    justify-content: center;
     position: fixed;
     z-index: 999;
     overflow-y: auto;
-    padding: 2rem 1rem;
+    padding: clamp(1rem, 3vw, 2rem) clamp(0.5rem, 2vw, 1rem);
 }
+
 .window-notice .content {
     background: #ffffff;
     border-radius: 18px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-    box-sizing: content-box;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    margin: auto;
-    max-width: 480px;
     width: 100%;
-    height: 660px;
-    padding: .5rem 2.25rem 5rem;
-    font-size: 1rem;
+    max-width: 480px;
+    min-height: 0;
+    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.25rem) clamp(2rem, 5vw, 3rem);
+    font-size: clamp(0.95rem, 2.2vw, 1.05rem);
     position: relative;
     overflow: hidden;
 }
+
 .window-notice .content::before {
     content: "";
     display: block;
@@ -36,69 +39,128 @@
     left: 0;
     right: 0;
 }
+
 .auth-brand {
     text-align: center;
-    margin-bottom: .9rem;
+    margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
 }
+
 .auth-brand img {
-    width: 160px;
+    width: clamp(120px, 25vw, 160px);
     height: auto;
 }
+
 .auth-brand h1 {
-    font-size: 2.2rem;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
     color: #2b2b2b;
-    margin: .4rem 0 .2rem;
+    margin: 0.5rem 0 0.3rem;
     font-weight: 700;
+    line-height: 1.2;
 }
+
 .auth-brand p {
     color: #8a8a8a;
     margin: 0;
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    line-height: 1.4;
 }
+
 .auth-alert {
     background: #fdecea;
     color: #c0392b;
     border: 1px solid #f5c6c2;
     border-radius: 8px;
-    padding: .5rem .8rem;
-    font-size: .85rem;
-    margin-bottom: .9rem;
+    padding: 0.75rem 1rem;
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    margin-bottom: 1rem;
 }
+
+.auth-toast {
+    position: fixed;
+    top: auto;
+    bottom: clamp(16px, 3vw, 32px);
+    right: clamp(16px, 3vw, 32px);
+    left: clamp(16px, 3vw, auto);
+    z-index: 1000;
+    width: clamp(280px, 90vw, 440px);
+    max-width: calc(100vw - 32px);
+    pointer-events: auto;
+}
+
+@media (max-width: 480px) {
+    .auth-toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        width: auto;
+        max-width: calc(100vw - 32px);
+    }
+}
+
+.auth-toast .gen-alert {
+    margin-bottom: 0;
+    padding: clamp(1rem, 2.5vw, 2rem) clamp(1.5rem, 4vw, 2.2rem) clamp(1rem, 2.5vw, 2rem) clamp(3rem, 8vw, 4.5rem);
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    line-height: 1.5;
+    border-radius: 12px;
+    border-width: 2px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.auth-toast .gen-alert strong,
+.auth-toast .gen-alert span {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    line-height: 1.5;
+}
+
+.auth-toast .gen-alert-close {
+    top: clamp(0.5rem, 1.5vw, 1rem);
+    right: clamp(0.7rem, 2vw, 1.4rem);
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+}
+
 .auth-form {
     display: flex;
     flex-direction: column;
     flex: 1;
+    gap: clamp(0.75rem, 2vw, 1rem);
 }
+
 .auth-form .gen-btn {
     margin-top: auto;
+    width: 100%;
 }
+
 .auth-form label {
     display: block;
-    font-size: 1.15rem;
+    font-size: clamp(1rem, 2.2vw, 1.15rem);
     font-weight: 600;
     color: #444;
-    margin: .7rem 0 .25rem;
+    margin: 0.5rem 0 0.25rem;
 }
+
 .auth-form input:not([type="submit"]) {
     width: 100%;
-    padding: .75rem .95rem;
+    padding: clamp(0.65rem, 1.8vw, 0.85rem) clamp(0.85rem, 2vw, 1rem);
     border: 1.5px solid #e2e2e2;
     border-radius: 12px;
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
     background: #fafafa;
     color: #2b2b2b;
     outline: none;
-    transition: border-color .15s, box-shadow .15s, background .15s;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
+
 .auth-form input:not([type="submit"]):focus {
     border-color: #fc7d1c;
     background: #fff;
-    box-shadow: 0 0 0 4px rgba(252, 125, 28, .15);
+    box-shadow: 0 0 0 4px rgba(252, 125, 28, 0.15);
 }
+
 .auth-submit {
     width: 100%;
     margin-top: auto;
-    padding: .9rem;
+    padding: clamp(0.8rem, 2vw, 1rem);
     border: 0;
     border-radius: 12px;
     cursor: pointer;
@@ -106,48 +168,96 @@
     appearance: none;
     background: #2563eb;
     color: #fff;
-    font-size: 1.3rem;
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
     font-weight: 700;
-    letter-spacing: .3px;
-    transition: transform .1s, box-shadow .15s, filter .15s;
+    letter-spacing: 0.3px;
+    transition: transform 0.1s, box-shadow 0.15s, filter 0.15s;
 }
+
 .auth-submit:hover {
     filter: brightness(1.1);
-    box-shadow: 0 8px 18px rgba(37, 99, 235, .35);
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
 }
+
 .auth-submit:active {
     transform: translateY(1px);
 }
+
 .auth-switch {
     text-align: center;
     margin-top: auto;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 2.2vw, 1.3rem);
     color: #777;
+    line-height: 1.5;
 }
+
 .auth-switch a {
     color: #e85d04;
     font-weight: 700;
     text-decoration: none;
 }
+
 .auth-switch a:hover {
     text-decoration: underline;
 }
+
 .auth-cancel {
     display: inline-block;
-    margin-top: 1.4rem;
-    padding: .7rem 1.4rem;
+    margin-top: 1rem;
+    padding: clamp(0.6rem, 1.8vw, 0.8rem) clamp(1rem, 2.5vw, 1.4rem);
     border: 1.5px solid #e2e2e2;
     border-radius: 10px;
     background: #fff;
     color: #666;
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: clamp(0.95rem, 2vw, 1.05rem);
     cursor: pointer;
     text-decoration: none;
-    transition: background .15s, color .15s, border-color .15s;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
+
 .auth-cancel:hover {
     background: #f7f7f7;
     color: #333;
     border-color: #ccc;
+}
+
+@media (max-width: 480px) {
+    .window-notice {
+        padding: 1rem 0.75rem;
+    }
+
+    .window-notice .content {
+        border-radius: 14px;
+        padding: 1.25rem 1rem 2rem;
+    }
+
+    .auth-brand img {
+        width: 110px;
+    }
+
+    .auth-form input:not([type="submit"]) {
+        padding: 0.75rem 0.9rem;
+        font-size: 1rem;
+    }
+
+    .auth-submit {
+        padding: 0.85rem;
+        font-size: 1.1rem;
+    }
+
+    .auth-switch {
+        font-size: 1rem;
+    }
+
+    .auth-cancel {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (min-width: 769px) {
+    .window-notice .content {
+        max-width: 520px;
+    }
 }

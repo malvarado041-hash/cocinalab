@@ -1,6 +1,11 @@
 @extends('layouts.app')
 @section('title', 'Registro')
 @section('content')
+@if($errors->any())
+<div class="auth-toast" role="alert" aria-live="polite">
+    @include('genericos.feedback.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
+</div>
+@endif
 <div class="window-notice">
     <div class="content">
         <div class="auth-brand">
@@ -8,9 +13,6 @@
             <h1>Crea tu cuenta</h1>
             <p>Únete a CocinaLab y descubre nuevas recetas cada día</p>
         </div>
-        @if($errors->any())
-        @include('genericos.feedback.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
-        @endif
         <form class="auth-form" action="{{ route('register.post') }}" method="POST">
             @csrf
             @include('genericos.formularios.inputsgenerico', [
