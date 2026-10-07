@@ -9,9 +9,7 @@
 <div class="window-notice">
     <div class="content">
         <div class="auth-brand">
-            <img src="{{ asset('img/logo.png') }}" alt="CocinaLab">
-            <h1>Crea tu cuenta</h1>
-            <p>Únete a CocinaLab y descubre nuevas recetas cada día</p>
+            <img src="{{ asset('img/logo.png') }}" alt="CocinaLab" class="auth-logo">
         </div>
         <form class="auth-form" action="{{ route('register.post') }}" method="POST">
             @csrf
@@ -39,8 +37,8 @@
                 'label' => 'Registrarme',
                 'icon' => asset('img/logo.png'),
             ])
+            <a href="{{ route('login') }}" class="auth-register-btn">Iniciar sesión</a>
         </form>
-        <p class="auth-switch">¿Ya tienes cuenta? <a href="{{ route('login') }}">Inicia sesión</a></p>
     </div>
 </div>
 @include('partials.carousel')

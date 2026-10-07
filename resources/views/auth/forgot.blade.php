@@ -4,9 +4,7 @@
 <div class="window-notice">
     <div class="content">
         <div class="auth-brand">
-            <img src="{{ asset('img/logo.png') }}" alt="CocinaLab">
-            <h1>Recuperar contraseña</h1>
-            <p>Escribe tu usuario para solicitar el cambio con un administrador</p>
+            <img src="{{ asset('img/logo.png') }}" alt="CocinaLab" class="auth-logo">
         </div>
         @if($errors->any())
         @include('genericos.feedback.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
