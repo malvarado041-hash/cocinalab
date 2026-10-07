@@ -151,7 +151,7 @@ class AlmacenProducto extends Model
 
     public function scopeBajoStock($query)
     {
-        return $query->where('stock_minimo', '>', 0)->whereColumn('stock', '<=', 'stock_minimo');
+        return $query->where('stock_minimo', '>', 0)->whereColumn('stock', '<', 'stock_minimo');
     }
 
     public function scopePorCategoria($query, ?string $categoria)

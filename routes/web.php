@@ -48,7 +48,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('users/dados-de-baja', [UserController::class, 'trashed'])->name('users.trashed');
     Route::put('users/{id}/restaurar', [UserController::class, 'restore'])->name('users.restore');
     Route::delete('users/{id}/eliminar-definitivo', [UserController::class, 'forceDestroy'])->name('users.forceDestroy');
-    Route::resource('users', UserController::class)->except(['show', 'create', 'store']);
+    Route::resource('users', UserController::class)->except(['create', 'store']);
 
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/perfil', [ProfileController::class, 'update'])->name('profile.update');

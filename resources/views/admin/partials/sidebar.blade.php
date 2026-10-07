@@ -91,11 +91,11 @@
 <div id="sidebar-tooltip" class="fixed z-50 hidden px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg pointer-events-none"></div>
 
 <!-- Overlay solo móvil -->
-<div id="sidebar-mobile-overlay" class="fixed inset-0 z-[5] hidden bg-gray-900/50 lg:hidden"></div>
+<div id="sidebar-mobile-overlay" class="fixed inset-0 z-[5] hidden bg-gray-900/50 min-[1090px]:hidden"></div>
 
 <style>
     /* ---------- Drawer en móvil (< lg): sidebar fuera de pantalla ---------- */
-    @media (max-width: 1023.98px) {
+    @media (max-width: 1089.98px) {
         #sidebar {
             width: 16rem !important;
             transform: translateX(-100%);
@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Drawer móvil: hamburguesa del header abre/cierra el sidebar.
     const mobileToggle = document.getElementById('sidebar-mobile-toggle');
     const mobileOverlay = document.getElementById('sidebar-mobile-overlay');
-    const mqMobile = window.matchMedia('(max-width: 1023.98px)');
+    const mqMobile = window.matchMedia('(max-width: 1089.98px)');
 
     const isMobileOpen = () => document.documentElement.classList.contains('sidebar-mobile-open');
     const openMobile = () => {
