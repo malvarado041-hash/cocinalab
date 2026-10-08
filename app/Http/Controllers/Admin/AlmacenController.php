@@ -63,6 +63,14 @@ class AlmacenController extends Controller
         return view('admin.almacen.index', $viewData);
     }
 
+    public function show(AlmacenProducto $almacen)
+    {
+        return view('admin.almacen.show', [
+            'producto' => $almacen,
+            'unidades' => AlmacenProducto::UNIDADES,
+        ]);
+    }
+
     public function create()
     {
         return view('admin.almacen.create', [

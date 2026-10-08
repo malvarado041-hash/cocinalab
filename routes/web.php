@@ -43,7 +43,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('almacen/dados-de-baja', [AlmacenController::class, 'trashed'])->name('almacen.trashed');
     Route::put('almacen/{id}/restaurar', [AlmacenController::class, 'restore'])->name('almacen.restore');
     Route::delete('almacen/{id}/eliminar-definitivo', [AlmacenController::class, 'forceDestroy'])->name('almacen.forceDestroy');
-    Route::resource('almacen', AlmacenController::class)->except(['show']);
+    Route::resource('almacen', AlmacenController::class);
 
     Route::get('users/dados-de-baja', [UserController::class, 'trashed'])->name('users.trashed');
     Route::put('users/{id}/restaurar', [UserController::class, 'restore'])->name('users.restore');

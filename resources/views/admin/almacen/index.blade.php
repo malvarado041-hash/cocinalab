@@ -55,6 +55,40 @@
 </div>
 @endsection
 
+@push('styles')
+<style>
+    #almacen-tabla table {
+        table-layout: fixed;
+    }
+    #almacen-tabla td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #almacen-tabla td p,
+    #almacen-tabla td span.block,
+    #almacen-tabla td .inline-block-cell {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+    }
+    #almacen-tabla td .inline-flex-cell {
+        display: inline-flex;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #almacen-tabla td .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -118,13 +152,17 @@ document.addEventListener('DOMContentLoaded', function() {
         timer = setTimeout(function() { liveSearch(); }, 350);
     });
 
-    // La paginación también funciona sin recargar.
+    // Clic en fila → vista de detalle (delegación, la tabla se recarga vía AJAX).
     tabla.addEventListener('click', function(e) {
         const link = e.target.closest('#almacen-pagination a');
         if (link) {
             e.preventDefault();
             liveSearch(link.href);
+            return;
         }
+        if (e.target.closest('a') || e.target.closest('button') || e.target.closest('form')) return;
+        const row = e.target.closest('.almacen-row');
+        if (row && row.dataset.url) window.location.href = row.dataset.url;
     });
 });
 </script>
