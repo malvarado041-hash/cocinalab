@@ -146,7 +146,7 @@ class AlmacenProducto extends Model
 
     public function esBajoStock(): bool
     {
-        return (float) $this->stock_minimo > 0 && (float) $this->stock <= (float) $this->stock_minimo;
+        return (float) $this->stock_minimo > 0 && (float) $this->stock < (float) $this->stock_minimo;
     }
 
     public function scopeBajoStock($query)

@@ -17,23 +17,23 @@
             <input type="text" id="search-users" placeholder="Buscar usuarios..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent w-full transition">
         </div>
     </div>
-    <div class="users-table-fixed">
+    <div class="hidden md:block users-table-fixed">
         <table class="w-full table-auto admin-table" id="users-table">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</th>
-                    <th class="hidden md:table-cell px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Código</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rol</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
-                    <th class="hidden min-[1225px]:table-cell px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aprobado por</th>
-                    <th class="hidden min-[1322px]:table-cell px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Registro</th>
-                    <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider" sticky-col">Acciones</th>
+                    <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</th>
+                    <th class="hidden md:table-cell px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Código</th>
+                    <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rol</th>
+                    <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+                    <th class="hidden min-[1225px]:table-cell px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aprobado por</th>
+                    <th class="hidden min-[1322px]:table-cell px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Registro</th>
+                    <th class="px-3 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider sticky-col">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100" id="users-tbody">
                 @forelse ($users as $user)
                     <tr class="hover:bg-gray-50 transition-colors user-row cursor-pointer" data-url="{{ route('admin.users.show', $user) }}" data-name="{{ strtolower($user->name) }}" data-code="{{ strtolower($user->codigo_empleado ?? '') }}" data-role="{{ strtolower($user->role ?? '') }}" data-status="{{ strtolower($user->status) }}">
-                        <td class="px-6 py-4">
+                        <td class="px-3 py-4">
                             <div class="flex items-center gap-3">
                                 <div class="hidden sm:flex w-10 h-10 rounded-xl items-center justify-center bg-gray-100 flex-shrink-0">
                                     <i class="fas fa-user text-gray-400"></i>
@@ -51,10 +51,10 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="hidden md:table-cell px-6 py-4">
+                        <td class="hidden md:table-cell px-3 py-4">
                             <p class="text-gray-700 font-mono tracking-wider">{{ $user->codigo_empleado ?? '—' }}</p>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-3 py-4">
                             @php
                                 $roleColors = [
                                     'admin' => 'purple',
@@ -82,7 +82,7 @@
                                 <span class="hidden min-[809px]:inline">{{ ucfirst($user->role ?? 'Sin rol') }}</span>
                             </span>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-3 py-4">
                             @php
                                 $statusColors = [
                                     'activo' => 'green',
@@ -102,7 +102,7 @@
                                 <span class="hidden min-[809px]:inline">{{ ucfirst($user->status) }}</span>
                             </span>
                         </td>
-                        <td class="hidden min-[1225px]:table-cell px-6 py-4">
+                        <td class="hidden min-[1225px]:table-cell px-3 py-4">
                             @if ($user->approver)
                                 <div class="flex items-center gap-2">
                                     <div class="w-6 h-6 bg-primary-100 rounded-full flex items-center justify-center">
@@ -114,10 +114,10 @@
                                 <span class="text-gray-400 text-sm">-</span>
                             @endif
                         </td>
-                        <td class="hidden min-[1322px]:table-cell px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        <td class="hidden min-[1322px]:table-cell px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                             {{ $user->created_at->format('d/m/Y H:i') }}
                         </td>
-                        <td class="px-6 py-4 text-center sticky-col">
+                        <td class="px-3 py-4 text-center sticky-col">
                             <div class="flex items-center justify-center gap-2">
                                 <a href="{{ route('admin.users.edit', $user) }}" 
                                    class="hidden min-[400px]:inline-flex btn-secondary text-sm px-3 py-1.5"
@@ -160,6 +160,114 @@
         </table>
     </div>
 
+    <div class="md:hidden divide-y divide-gray-100">
+        @forelse ($users as $user)
+            @php
+                $roleColors = [
+                    'admin' => 'purple',
+                    'cocinero' => 'orange',
+                    'mesero' => 'blue',
+                    'capitan' => 'indigo',
+                    'almacen' => 'green',
+                    'cajero' => 'teal',
+                    'sistemas' => 'gray',
+                ];
+                $roleIcons = [
+                    'admin' => 'fa-user-shield',
+                    'cocinero' => 'fa-utensils',
+                    'mesero' => 'fa-concierge-bell',
+                    'capitan' => 'fa-user-tie',
+                    'almacen' => 'fa-boxes',
+                    'cajero' => 'fa-cash-register',
+                    'sistemas' => 'fa-laptop-code',
+                ];
+                $color = $roleColors[$user->role ?? ''] ?? 'gray';
+                $icon = $roleIcons[$user->role ?? ''] ?? 'fa-user';
+                $statusColors = [
+                    'activo' => 'green',
+                    'pendiente' => 'yellow',
+                    'inactivo' => 'red',
+                ];
+                $statusIcons = [
+                    'activo' => 'fa-check-circle',
+                    'pendiente' => 'fa-clock',
+                    'inactivo' => 'fa-ban',
+                ];
+                $sColor = $statusColors[$user->status] ?? 'gray';
+                $sIcon = $statusIcons[$user->status] ?? 'fa-question';
+            @endphp
+            <div class="user-card px-4 py-4 space-y-2 cursor-pointer hover:bg-gray-50 transition-colors"
+                 data-url="{{ route('admin.users.show', $user) }}"
+                 data-name="{{ strtolower($user->name) }}"
+                 data-code="{{ strtolower($user->codigo_empleado ?? '') }}"
+                 data-role="{{ strtolower($user->role ?? '') }}"
+                 data-status="{{ strtolower($user->status) }}">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-100 flex-shrink-0">
+                        <i class="fas fa-user text-gray-400"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="font-medium text-gray-800 truncate">{{ $user->name }}</p>
+                        <p class="text-xs text-gray-500 font-mono tracking-wider">{{ $user->codigo_empleado ?? '—' }}</p>
+                    </div>
+                    @if ($user->id === Auth::id())
+                        <span class="text-xs text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full flex-shrink-0">Tú</span>
+                    @endif
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-{{ $color }}-100 text-{{ $color }}-700">
+                        <i class="fas {{ $icon }}"></i>
+                        {{ ucfirst($user->role ?? 'Sin rol') }}
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-{{ $sColor }}-100 text-{{ $sColor }}-700">
+                        <i class="fas {{ $sIcon }}"></i>
+                        {{ ucfirst($user->status) }}
+                    </span>
+                    @if ($user->password_reset_requested_at)
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-700" title="Solicitó recuperación de contraseña">
+                            <i class="fas fa-key"></i>
+                            Solicitó cambio
+                        </span>
+                    @endif
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <span>Aprobado por: <span class="text-gray-700">{{ $user->approver->name ?? '—' }}</span></span>
+                    <span>Registro: {{ $user->created_at->format('d/m/Y H:i') }}</span>
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <a href="{{ route('admin.users.edit', $user) }}"
+                       class="btn-secondary text-sm px-3 py-1.5"
+                       @if ($user->id === Auth::id()) style="pointer-events: none; opacity: 0.5;" @endif
+                       title="Editar">
+                        <i class="fas fa-edit mr-1"></i> Editar
+                    </a>
+                    @if ($user->id !== Auth::id())
+                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="btn-danger text-sm px-3 py-1.5"
+                                    @if ($user->isPrivileged() && !Auth::user()->isSistemas()) disabled @endif
+                                    title="Dar de baja"
+                                    onclick="return confirm('¿Estás seguro de dar de baja a {{ $user->name }}? El usuario dejará de aparecer en el sistema.')">
+                                <i class="fas fa-trash mr-1"></i> Dar de baja
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            </div>
+        @empty
+            <div class="px-6 py-16 text-center">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-users text-3xl text-gray-400"></i>
+                    </div>
+                    <p class="text-lg font-medium text-gray-800">No hay usuarios registrados</p>
+                </div>
+            </div>
+        @endforelse
+    </div>
+
     <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-4">
         <div class="text-sm text-gray-500">
             Mostrando {{ $users->firstItem() ?? 0 }} a {{ $users->lastItem() ?? 0 }} de {{ $users->total() }} usuarios
@@ -186,13 +294,6 @@
         width: 1%;
         white-space: nowrap;
     }
-    @media (max-width: 808.98px) {
-        #users-table th,
-        #users-table td {
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
-        }
-    }
 </style>
 @endpush
 @endsection
@@ -202,39 +303,75 @@
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('search-users');
         const rows = document.querySelectorAll('#users-tbody tr.user-row');
+        const cards = document.querySelectorAll('.user-card');
 
-        rows.forEach(function(row) {
-            row.addEventListener('click', function(e) {
+        function handleNavigation(el) {
+            el.addEventListener('click', function(e) {
                 if (e.target.closest('a') || e.target.closest('button') || e.target.closest('form')) return;
-                const url = row.getAttribute('data-url');
+                const url = el.getAttribute('data-url');
                 if (url) window.location.href = url;
             });
-        });
+        }
+
+        rows.forEach(handleNavigation);
+        cards.forEach(handleNavigation);
 
         if (searchInput) {
             searchInput.addEventListener('input', function() {
                 const query = this.value.toLowerCase();
                 let visibleCount = 0;
-                
+
                 rows.forEach(function(row) {
                     const name = row.dataset.name || '';
                     const code = row.dataset.code || '';
                     const role = row.dataset.role || '';
                     const status = row.dataset.status || '';
-                    
-                    const matches = name.includes(query) || 
-                                   code.includes(query) || 
-                                   role.includes(query) || 
+
+                    const matches = name.includes(query) ||
+                                   code.includes(query) ||
+                                   role.includes(query) ||
                                    status.includes(query);
-                    
+
                     row.style.display = matches ? '' : 'none';
                     if (matches) visibleCount++;
                 });
-                
-                // Show/hide empty state
+
+                cards.forEach(function(card) {
+                    const name = card.dataset.name || '';
+                    const code = card.dataset.code || '';
+                    const role = card.dataset.role || '';
+                    const status = card.dataset.status || '';
+
+                    const matches = name.includes(query) ||
+                                   code.includes(query) ||
+                                   role.includes(query) ||
+                                   status.includes(query);
+
+                    card.style.display = matches ? '' : 'none';
+                    if (matches) visibleCount++;
+                });
+
                 const emptyRow = document.querySelector('#users-tbody tr:not(.user-row)');
                 if (emptyRow && rows.length > 0) {
                     emptyRow.style.display = visibleCount === 0 && query !== '' ? '' : 'none';
+                }
+
+                const mobileEmpty = document.querySelector('.md\\:hidden .user-card');
+                if (mobileEmpty) {
+                    const anyVisible = [...cards].some(c => c.style.display !== 'none');
+                    if (!anyVisible && query !== '') {
+                        let msg = document.querySelector('.mobile-no-results');
+                        if (!msg) {
+                            msg = document.createElement('div');
+                            msg.className = 'mobile-no-results px-6 py-8 text-center text-sm text-gray-500';
+                            msg.textContent = 'No se encontraron usuarios';
+                            mobileEmpty.parentElement.appendChild(msg);
+                        }
+                        msg.style.display = '';
+                    } else {
+                        const msg = document.querySelector('.mobile-no-results');
+                        if (msg) msg.style.display = 'none';
+                    }
                 }
             });
         }
