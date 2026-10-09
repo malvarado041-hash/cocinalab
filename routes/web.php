@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AlmacenController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ReporteController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -44,6 +45,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('almacen/{id}/restaurar', [AlmacenController::class, 'restore'])->name('almacen.restore');
     Route::delete('almacen/{id}/eliminar-definitivo', [AlmacenController::class, 'forceDestroy'])->name('almacen.forceDestroy');
     Route::resource('almacen', AlmacenController::class);
+
+    Route::get('reportes/inventario', [ReporteController::class, 'inventario'])->name('reportes.inventario');
+    Route::get('reportes/inventario/csv', [ReporteController::class, 'inventarioCsv'])->name('reportes.inventario.csv');
 
     Route::get('users/dados-de-baja', [UserController::class, 'trashed'])->name('users.trashed');
     Route::put('users/{id}/restaurar', [UserController::class, 'restore'])->name('users.restore');

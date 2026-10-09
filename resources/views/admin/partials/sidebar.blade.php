@@ -52,7 +52,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200" data-tooltip="Reportes">
+                    <a href="{{ route('admin.reportes.inventario') }}"
+                       class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.reportes*') ? 'bg-primary-50 text-primary-600' : '' }}"
+                       data-tooltip="Reportes">
                         <i class="fas fa-chart-bar sidebar-icon w-6 text-center text-lg"></i>
                         <span class="sidebar-text">Reportes</span>
                     </a>
