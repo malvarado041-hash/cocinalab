@@ -1,0 +1,66 @@
+.boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: clamp(0.75rem, 2vw, 1rem) clamp(1.25rem, 3vw, 2rem);
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    color: #2b2b2b;
+    background: linear-gradient(135deg, #fef3e7 0%, #fde6d0 50%, #fad9ad 100%);
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.15s, filter 0.15s, background 0.15s;
+    white-space: nowrap;
+}
+
+.boton:hover {
+    filter: brightness(1.05);
+    box-shadow:
+        0 6px 16px rgba(166, 99, 40, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: #2b2b2b;
+}
+
+.boton:active {
+    transform: translateY(1px);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.1),
+        inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.boton:focus-visible {
+    outline: 3px solid #ed7d1e;
+    outline-offset: 2px;
+}
+
+.btnlist {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+@media (max-width: 480px) {
+    .boton {
+        padding: 0.625rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
+
+    .btnlist {
+        gap: 0.375rem;
+    }
+}

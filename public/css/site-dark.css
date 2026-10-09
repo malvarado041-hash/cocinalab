@@ -1,0 +1,119 @@
+/* ============================================================
+   CocinaLab Sitio público - Modo oscuro (html.dark)
+   ============================================================ */
+html.dark { color-scheme: dark; }
+
+html.dark body {
+    background-color: #0f172a !important;
+    color: #e2e8f0;
+}
+html.dark body.loggedin { background-color: #0f172a !important; }
+
+/* ---------- Navegación principal (boton.css) ---------- */
+html.dark .contenedor { background-color: transparent; }
+html.dark .btnlist { border-color: #334155; }
+html.dark .boton {
+    background: linear-gradient(#334155, #1e293b);
+    border-left-color: #475569;
+    border-right-color: #334155;
+    color: #e2e8f0;
+    text-shadow: none;
+}
+html.dark .boton:hover { background: #ed7d1e; color: #fff; }
+html.dark .buscador {
+    background-color: #1e293b;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+}
+html.dark .buscador::placeholder { color: #64748b; }
+
+/* ---------- Toggle de tema en nav pública ---------- */
+.theme-toggle-public {
+    border: 1px solid #e4e4e4;
+    background: linear-gradient(#a66328, #7d420f);
+    color: #fff;
+    border-radius: 5px;
+    padding: 16px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+html.dark .theme-toggle-public {
+    background: linear-gradient(#334155, #1e293b);
+    border-color: #475569;
+    color: #fbbf24;
+}
+
+/* ---------- Login / registro (style.css + auth.css) ---------- */
+html.dark .login { background-color: #1e293b; }
+html.dark .login h1 { color: #f1f5f9; border-bottom-color: #334155; }
+html.dark .window-notice { background: linear-gradient(135deg, #431407 0%, #7c2d12 55%, #0f172a 100%); }
+html.dark .window-notice .content { background: #1e293b; box-shadow: 0 20px 60px rgba(0, 0, 0, .6); }
+html.dark .auth-brand h1 { color: #f1f5f9; }
+html.dark .auth-brand p { color: #94a3b8; }
+html.dark .auth-form label { color: #cbd5e1; }
+html.dark .auth-form input:not([type="submit"]) { background: #0f172a; border-color: #475569; color: #f1f5f9; }
+html.dark .auth-form input:not([type="submit"]):focus { background: #0f172a; border-color: #ed7d1e; }
+html.dark .auth-switch { color: #94a3b8; }
+html.dark .auth-cancel { background: #0f172a; border-color: #475569; color: #cbd5e1; }
+html.dark .auth-cancel:hover { background: #334155; color: #fff; }
+html.dark .auth-alert { background: rgba(239, 68, 68, .14); border-color: rgba(239, 68, 68, .4); color: #fca5a5; }
+
+/* ---------- Componentes genéricos ---------- */
+html.dark .gen-input { background: #0f172a; border-color: #475569; color: #f1f5f9; }
+html.dark .gen-input:focus { background: #0f172a; }
+html.dark .gen-field .gen-input,
+html.dark .auth-form .gen-field input.gen-input { background: #0f172a; border-color: #475569; color: #f1f5f9; }
+html.dark .gen-field label,
+html.dark .auth-form .gen-field label { background: #1e293b; color: #94a3b8; }
+html.dark .gen-btn-secondary { background: #334155; color: #f1f5f9; }
+html.dark .gen-btn-warning { background: #a16207; color: #fff; }
+html.dark .gen-alert-success { background: rgba(34, 197, 94, .12); border-color: rgba(34, 197, 94, .35); color: #86efac; }
+html.dark .gen-alert-danger { background: rgba(239, 68, 68, .12); border-color: rgba(239, 68, 68, .35); color: #fca5a5; }
+html.dark .gen-alert-warning { background: rgba(234, 179, 8, .12); border-color: rgba(234, 179, 8, .35); color: #fde047; }
+html.dark .gen-alert-info { background: rgba(59, 130, 246, .12); border-color: rgba(59, 130, 246, .35); color: #93c5fd; }
+html.dark .gen-card { background: #1e293b; box-shadow: 0 6px 24px rgba(0, 0, 0, .5); }
+html.dark .gen-card-title { color: #f1f5f9; }
+html.dark .gen-card-subtitle { color: #94a3b8; }
+html.dark .gen-card-body { color: #cbd5e1; }
+html.dark .gen-card-footer { background: #0f172a; border-top-color: #334155; }
+
+/* ---------- Contenido (style.css .content) ---------- */
+html.dark .content h2 { color: #f1f5f9; border-bottom-color: #334155; }
+html.dark .content > p, html.dark .content > div { background-color: #1e293b; box-shadow: 0 0 5px rgba(0, 0, 0, .5); color: #cbd5e1; }
+html.dark .content > p table td:first-child,
+html.dark .content > div table td:first-child { color: #f1f5f9; }
+
+/* ---------- Filtros de recetas ---------- */
+html.dark .dropbtn { background-color: #9a3412; }
+html.dark .dropdown-content { background-color: #1e293b; box-shadow: 0 8px 16px rgba(0, 0, 0, .5); }
+html.dark .dropdown-content a { color: #e2e8f0; }
+html.dark .dropdown-content a:hover { background-color: #334155; }
+html.dark .dropdown:hover .dropbtn { background-color: #7c2d12; }
+
+/* ---------- Carrusel ---------- */
+html.dark .container h2 { color: #f1f5f9; }
+html.dark .carousel-control { background-image: none !important; }
+
+/* ---------- Bootstrap 3 ---------- */
+html.dark .panel { background-color: #1e293b; border-color: #334155; }
+html.dark .panel-default > .panel-heading { background-color: #0f172a; border-color: #334155; color: #f1f5f9; }
+html.dark .table > tbody > tr > td,
+html.dark .table > thead > tr > th { border-top-color: #334155; color: #cbd5e1; }
+html.dark .table-striped > tbody > tr:nth-of-type(odd) { background-color: rgba(51, 65, 85, .4); }
+html.dark .table-hover > tbody > tr:hover { background-color: #334155; }
+html.dark .well { background-color: #1e293b; border-color: #334155; }
+html.dark .thumbnail { background-color: #1e293b; border-color: #334155; }
+html.dark .thumbnail .caption { color: #cbd5e1; }
+html.dark .modal-content { background-color: #1e293b; }
+html.dark .dropdown-menu { background-color: #1e293b; border-color: #334155; }
+html.dark .dropdown-menu > li > a { color: #cbd5e1; }
+html.dark .dropdown-menu > li > a:hover { background-color: #334155; color: #fff; }
+html.dark .form-control { background-color: #0f172a; border-color: #475569; color: #f1f5f9; }
+html.dark .jumbotron { background-color: #1e293b; }
+html.dark hr { border-top-color: #334155; }
+html.dark a { color: #fdba74; }
+
+/* ---------- Transiciones ---------- */
+body, .boton, .gen-card, .content > div, .panel, .window-notice .content {
+    transition: background-color .25s ease, border-color .25s ease, color .25s ease;
+}

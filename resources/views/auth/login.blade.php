@@ -1,0 +1,44 @@
+@extends('layouts.app')
+@section('title', 'Login')
+@section('content')
+@if($errors->any() || session('success'))
+<div class="auth-toast" role="alert" aria-live="polite">
+    @if($errors->any())
+    @include('genericos.feedback.alertgenerico', ['type' => 'danger', 'message' => $errors->first(), 'dismiss' => true])
+    @endif
+    @if(session('success'))
+    @include('genericos.feedback.alertgenerico', ['type' => 'success', 'message' => session('success'), 'dismiss' => true])
+    @endif
+</div>
+@endif
+<div class="window-notice">
+    <div class="content">
+        <div class="auth-brand">
+            <img src="{{ asset('img/logo.png') }}" alt="CocinaLab" class="auth-logo">
+        </div>
+        <form class="auth-form" action="{{ route('login.post') }}" method="POST">
+            @csrf
+            @include('genericos.formularios.inputsgenerico', [
+                'name' => 'Usuario',
+                'label' => 'Usuario',
+                'value' => old('Usuario'),
+                'required' => true,
+            ])
+            @include('genericos.formularios.inputsgenerico', [
+                'type' => 'password',
+                'name' => 'contrasena',
+                'label' => 'Contraseña',
+                'required' => true,
+            ])
+            @include('genericos.formularios.btnicongenerico', [
+                'type' => 'submit',
+                'label' => 'Acceder',
+                'icon' => asset('img/logo.png'),
+            ])
+            <p class="auth-switch">¿Olvidaste tu contraseña? <a href="{{ route('password.forgot') }}">Recupérala aquí</a></p>
+            <a href="{{ route('register') }}" class="auth-register-btn">Crear cuenta</a>
+        </form>
+    </div>
+</div>
+@include('partials.carousel')
+@endsection
