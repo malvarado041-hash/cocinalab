@@ -22,7 +22,19 @@ class RecetaController extends Controller
                 $ingredientesPorTipo[$tipo] = $ings;
             }
         }
-        return view('recetas.index', compact('ingredientesPorTipo'));
+
+        // Catálogo en tarjetas con imagen, agrupado por tipo.
+        $catalogoPorTipo = [];
+        foreach ($tipos as $tipo) {
+            $catalogoPorTipo[$tipo] = Receta::with('imagenes')
+                ->where('TipoC', $tipo)
+                ->orderBy('Nombre')
+                ->take(12)
+                ->get();
+        }
+        $catalogoPorTipo = array_filter($catalogoPorTipo, fn ($c) => $c->isNotEmpty());
+
+        return view('recetas.index', compact('ingredientesPorTipo', 'catalogoPorTipo'));
     }
 
     private function ingredientesPorTipo(string $tipo)
@@ -45,8 +57,9 @@ class RecetaController extends Controller
             'ingrediente' => 'required|string',
         ]);
 
-        $recetas = Receta::select('recetas.id', 'recetas.Nombre')
+        $recetas = Receta::select('recetas.id', 'recetas.Nombre', 'recetas.TipoC')
             ->distinct()
+            ->with('imagenes')
             ->join('receta_ingrediente as ri', 'recetas.id', '=', 'ri.receta_id')
             ->join('ingredientes as i', 'ri.ingrediente_id', '=', 'i.id')
             ->where('recetas.TipoC', $data['tipo'])
@@ -66,10 +79,10 @@ class RecetaController extends Controller
     {
         $receta = null;
         if ($request->filled('id') && is_numeric($request->query('id'))) {
-            $receta = Receta::select('Nombre', 'Procedimiento')->find((int) $request->query('id'));
+            $receta = Receta::with(['imagenes', 'ingredientes.almacenProducto'])->find((int) $request->query('id'));
         } elseif ($request->filled('buscar') && trim($request->query('buscar')) !== '') {
             $buscar = trim($request->query('buscar'));
-            $receta = Receta::select('Nombre', 'Procedimiento')->where('Nombre', 'like', "%{$buscar}%")->first();
+            $receta = Receta::with(['imagenes', 'ingredientes.almacenProducto'])->where('Nombre', 'like', "%{$buscar}%")->first();
         } else {
             abort(400, 'ID de receta no proporcionado.');
         }
@@ -78,6 +91,8 @@ class RecetaController extends Controller
             abort(404, 'No se encontró la receta.');
         }
 
-        return view('recetas.show', compact('receta'));
+        $costo = $receta->costoEstimado();
+
+        return view('recetas.show', compact('receta', 'costo'));
     }
 }

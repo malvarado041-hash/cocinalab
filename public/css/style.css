@@ -951,3 +951,136 @@ body {
     font-size: clamp(1.15rem, 3vw, 1.4rem);
     color: #4a536e;
 }
+
+/* ---------- Carrusel de tarjetas de recetas (home + catálogo) ---------- */
+.recetas-carousel-section {
+    max-width: 1200px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+}
+.recetas-carousel-title {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    font-weight: 700;
+    color: #2b2b2b;
+    margin: 0 0 1rem;
+    text-align: center;
+}
+.recetas-carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: transparent;
+}
+.recetas-carousel-track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 0.25rem 0.25rem 1rem;
+    scrollbar-width: thin;
+}
+.receta-card {
+    flex: 0 0 min(260px, 78vw);
+    scroll-snap-align: start;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+}
+.receta-card-link { display: block; color: inherit; text-decoration: none; }
+.receta-card-img {
+    display: block;
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    background: #eee;
+}
+.receta-card-body { padding: 0.75rem 0.9rem 1rem; }
+.receta-card-tipo {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #ed7d1e;
+    background: #fef3e6;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+}
+.receta-card-nombre {
+    margin: 0.5rem 0 0.25rem;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    color: #2b2b2b;
+}
+.receta-card-ver { font-size: 0.85rem; color: #7d420f; font-weight: 600; }
+.recetas-carousel-btn {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 42px; height: 42px;
+    border: none; border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    cursor: pointer; z-index: 5;
+    display: flex; align-items: center; justify-content: center;
+}
+.recetas-carousel-btn--prev { left: 8px; }
+.recetas-carousel-btn--next { right: 8px; }
+
+/* ---------- Galería en detalle de receta ---------- */
+.receta-galeria {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.6rem;
+    margin: 1rem 0;
+}
+.receta-galeria img {
+    width: 100%; height: 130px; object-fit: cover; border-radius: 10px;
+}
+.receta-costo {
+    margin-top: 1.2rem;
+    background: #fff8f0;
+    border: 1px solid #f5ddba;
+    border-radius: 12px;
+    padding: 1rem;
+}
+.receta-costo table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.receta-costo th, .receta-costo td { padding: 0.4rem 0.5rem; border-bottom: 1px solid #f0e2cd; text-align: left; }
+.receta-costo .total { text-align: right; font-weight: 800; margin-top: 0.5rem; }
+
+/* ---------- Pasos numerados del procedimiento ---------- */
+.receta-pasos {
+    counter-reset: paso;
+    list-style: none;
+    margin: 1rem 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+.receta-pasos li {
+    counter-increment: paso;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: #fff;
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.receta-pasos li::before {
+    content: counter(paso);
+    flex-shrink: 0;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 50%;
+    background: #fef3e6;
+    color: #ed7d1e;
+    font-weight: 800;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

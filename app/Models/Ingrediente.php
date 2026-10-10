@@ -13,6 +13,11 @@ class Ingrediente extends Model
     public function recetas()
     {
         return $this->belongsToMany(Receta::class, 'receta_ingrediente', 'ingrediente_id', 'receta_id')
-            ->withPivot('cantidad');
+            ->withPivot('id', 'cantidad', 'cantidad_num', 'unidad');
+    }
+
+    public function almacenProducto()
+    {
+        return $this->belongsTo(AlmacenProducto::class, 'almacen_producto_id');
     }
 }

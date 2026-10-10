@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Receta;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return view('home');
+        $destacadas = Receta::with('imagenes')
+            ->orderBy('Nombre')
+            ->take(12)
+            ->get();
+
+        return view('home', compact('destacadas'));
     }
 
     public function usuario()

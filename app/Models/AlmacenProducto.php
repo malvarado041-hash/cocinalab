@@ -167,4 +167,9 @@ class AlmacenProducto extends Model
     {
         return self::CATEGORIAS[$this->categoria] ?? ucfirst($this->categoria);
     }
+
+    public function ingredientes()
+    {
+        return $this->hasMany(\App\Models\Ingrediente::class, 'almacen_producto_id');
+    }
 }

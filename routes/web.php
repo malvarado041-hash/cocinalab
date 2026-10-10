@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AlmacenController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\RecetaController as AdminRecetaController;
 use App\Http\Controllers\Admin\ReporteController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -53,6 +54,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('users/{id}/restaurar', [UserController::class, 'restore'])->name('users.restore');
     Route::delete('users/{id}/eliminar-definitivo', [UserController::class, 'forceDestroy'])->name('users.forceDestroy');
     Route::resource('users', UserController::class)->except(['create', 'store']);
+
+    Route::get('recetas/dadas-de-baja', [AdminRecetaController::class, 'trashed'])->name('recetas.trashed');
+    Route::put('recetas/{id}/restaurar', [AdminRecetaController::class, 'restore'])->name('recetas.restore');
+    Route::delete('recetas/{id}/eliminar-definitivo', [AdminRecetaController::class, 'forceDestroy'])->name('recetas.forceDestroy');
+    Route::resource('recetas', AdminRecetaController::class);
 
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/perfil', [ProfileController::class, 'update'])->name('profile.update');
