@@ -1,6 +1,7 @@
 @php
     $isEdit = isset($producto);
     $old = fn($k, $d = '') => old($k, $isEdit ? $producto->$k : $d);
+    $esAlmacen = auth()->user()->isAlmacen();
 @endphp
 
 @if ($errors->any())
@@ -23,9 +24,23 @@
     </div>
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Proveedor</label>
-        <input type="text" name="proveedor" value="{{ $old('proveedor') }}" maxlength="200"
-            placeholder="Ej. Central de abastos"
+        @php
+            $listaProveedores = $proveedores ?? [];
+            $provActual = $old('proveedor');
+        @endphp
+        <select name="proveedor"
             class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="">Sin proveedor…</option>
+            @foreach ($listaProveedores as $nombreProv)
+                <option value="{{ $nombreProv }}" @selected($provActual === $nombreProv)>{{ $nombreProv }}</option>
+            @endforeach
+            @if ($provActual && !in_array($provActual, $listaProveedores))
+                <option value="{{ $provActual }}" selected>{{ $provActual }} (no registrado)</option>
+            @endif
+        </select>
+        @if (empty($listaProveedores))
+            <p class="text-xs text-gray-400 mt-1">Aún no hay proveedores registrados. <a href="{{ route('admin.proveedores.create') }}" class="text-primary-600 hover:underline">Registrar uno</a>.</p>
+        @endif
     </div>
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Categoría *</label>
@@ -52,6 +67,17 @@
         </select>
         <p class="text-xs text-gray-400 mt-1">La subcategoría define cómo se cuenta: verdura/fruta/proteína por kg-g-pieza, especias por g, lácteos por L-ml, insumos por pieza-paquete.</p>
     </div>
+    @if($esAlmacen)
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $isEdit ? 'Agregar stock (entrada) *' : 'Stock inicial *' }}</label>
+            <input type="number" name="entrada" value="{{ old('entrada', '0') }}" required min="0" step="0.01"
+                placeholder="Ej. 5"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+            @if($isEdit)
+                <p class="text-xs text-gray-400 mt-1">Se sumará automáticamente al stock actual.</p>
+            @endif
+        </div>
+    @else
     <div class="grid grid-cols-2 gap-4">
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Stock actual *</label>
@@ -64,6 +90,7 @@
                 class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
         </div>
     </div>
+    @endif
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Precio unitario ($)</label>
         <input type="number" name="precio_unitario" value="{{ $old('precio_unitario') }}" min="0" step="0.01"

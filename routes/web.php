@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AlmacenController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ProveedorController;
 use App\Http\Controllers\Admin\RecetaController as AdminRecetaController;
 use App\Http\Controllers\Admin\ReporteController;
 use App\Http\Controllers\Admin\UserController;
@@ -21,8 +22,8 @@ Route::get('/olvide-mi-contrasena', [AuthController::class, 'showForgot'])->name
 Route::post('/olvide-mi-contrasena', [AuthController::class, 'forgot'])->name('password.forgot.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Zona privada
-Route::middleware('auth')->group(function () {
+// Zona privada (el rol almacen no entra aquí: solo tiene almacén y proveedores)
+Route::middleware(['auth', 'deny.almacen'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/recetas', [RecetaController::class, 'index'])->name('recetas.index');
     Route::get('/filtrar', [RecetaController::class, 'filtrar'])->name('recetas.filtrar');
@@ -31,8 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/info', [HomeController::class, 'info'])->name('info');
 });
 
-// Panel Admin
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+// Panel Admin (admin y sistemas; el rol almacen no entra)
+Route::middleware(['auth', 'deny.almacen', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', fn () => view('admin.dashboard', [
         'totalUsers' => \App\Models\User::where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
         'pendingUsers' => \App\Models\User::where('status', 'pendiente')->where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
@@ -42,11 +43,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'totalProductos' => \App\Models\AlmacenProducto::count(),
     ]))->name('dashboard');
     
-    Route::get('almacen/dados-de-baja', [AlmacenController::class, 'trashed'])->name('almacen.trashed');
-    Route::put('almacen/{id}/restaurar', [AlmacenController::class, 'restore'])->name('almacen.restore');
-    Route::delete('almacen/{id}/eliminar-definitivo', [AlmacenController::class, 'forceDestroy'])->name('almacen.forceDestroy');
-    Route::resource('almacen', AlmacenController::class);
-
     Route::get('reportes/inventario', [ReporteController::class, 'inventario'])->name('reportes.inventario');
     Route::get('reportes/inventario/csv', [ReporteController::class, 'inventarioCsv'])->name('reportes.inventario.csv');
 
@@ -62,4 +58,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/perfil', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+// Módulos operativos: accesibles para admin, sistemas y rol almacen.
+// El rol almacen SOLO tiene acceso a almacén y proveedores.
+Route::middleware(['auth', 'role:almacen'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('almacen/dados-de-baja', [AlmacenController::class, 'trashed'])->name('almacen.trashed');
+    Route::put('almacen/{id}/restaurar', [AlmacenController::class, 'restore'])->name('almacen.restore');
+    Route::delete('almacen/{id}/eliminar-definitivo', [AlmacenController::class, 'forceDestroy'])->name('almacen.forceDestroy');
+    Route::resource('almacen', AlmacenController::class);
+
+    Route::get('proveedores/dados-de-baja', [ProveedorController::class, 'trashed'])->name('proveedores.trashed');
+    Route::put('proveedores/{id}/restaurar', [ProveedorController::class, 'restore'])->name('proveedores.restore');
+    Route::delete('proveedores/{id}/eliminar-definitivo', [ProveedorController::class, 'forceDestroy'])->name('proveedores.forceDestroy');
+    Route::resource('proveedores', ProveedorController::class)->parameters(['proveedores' => 'proveedor']);
 });

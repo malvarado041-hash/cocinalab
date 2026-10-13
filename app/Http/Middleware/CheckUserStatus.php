@@ -27,8 +27,25 @@ class CheckUserStatus
             return redirect()->route('login')->with('error', 'Tu cuenta ha sido desactivada. Contacta al administrador.');
         }
 
-        if (!empty($roles) && !$user->hasRole($roles[0]) && !$user->isAdmin() && !$user->isSistemas()) {
-            abort(403, 'No tienes permisos para acceder a esta sección.');
+        // Acepta uno o varios roles separados por coma: role:admin,almacen
+        // admin y sistemas siempre pasan cuando se pide un rol concreto.
+        if (!empty($roles)) {
+            $allowed = [];
+            foreach ($roles as $group) {
+                foreach (explode(',', $group) as $r) {
+                    $r = trim($r);
+                    if ($r !== '') {
+                        $allowed[] = $r;
+                    }
+                }
+            }
+            $hasAccess = in_array($user->role, $allowed, true)
+                || $user->isAdmin()
+                || $user->isSistemas();
+
+            if (!$hasAccess) {
+                abort(403, 'No tienes permisos para acceder a esta sección.');
+            }
         }
 
         return $next($request);

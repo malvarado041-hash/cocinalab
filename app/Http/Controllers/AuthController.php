@@ -50,6 +50,10 @@ class AuthController extends Controller
         $user->forceFill(['remember_token' => null])->save();
         $request->session()->regenerate();
 
+        if ($user->isAlmacen()) {
+            return redirect()->route('admin.almacen.index');
+        }
+
         if ($user->isAdmin() || $user->isSistemas()) {
             return redirect()->route('admin.dashboard');
         }

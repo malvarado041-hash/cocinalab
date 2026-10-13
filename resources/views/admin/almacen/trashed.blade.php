@@ -18,6 +18,7 @@
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Categoría</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Motivo de baja</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Baja</th>
                     <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider" sticky-col">Acciones</th>
                 </tr>
@@ -27,6 +28,7 @@
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 font-medium text-gray-800">{{ $p->nombre }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $p->categoria_label }} / {{ str_replace('_', ' ', $p->subcategoria) }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">{{ $p->motivo_baja ?? '—' }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $p->deleted_at->format('d/m/Y H:i') }}</td>
                         <td class="px-6 py-4 text-center sticky-col">
                             <div class="flex items-center justify-center gap-2">
@@ -51,7 +53,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="px-6 py-16 text-center text-gray-500">No hay productos dados de baja</td>
+                        <td colspan="5" class="px-6 py-16 text-center text-gray-500">No hay productos dados de baja</td>
                     </tr>
                 @endforelse
             </tbody>

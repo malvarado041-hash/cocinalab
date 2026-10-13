@@ -23,6 +23,7 @@ class AlmacenProducto extends Model
         'perecedero',
         'fecha_caducidad',
         'proveedor',
+        'motivo_baja',
     ];
 
     protected $casts = [

@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->role === 'sistemas';
     }
 
+    public function isAlmacen(): bool
+    {
+        return $this->role === 'almacen';
+    }
+
     public function isPrivileged(): bool
     {
         return in_array($this->role, ['admin', 'sistemas'], true);

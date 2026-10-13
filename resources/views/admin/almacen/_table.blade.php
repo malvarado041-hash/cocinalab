@@ -40,14 +40,11 @@
                             <a href="{{ route('admin.almacen.edit', array_merge(['almacen' => $p->id], $qs)) }}" class="hidden min-[400px]:inline-flex btn-secondary text-sm px-3 py-1.5" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('admin.almacen.destroy', array_merge(['almacen' => $p->id], $qs)) }}" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-danger text-sm px-3 py-1.5" title="Dar de baja"
-                                    onclick="return confirm('¿Dar de baja a {{ $p->nombre }}?')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                            <button type="button" class="btn-danger text-sm px-3 py-1.5 btn-baja" title="Dar de baja"
+                                data-action="{{ route('admin.almacen.destroy', array_merge(['almacen' => $p->id], $qs)) }}"
+                                data-nombre="{{ $p->nombre }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -99,14 +96,11 @@
                 <a href="{{ route('admin.almacen.edit', array_merge(['almacen' => $p->id], $qs)) }}" class="btn-secondary text-sm px-3 py-1.5" title="Editar">
                     <i class="fas fa-edit mr-1"></i> Editar
                 </a>
-                <form action="{{ route('admin.almacen.destroy', array_merge(['almacen' => $p->id], $qs)) }}" method="POST" class="inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn-danger text-sm px-3 py-1.5" title="Dar de baja"
-                        onclick="return confirm('¿Dar de baja a {{ $p->nombre }}?')">
-                        <i class="fas fa-trash mr-1"></i> Dar de baja
-                    </button>
-                </form>
+                <button type="button" class="btn-danger text-sm px-3 py-1.5 btn-baja" title="Dar de baja"
+                    data-action="{{ route('admin.almacen.destroy', array_merge(['almacen' => $p->id], $qs)) }}"
+                    data-nombre="{{ $p->nombre }}">
+                    <i class="fas fa-trash mr-1"></i> Dar de baja
+                </button>
             </div>
         </div>
     @empty

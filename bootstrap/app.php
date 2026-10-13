@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckUserStatus::class,
+            'deny.almacen' => \App\Http\Middleware\DenyAlmacen::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

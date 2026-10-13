@@ -15,6 +15,16 @@ $unidadPlural = $unidades[$producto->unidad][1] ?? ucfirst($producto->unidad) . 
 @endsection
 
 @section('content')
+@if ($errors->has('motivo_baja'))
+    <div class="max-w-2xl mx-auto mb-4 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg" role="alert">
+        <p class="font-semibold text-sm">No se pudo dar de baja:</p>
+        <ul class="list-disc list-inside text-sm">
+            @foreach ($errors->get('motivo_baja') as $e)
+                <li>{{ $e }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in">
     <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-4">
         <div class="w-14 h-14 rounded-xl flex items-center justify-center {{ $producto->esBajoStock() ? 'bg-red-100' : 'bg-green-100' }}">
@@ -74,14 +84,53 @@ $unidadPlural = $unidades[$producto->unidad][1] ?? ucfirst($producto->unidad) . 
         <a href="{{ route('admin.almacen.edit', $producto) }}" class="btn-primary text-sm px-4 py-2">
             <i class="fas fa-edit mr-2"></i> Editar
         </a>
-        <form action="{{ route('admin.almacen.destroy', $producto) }}" method="POST" class="inline">
+        <button type="button" id="btn-baja-show" class="btn-danger text-sm px-4 py-2">
+            <i class="fas fa-trash mr-2"></i> Dar de baja
+        </button>
+    </div>
+</div>
+
+<div id="modal-baja" class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-900/50 p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+        <h3 class="text-lg font-semibold text-gray-800">Dar de baja: {{ $producto->nombre }}</h3>
+        <form action="{{ route('admin.almacen.destroy', $producto) }}" method="POST">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn-danger text-sm px-4 py-2"
-                    onclick="return confirm('¿Dar de baja a {{ $producto->nombre }}?')">
-                <i class="fas fa-trash mr-2"></i> Dar de baja
-            </button>
+            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1" for="motivo_baja">Motivo de la baja *</label>
+            <textarea id="motivo_baja" name="motivo_baja" required minlength="5" maxlength="500" rows="3"
+                placeholder="Ej. Producto caducado, dañado, descontinuado…"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+            <div class="mt-5 flex items-center justify-end gap-3">
+                <button type="button" id="modal-baja-cancelar" class="btn-secondary text-sm px-4 py-2">Cancelar</button>
+                <button type="submit" class="btn-danger text-sm px-4 py-2">
+                    <i class="fas fa-trash mr-2"></i> Confirmar baja
+                </button>
+            </div>
         </form>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('modal-baja');
+    const openBtn = document.getElementById('btn-baja-show');
+    const cancelBtn = document.getElementById('modal-baja-cancelar');
+    function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+});
+</script>
+@endpush

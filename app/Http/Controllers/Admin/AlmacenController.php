@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AlmacenProducto;
+use App\Models\Proveedor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -77,12 +78,20 @@ class AlmacenController extends Controller
             'mapa' => AlmacenProducto::MAPA,
             'categorias' => AlmacenProducto::CATEGORIAS,
             'unidades' => AlmacenProducto::UNIDADES,
+            'proveedores' => Proveedor::orderBy('nombre')->pluck('nombre')->all(),
         ]);
     }
 
     public function store(Request $request)
     {
         $data = $this->validated($request);
+
+        // El rol almacen no define stock/stock_minimo: su "entrada" es el stock inicial.
+        if (Auth::user()->isAlmacen()) {
+            $data['stock'] = $data['entrada'] ?? 0;
+            $data['stock_minimo'] = 0;
+            unset($data['entrada']);
+        }
 
         AlmacenProducto::create($data);
 
@@ -97,12 +106,27 @@ class AlmacenController extends Controller
             'mapa' => AlmacenProducto::MAPA,
             'categorias' => AlmacenProducto::CATEGORIAS,
             'unidades' => AlmacenProducto::UNIDADES,
+            'proveedores' => Proveedor::orderBy('nombre')->pluck('nombre')->all(),
         ]);
     }
 
     public function update(Request $request, AlmacenProducto $almacen)
     {
         $data = $this->validated($request, $almacen->id);
+
+        // El rol almacen no edita el stock actual: su "entrada" se suma al actual.
+        // Se ignoran stock/stock_minimo aunque vengan manipulados en la petición.
+        if (Auth::user()->isAlmacen()) {
+            $entrada = (float) ($data['entrada'] ?? 0);
+            unset($data['entrada'], $data['stock'], $data['stock_minimo']);
+
+            $almacen->fill($data);
+            $almacen->stock = (float) $almacen->stock + $entrada;
+            $almacen->save();
+
+            return redirect()->route('admin.almacen.index', $this->filtrosActivos($request))
+                ->with('success', 'Entrada de stock registrada correctamente.');
+        }
 
         $almacen->update($data);
 
@@ -112,6 +136,15 @@ class AlmacenController extends Controller
 
     public function destroy(Request $request, AlmacenProducto $almacen)
     {
+        // La baja exige el motivo (el rol almacen solo puede dar de baja así).
+        $data = $request->validate([
+            'motivo_baja' => ['required', 'string', 'min:5', 'max:500'],
+        ], [], [
+            'motivo_baja' => 'motivo de baja',
+        ]);
+
+        $almacen->motivo_baja = trim($data['motivo_baja']);
+        $almacen->save();
         $almacen->delete();
 
         return redirect()->route('admin.almacen.index', $this->filtrosActivos($request))
@@ -139,6 +172,8 @@ class AlmacenController extends Controller
 
         $producto = AlmacenProducto::onlyTrashed()->findOrFail($id);
         $producto->restore();
+        $producto->motivo_baja = null;
+        $producto->save();
 
         return redirect()->route('admin.almacen.trashed')
             ->with('success', 'Producto restaurado correctamente.');
@@ -183,18 +218,27 @@ class AlmacenController extends Controller
         $subsValidas = AlmacenProducto::subcategoriasPara((string) $categoria);
         $unidadesValidas = AlmacenProducto::unidadesPara((string) $categoria, (string) $subcategoria);
 
-        $data = $request->validate([
+        $rules = [
             'nombre' => ['required', 'string', 'min:2', 'max:200', Rule::unique('almacen_productos', 'nombre')->ignore($ignoreId)],
             'categoria' => ['required', Rule::in(array_keys(AlmacenProducto::CATEGORIAS))],
             'subcategoria' => ['required', 'string', Rule::in($subsValidas)],
             'unidad' => ['required', Rule::in($unidadesValidas ?: AlmacenProducto::todasUnidades())],
-            'stock' => ['required', 'numeric', 'min:0', 'max:9999999.99'],
-            'stock_minimo' => ['required', 'numeric', 'min:0', 'max:9999999.99'],
             'precio_unitario' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'perecedero' => ['nullable', 'boolean'],
             'fecha_caducidad' => ['nullable', 'date', 'after_or_equal:today'],
             'proveedor' => ['nullable', 'string', 'max:200'],
-        ]);
+        ];
+
+        // El rol almacen ve los stocks pero no los edita:
+        // solo registra una "entrada" que se suma al stock actual.
+        if (Auth::user()->isAlmacen()) {
+            $rules['entrada'] = [$ignoreId === null ? 'required' : 'nullable', 'numeric', 'min:0', 'max:9999999.99'];
+        } else {
+            $rules['stock'] = ['required', 'numeric', 'min:0', 'max:9999999.99'];
+            $rules['stock_minimo'] = ['required', 'numeric', 'min:0', 'max:9999999.99'];
+        }
+
+        $data = $request->validate($rules);
 
         $data['perecedero'] = (bool) ($request->boolean('perecedero'));
 

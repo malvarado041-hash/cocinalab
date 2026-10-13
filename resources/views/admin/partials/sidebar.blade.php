@@ -15,6 +15,7 @@
         <div class="sidebar-section px-3 py-2">
             <h3 class="sidebar-text text-xs font-semibold text-gray-400 uppercase tracking-wider">Navegación</h3>
             <ul class="space-y-1 mt-2" role="navigation" aria-label="Navegación principal">
+                @if(!auth()->user()->isAlmacen())
                 <li>
                     <a href="{{ route('admin.dashboard') }}" 
                        class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-primary-50 text-primary-600' : '' }}"
@@ -31,6 +32,7 @@
                         <span class="sidebar-text">Usuarios</span>
                     </a>
                 </li>
+                @endif
                 <li>
                     <a href="{{ route('admin.almacen.index') }}"
                         class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.almacen*') ? 'bg-primary-50 text-primary-600' : '' }}"
@@ -40,6 +42,15 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.proveedores.index') }}"
+                        class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.proveedores*') ? 'bg-primary-50 text-primary-600' : '' }}"
+                        data-tooltip="Proveedores">
+                        <i class="fas fa-truck sidebar-icon w-6 text-center text-lg"></i>
+                        <span class="sidebar-text">Proveedores</span>
+                    </a>
+                </li>
+                @if(!auth()->user()->isAlmacen())
+                <li>
                     <a href="{{ route('admin.recetas.index') }}"
                         class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.recetas*') ? 'bg-primary-50 text-primary-600' : '' }}"
                         data-tooltip="Recetas">
@@ -47,9 +58,11 @@
                         <span class="sidebar-text">Recetas</span>
                     </a>
                 </li>
+                @endif
             </ul>
         </div>
 
+        @if(!auth()->user()->isAlmacen())
         <div class="sidebar-section px-3 py-2">
             <h3 class="sidebar-text text-xs font-semibold text-gray-400 uppercase tracking-wider">Sistema</h3>
             <ul class="space-y-1 mt-2" role="navigation" aria-label="Sistema">
@@ -69,6 +82,7 @@
                 </li>
             </ul>
         </div>
+        @endif
     </nav>
 
     <div class="p-4 border-t sidebar-footer">
@@ -82,10 +96,12 @@
             </div>
         </div>
         <div class="mt-3 space-y-2">
+            @if(!auth()->user()->isAlmacen())
             <a href="{{ route('home') }}" class="sidebar-link flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-lg transition" data-tooltip="Ver sitio">
                 <i class="fas fa-external-link-alt w-5 text-center"></i>
                 <span class="sidebar-text">Ver sitio</span>
             </a>
+            @endif
             <form action="{{ route('logout') }}" method="POST" class="w-full">
                 @csrf
                 <button type="submit" class="sidebar-link flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition w-full" data-tooltip="Cerrar sesión">

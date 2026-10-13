@@ -8,6 +8,16 @@
 @endsection
 
 @section('content')
+@if ($errors->has('motivo_baja'))
+    <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg" role="alert">
+        <p class="font-semibold text-sm">No se pudo dar de baja:</p>
+        <ul class="list-disc list-inside text-sm">
+            @foreach ($errors->get('motivo_baja') as $e)
+                <li>{{ $e }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in">
     <div class="px-4 sm:px-6 py-4 flex flex-col lg:flex-row lg:flex-wrap lg:items-center gap-3 border-b border-gray-100">
         <form id="filtros-form" method="GET" action="{{ route('admin.almacen.index') }}" class="flex-[1_1_auto] min-w-0 grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-3">
@@ -55,6 +65,27 @@
 
     <div id="almacen-tabla" class="transition-opacity duration-150">
         @include('admin.almacen._table')
+    </div>
+</div>
+
+<div id="modal-baja" class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-900/50 p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+        <h3 class="text-lg font-semibold text-gray-800">Dar de baja</h3>
+        <p class="text-sm text-gray-500 mt-1">Producto: <span id="modal-baja-nombre" class="font-medium text-gray-700"></span></p>
+        <form id="modal-baja-form" method="POST" action="">
+            @csrf
+            @method('DELETE')
+            <label class="block text-sm font-medium text-gray-700 mt-4 mb-1" for="modal-baja-motivo">Motivo de la baja *</label>
+            <textarea id="modal-baja-motivo" name="motivo_baja" required minlength="5" maxlength="500" rows="3"
+                placeholder="Ej. Producto caducado, dañado, descontinuado…"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+            <div class="mt-5 flex items-center justify-end gap-3">
+                <button type="button" id="modal-baja-cancelar" class="btn-secondary text-sm px-4 py-2">Cancelar</button>
+                <button type="submit" class="btn-danger text-sm px-4 py-2">
+                    <i class="fas fa-trash mr-2"></i> Confirmar baja
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
@@ -164,10 +195,47 @@ document.addEventListener('DOMContentLoaded', function() {
             liveSearch(link.href);
             return;
         }
+        const btnBaja = e.target.closest('.btn-baja');
+        if (btnBaja) {
+            openModalBaja(btnBaja.dataset.action, btnBaja.dataset.nombre);
+            return;
+        }
         if (e.target.closest('a') || e.target.closest('button') || e.target.closest('form')) return;
         const row = e.target.closest('.almacen-row');
         if (row && row.dataset.url) window.location.href = row.dataset.url;
     });
+
+    // Modal de baja con motivo obligatorio.
+    const modalBaja = document.getElementById('modal-baja');
+    const modalBajaForm = document.getElementById('modal-baja-form');
+    const modalBajaNombre = document.getElementById('modal-baja-nombre');
+    const modalBajaMotivo = document.getElementById('modal-baja-motivo');
+    const modalBajaCancelar = document.getElementById('modal-baja-cancelar');
+
+    function openModalBaja(action, nombre) {
+        modalBajaForm.setAttribute('action', action);
+        modalBajaNombre.textContent = nombre || '';
+        modalBajaMotivo.value = '';
+        modalBaja.classList.remove('hidden');
+        modalBaja.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        setTimeout(function() { modalBajaMotivo.focus(); }, 50);
+    }
+    function closeModalBaja() {
+        modalBaja.classList.add('hidden');
+        modalBaja.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('click', function(e) {
+        const btnBaja = e.target.closest && e.target.closest('.btn-baja');
+        if (btnBaja && !tabla.contains(btnBaja)) {
+            openModalBaja(btnBaja.dataset.action, btnBaja.dataset.nombre);
+        }
+    });
+    if (modalBajaCancelar) modalBajaCancelar.addEventListener('click', closeModalBaja);
+    modalBaja.addEventListener('click', function(e) { if (e.target === modalBaja) closeModalBaja(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && !modalBaja.classList.contains('hidden')) closeModalBaja(); });
 });
 </script>
 @endpush
