@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AlmacenController;
+use App\Http\Controllers\Admin\CocinaController;
+use App\Http\Controllers\Admin\ComandaController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProveedorController;
 use App\Http\Controllers\Admin\RecetaController as AdminRecetaController;
@@ -73,3 +75,22 @@ Route::middleware(['auth', 'role:almacen'])->prefix('admin')->name('admin.')->gr
     Route::delete('proveedores/{id}/eliminar-definitivo', [ProveedorController::class, 'forceDestroy'])->name('proveedores.forceDestroy');
     Route::resource('proveedores', ProveedorController::class)->parameters(['proveedores' => 'proveedor']);
 });
+
+// Operación del restaurante: cuentas y cocina.
+// Accesible para mesero, cocinero, capitán, cajero (+ admin y sistemas).
+// El rol almacen no entra (deny.almacen).
+Route::middleware(['auth', 'deny.almacen', 'role:mesero,cocinero,capitan,cajero'])
+    ->prefix('admin')->name('admin.')->group(function () {
+        Route::get('cocina', [CocinaController::class, 'index'])->name('cocina.index');
+        Route::put('cocina/items/{item}/avanzar', [CocinaController::class, 'avanzar'])->name('cocina.avanzar');
+
+        Route::get('comandas/dadas-de-baja', [ComandaController::class, 'trashed'])->name('comandas.trashed');
+        Route::put('comandas/{id}/restaurar', [ComandaController::class, 'restore'])->name('comandas.restore');
+        Route::delete('comandas/{id}/eliminar-definitivo', [ComandaController::class, 'forceDestroy'])->name('comandas.forceDestroy');
+        Route::put('comandas/{comanda}/enviar-cocina', [ComandaController::class, 'enviarCocina'])->name('comandas.enviar-cocina');
+        Route::put('comandas/{comanda}/marcar-servida', [ComandaController::class, 'marcarServida'])->name('comandas.marcar-servida');
+        Route::put('comandas/{comanda}/cancelar', [ComandaController::class, 'cancelar'])->name('comandas.cancelar');
+        Route::post('comandas/{comanda}/items', [ComandaController::class, 'addItem'])->name('comandas.items.store');
+        Route::delete('comandas/{comanda}/items/{item}', [ComandaController::class, 'removeItem'])->name('comandas.items.destroy');
+        Route::resource('comandas', ComandaController::class);
+    });

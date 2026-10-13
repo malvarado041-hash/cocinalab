@@ -54,6 +54,14 @@ class AuthController extends Controller
             return redirect()->route('admin.almacen.index');
         }
 
+        if ($user->hasRole('cocinero')) {
+            return redirect()->route('admin.cocina.index');
+        }
+
+        if ($user->hasRole('mesero') || $user->hasRole('capitan') || $user->hasRole('cajero')) {
+            return redirect()->route('admin.comandas.index');
+        }
+
         if ($user->isAdmin() || $user->isSistemas()) {
             return redirect()->route('admin.dashboard');
         }

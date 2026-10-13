@@ -12,10 +12,16 @@
     </div>
 
     <nav class="p-4 flex-1 overflow-y-auto" id="sidebar-nav">
+        @php
+            $rolActual = auth()->user()->role;
+            $esPrivilegiado = auth()->user()->isPrivileged();
+            $veComandas = $esPrivilegiado || in_array($rolActual, ['mesero', 'cocinero', 'capitan', 'cajero'], true);
+            $veCocina = $esPrivilegiado || in_array($rolActual, ['cocinero', 'capitan'], true);
+        @endphp
         <div class="sidebar-section px-3 py-2">
             <h3 class="sidebar-text text-xs font-semibold text-gray-400 uppercase tracking-wider">Navegación</h3>
             <ul class="space-y-1 mt-2" role="navigation" aria-label="Navegación principal">
-                @if(!auth()->user()->isAlmacen())
+                @if($esPrivilegiado)
                 <li>
                     <a href="{{ route('admin.dashboard') }}" 
                        class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-primary-50 text-primary-600' : '' }}"
@@ -49,7 +55,7 @@
                         <span class="sidebar-text">Proveedores</span>
                     </a>
                 </li>
-                @if(!auth()->user()->isAlmacen())
+                @if($esPrivilegiado)
                 <li>
                     <a href="{{ route('admin.recetas.index') }}"
                         class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.recetas*') ? 'bg-primary-50 text-primary-600' : '' }}"
@@ -59,10 +65,30 @@
                     </a>
                 </li>
                 @endif
+                @if($veComandas)
+                <li>
+                    <a href="{{ route('admin.comandas.index') }}"
+                        class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.comandas*') ? 'bg-primary-50 text-primary-600' : '' }}"
+                        data-tooltip="Comandas">
+                        <i class="fas fa-receipt sidebar-icon w-6 text-center text-lg"></i>
+                        <span class="sidebar-text">Comandas</span>
+                    </a>
+                </li>
+                @endif
+                @if($veCocina)
+                <li>
+                    <a href="{{ route('admin.cocina.index') }}"
+                        class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.cocina*') ? 'bg-primary-50 text-primary-600' : '' }}"
+                        data-tooltip="Cocina">
+                        <i class="fas fa-fire-burner sidebar-icon w-6 text-center text-lg"></i>
+                        <span class="sidebar-text">Cocina</span>
+                    </a>
+                </li>
+                @endif
             </ul>
         </div>
 
-        @if(!auth()->user()->isAlmacen())
+        @if($esPrivilegiado)
         <div class="sidebar-section px-3 py-2">
             <h3 class="sidebar-text text-xs font-semibold text-gray-400 uppercase tracking-wider">Sistema</h3>
             <ul class="space-y-1 mt-2" role="navigation" aria-label="Sistema">
