@@ -55,14 +55,14 @@
     </style>
     @stack('styles')
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="flex">
+<body class="bg-gray-50 h-screen overflow-hidden">
+    <div class="flex h-full">
         @include('admin.partials.sidebar')
 
-        <div id="main-content" class="flex-1 flex flex-col min-w-0 ml-64">
+        <div id="main-content" class="flex-1 flex flex-col min-w-0 ml-64 h-full">
             @include('admin.partials.header')
 
-            <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto overflow-x-hidden">
                 @if (session('success'))
                     <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg flex items-center gap-3 fade-in" role="alert">
                         <i class="fas fa-check-circle text-green-500 text-xl"></i>

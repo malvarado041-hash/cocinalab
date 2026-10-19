@@ -11,7 +11,7 @@
         'servida' => 'gray', 'cancelada' => 'red',
     ];
 @endphp
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in">
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in flex flex-col min-h-full">
     <div class="px-4 sm:px-6 py-4 flex flex-col lg:flex-row lg:flex-wrap lg:items-center gap-3 border-b border-gray-100">
         <form method="GET" action="{{ route('admin.comandas.index') }}" class="flex-[1_1_auto] min-w-0 grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-3">
             <div class="relative sm:col-span-2 lg:w-56">
@@ -46,77 +46,55 @@
         @endif
     </div>
 
-    <div class="hidden md:block">
-        <table class="w-full admin-table">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Cuenta</th>
-                    <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Mesero</th>
-                    <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
-                    <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
-                    <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Hora</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                @forelse ($comandas as $c)
-                    @php $color = $estadoColors[$c->estado] ?? 'gray'; @endphp
-                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer" data-url="{{ route('admin.comandas.show', $c->id) }}">
-                        <td class="px-3 py-4">
-                            <p class="font-medium text-gray-800">{{ $c->mesa }}</p>
-                            <p class="text-xs text-gray-500">{{ $c->tipo_label }} · {{ $c->items_count }} platillo(s)</p>
-                        </td>
-                        <td class="px-3 py-4 text-sm text-gray-600">{{ $c->mesero->name ?? '—' }}</td>
-                        <td class="px-3 py-4">
-                            <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-{{ $color }}-100 text-{{ $color }}-700">
-                                {{ $c->estado_label }}
-                            </span>
-                        </td>
-                        <td class="px-3 py-4 font-semibold text-gray-800">${{ number_format($c->total, 2) }}</td>
-                        <td class="px-3 py-4 text-sm text-gray-500">{{ $c->created_at->format('d/m H:i') }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-16 text-center">
-                            <div class="flex flex-col items-center gap-4">
-                                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-receipt text-3xl text-gray-400"></i>
-                                </div>
-                                <p class="text-lg font-medium text-gray-800">No hay cuentas</p>
-                                @if ($puedeOperar ?? false)
-                                <a href="{{ route('admin.comandas.create') }}" class="btn-primary text-sm px-4 py-2">Abrir la primera</a>
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <div class="md:hidden divide-y divide-gray-100">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 flex-1 content-start">
         @forelse ($comandas as $c)
             @php $color = $estadoColors[$c->estado] ?? 'gray'; @endphp
-            <div class="px-4 py-4 space-y-2 cursor-pointer hover:bg-gray-50 transition-colors" data-url="{{ route('admin.comandas.show', $c->id) }}">
-                <div class="flex items-start justify-between gap-3">
-                    <p class="font-medium text-gray-800">{{ $c->mesa }}</p>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer fade-in"
+                 data-url="{{ route('admin.comandas.show', $c->id) }}">
+                <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-2 {{ $c->tipo === 'llevar' ? 'bg-purple-50' : '' }}">
+                    <div class="min-w-0">
+                        <h3 class="font-semibold text-gray-800 truncate">{{ $c->mesa }}</h3>
+                        <p class="text-xs text-gray-500">{{ $c->tipo_label }}</p>
+                    </div>
                     <span class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-{{ $color }}-100 text-{{ $color }}-700 flex-shrink-0">
                         {{ $c->estado_label }}
                     </span>
                 </div>
-                <div class="flex items-center gap-4 text-sm text-gray-500">
-                    <span>{{ $c->tipo_label }}</span>
-                    <span>{{ $c->mesero->name ?? '—' }}</span>
-                    <span class="font-semibold text-gray-800">${{ number_format($c->total, 2) }}</span>
+                <div class="px-4 py-3 space-y-1.5">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">Mesero</span>
+                        <span class="text-gray-700 font-medium">{{ $c->mesero->name ?? '—' }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">Platillos</span>
+                        <span class="text-gray-700 font-medium">{{ $c->items_count }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">Hora</span>
+                        <span class="text-gray-700">{{ $c->created_at->format('H:i') }}</span>
+                    </div>
+                    <div class="pt-2 border-t border-gray-50 flex items-center justify-between">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider">Total</span>
+                        <span class="font-semibold text-gray-800">${{ number_format($c->total, 2) }}</span>
+                    </div>
                 </div>
             </div>
         @empty
-            <div class="px-6 py-16 text-center">
-                <p class="text-lg font-medium text-gray-800">No hay cuentas</p>
+            <div class="col-span-full px-6 py-16 text-center bg-white rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-receipt text-3xl text-gray-400"></i>
+                    </div>
+                    <p class="text-lg font-medium text-gray-800">No hay cuentas</p>
+                    @if ($puedeOperar ?? false)
+                    <a href="{{ route('admin.comandas.create') }}" class="btn-primary text-sm px-4 py-2">Abrir la primera</a>
+                    @endif
+                </div>
             </div>
         @endforelse
     </div>
 
-    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-4">
+    <div class="px-2 sm:px-0 mt-4 flex items-center justify-end gap-4">
         <div class="text-sm text-gray-500">
             Mostrando {{ $comandas->firstItem() ?? 0 }} a {{ $comandas->lastItem() ?? 0 }} de {{ $comandas->total() }} cuentas
         </div>

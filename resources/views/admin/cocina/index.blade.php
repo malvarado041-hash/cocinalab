@@ -11,9 +11,9 @@
 @endsection
 
 @section('content')
-<div class="fade-in" id="kds">
+<div class="fade-in flex flex-col h-full" id="kds">
     @if ($items->isEmpty())
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-6 py-16 text-center">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-6 py-16 text-center flex-1 flex items-center justify-center">
             <div class="flex flex-col items-center gap-4">
                 <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
                     <i class="fas fa-check text-3xl text-green-600"></i>
@@ -23,10 +23,10 @@
             </div>
         </div>
     @else
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 flex-1 content-start">
             @foreach ($items as $comandaId => $grupo)
                 @php $comanda = $grupo->first()->comanda; @endphp
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow fade-in">
                     <div class="px-5 py-4 border-b border-gray-100 flex items-center gap-3 {{ $comanda->tipo === 'llevar' ? 'bg-purple-50' : '' }}">
                         <div class="min-w-0 flex-1">
                             <h3 class="font-semibold text-gray-800 truncate">{{ $comanda->mesa }}</h3>
@@ -35,7 +35,7 @@
                                 hace {{ $comanda->created_at->diffForHumans(null, true) }}
                             </p>
                         </div>
-                        <span class="text-xs text-gray-500">{{ $grupo->count() }} plat.</span>
+                        <span class="text-xs font-medium text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">{{ $grupo->count() }} plat.</span>
                     </div>
                     <div class="divide-y divide-gray-100">
                         @foreach ($grupo as $item)
@@ -44,7 +44,7 @@
                                     <p class="font-medium text-gray-800">{{ $item->cantidad }} × {{ $item->receta->Nombre ?? '—' }}</p>
                                     @if ($item->notas)
                                         <p class="text-xs text-amber-700 font-medium">{{ $item->notas }}</p>
-                                    @endif
+                                    @endif>
                                     <p class="text-xs text-gray-400">
                                         {{ $item->estado === 'pendiente' ? 'Pendiente' : 'En preparación' }} ·
                                         hace {{ $item->created_at->diffForHumans(null, true) }}
