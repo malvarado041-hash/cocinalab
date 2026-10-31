@@ -67,6 +67,8 @@ Route::middleware(['auth', 'deny.almacen', 'role:admin'])->prefix('admin')->name
 // Módulos operativos: accesibles para admin, sistemas y rol almacen.
 // El rol almacen SOLO tiene acceso a almacén y proveedores.
 Route::middleware(['auth', 'role:almacen'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('movimientos',[\App\Http\Controllers\Admin\MovimientoController::class,'index'])->name('movimientos.index');
+    Route::post('movimientos',[\App\Http\Controllers\Admin\MovimientoController::class,'store'])->name('movimientos.store');
     Route::get('almacen/dados-de-baja', [AlmacenController::class, 'trashed'])->name('almacen.trashed');
     Route::put('almacen/{id}/restaurar', [AlmacenController::class, 'restore'])->name('almacen.restore');
     Route::delete('almacen/{id}/eliminar-definitivo', [AlmacenController::class, 'forceDestroy'])->name('almacen.forceDestroy');

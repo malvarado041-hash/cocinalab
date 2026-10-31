@@ -8,6 +8,7 @@
 @endsection
 
 @section('content')
+<a href="{{ route('admin.movimientos.index') }}" class="btn-secondary inline-block p-3 mb-4">Movimientos, compras y lotes</a>
 @if ($errors->has('motivo_baja'))
     <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg" role="alert">
         <p class="font-semibold text-sm">No se pudo dar de baja:</p>

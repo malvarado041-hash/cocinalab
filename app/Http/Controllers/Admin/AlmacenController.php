@@ -93,7 +93,10 @@ class AlmacenController extends Controller
             unset($data['entrada']);
         }
 
-        AlmacenProducto::create($data);
+        \Illuminate\Support\Facades\DB::transaction(function() use($data) {
+            $p=AlmacenProducto::create($data);
+            if($p->stock>0) \App\Models\MovimientoInventario::create(['almacen_producto_id'=>$p->id,'user_id'=>Auth::id(),'tipo'=>'entrada','cantidad'=>$p->stock,'stock_resultante'=>$p->stock,'costo_unitario'=>$p->precio_unitario??0,'motivo'=>'Stock inicial']);
+        });
 
         return redirect()->route('admin.almacen.index', $this->filtrosActivos($request))
             ->with('success', 'Producto registrado en almacén.');
@@ -114,21 +117,21 @@ class AlmacenController extends Controller
     {
         $data = $this->validated($request, $almacen->id);
 
-        // El rol almacen no edita el stock actual: su "entrada" se suma al actual.
-        // Se ignoran stock/stock_minimo aunque vengan manipulados en la petición.
-        if (Auth::user()->isAlmacen()) {
-            $entrada = (float) ($data['entrada'] ?? 0);
-            unset($data['entrada'], $data['stock'], $data['stock_minimo']);
-
-            $almacen->fill($data);
-            $almacen->stock = (float) $almacen->stock + $entrada;
-            $almacen->save();
-
-            return redirect()->route('admin.almacen.index', $this->filtrosActivos($request))
-                ->with('success', 'Entrada de stock registrada correctamente.');
-        }
-
-        $almacen->update($data);
+        \Illuminate\Support\Facades\DB::transaction(function() use($data,$almacen) {
+            $p=AlmacenProducto::lockForUpdate()->findOrFail($almacen->id);
+            $nuevo=Auth::user()->isAlmacen() ? (float)$p->stock+(float)($data['entrada']??0) : (float)$data['stock'];
+            if($data['unidad']!==$p->unidad && ((float)$p->stock>0 || \App\Models\MovimientoInventario::where('almacen_producto_id',$p->id)->exists())) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['unidad'=>'No se puede cambiar la unidad de un producto con existencias o historial. Crea otro producto.']);
+            }
+            $delta=round($nuevo-$p->stock,6);
+            if(abs($delta)>0.0000001) {
+                $m=\App\Models\MovimientoInventario::create(['almacen_producto_id'=>$p->id,'user_id'=>Auth::id(),'tipo'=>Auth::user()->isAlmacen()?'entrada':'ajuste','cantidad'=>$delta,'stock_resultante'=>$nuevo,'costo_unitario'=>$p->precio_unitario??0,'motivo'=>'Actualización desde ficha de producto']);
+                if($delta<0) app(\App\Services\LotesInventario::class)->retirar($p,-$delta,$m,true);
+            }
+            unset($data['entrada']);
+            if(Auth::user()->isAlmacen()) unset($data['stock_minimo']);
+            $data['stock']=$nuevo; $p->update($data);
+        });
 
         return redirect()->route('admin.almacen.index', $this->filtrosActivos($request))
             ->with('success', 'Producto actualizado correctamente.');
