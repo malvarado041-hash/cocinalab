@@ -1,10 +1,10 @@
 <div class="ing-row" data-idx="{{ $idx }}">
     <div class="recipe-ingredient-fields">
-        <div class="recipe-field"><label for="ing-{{ $idx }}">Ingrediente *</label><select id="ing-{{ $idx }}" name="ingredientes[{{ $idx }}][ingrediente_id]" class="ing-select" required>
+        <div class="recipe-field"><label for="ing-{{ $idx }}">Ingrediente *</label><select id="ing-{{ $idx }}" name="ingredientes[{{ $idx }}][almacen_producto_id]" class="ing-select" required>
             <option value="">Buscar ingrediente del almacén…</option>
-            @foreach($opciones as $op)<option value="{{ $op['ingrediente_id'] }}" @selected((string)($fila['ingrediente_id'] ?? '') === (string)$op['ingrediente_id'])>{{ $op['nombre'] }}</option>@endforeach
+            @foreach($opciones as $op)<option value="{{ $op['almacen_producto_id'] }}" @selected((string)($fila['almacen_producto_id'] ?? '') === (string)$op['almacen_producto_id'])>{{ $op['nombre'] }}</option>@endforeach
         </select>
-        @if(!empty($fila['ingrediente_id']) && !collect($opciones)->contains('ingrediente_id', (int)$fila['ingrediente_id']))<small class="recipe-error">El ingrediente anterior ya no está vinculado a un producto activo. Selecciona un reemplazo.</small>@endif
+        @if((!empty($fila['almacen_producto_id']) && !collect($opciones)->contains('almacen_producto_id', (int)$fila['almacen_producto_id'])) || (!empty($fila['ingrediente_anterior']) && empty($fila['almacen_producto_id'])))<small class="recipe-error">{{ $fila['ingrediente_anterior'] ?? 'El producto anterior' }} no tiene un producto activo asociado. Selecciona un reemplazo del almacén.</small>@endif
         </div>
         <div class="recipe-field"><label for="cantidad-{{ $idx }}">Cantidad *</label><input id="cantidad-{{ $idx }}" name="ingredientes[{{ $idx }}][cantidad_num]" type="number" class="cantidad-input" min="0.01" step="0.01" required value="{{ $fila['cantidad_num'] ?? '' }}" placeholder="Ej. 200"><input type="hidden" name="ingredientes[{{ $idx }}][cantidad]" class="cantidad-legacy" value="{{ $fila['cantidad'] ?? '' }}"></div>
         <div class="recipe-field"><label for="unidad-{{ $idx }}">Unidad *</label><select id="unidad-{{ $idx }}" name="ingredientes[{{ $idx }}][unidad]" class="unidad-select" data-current="{{ $fila['unidad'] ?? '' }}" required><option value="">Selecciona…</option></select></div>

@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.TomSelect) {
             const ts = new TomSelect(select, {create:false, maxItems:1, placeholder:'Buscar ingrediente…',
                 onInitialize() { this.control_input.setAttribute('aria-label','Buscar ingrediente del almacén'); },
-                render: { no_results: () => '<div class="no-results">No hay ingredientes vinculados con ese nombre.</div>' }
+                render: { no_results: () => '<div class="no-results">No hay productos activos con ese nombre.</div>' }
             });
             ts.on('change', change);
         } else select.addEventListener('change', change);

@@ -6,7 +6,7 @@ Ejecutar `php artisan migrate` y `php artisan serve`. Las migraciones añaden es
 
 ## Preparación de recetas
 
-En Recetas → Vincular ingredientes con almacén se relacionan los ingredientes antiguos. Después, editar cada receta: definir cantidades numéricas, unidades compatibles y las porciones que rinde. No se infieren unidades de datos antiguos: una cantidad sin unidad no es apta para descontar inventario. El precio de venta corresponde a una porción. El costo y margen quedan incompletos hasta completar los ingredientes.
+En Nueva receta, el selector toma directamente los productos activos de `almacen_productos`. Al guardar se crea o reutiliza su ingrediente vinculado, sin modificar stock. Para recetas antiguas sin vínculo, seleccionar el producto correspondiente al editarlas. En cada receta: definir cantidades numéricas, unidades compatibles y las porciones que rinde. No se infieren unidades de datos antiguos: una cantidad sin unidad no es apta para descontar inventario. El precio de venta corresponde a una porción. El costo y margen quedan incompletos hasta completar los ingredientes.
 
 ## Servicio e inventario
 

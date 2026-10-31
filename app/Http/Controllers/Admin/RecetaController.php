@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AlmacenProducto;
 use App\Models\Ingrediente;
 use App\Models\Receta;
 use App\Models\RecetaImagen;
@@ -162,29 +163,21 @@ class RecetaController extends Controller
 
     private function formData(): array
     {
-        // Solo ingredientes cuyo producto vinculado sigue activo (no dado de baja).
-        $items = Ingrediente::with('almacenProducto')->whereHas('almacenProducto')
-            ->orderBy('Nombre')
-            ->get();
-
-        // Mapa ingrediente_id -> vínculo de almacén para el autollenado JS.
-        // (Precalculados aquí: los closures dentro de @json() en Blade
-        // rompen el compilador con "Unclosed '[' does not match ')'").
+        // El catálogo viene directamente de almacén, incluso para productos
+        // antiguos que todavía no tienen un ingrediente espejo.
+        $productos = AlmacenProducto::orderBy('nombre')->get();
         $mapaVinculos = [];
         $opciones = [];
-        foreach ($items as $ing) {
-            $prod = $ing->almacenProducto;
-            $mapaVinculos[$ing->id] = [
-                'prod_id' => $ing->almacen_producto_id,
-                'unidad' => $prod->unidad ?? null,
-                'precio' => $prod->precio_unitario ?? null,
-                'nombre' => $prod->nombre ?? $ing->Nombre,
+        foreach ($productos as $producto) {
+            $mapaVinculos[$producto->id] = [
+                'prod_id' => $producto->id,
+                'unidad' => $producto->unidad,
+                'precio' => $producto->precio_unitario,
+                'nombre' => $producto->nombre,
             ];
             $opciones[] = [
-                'ingrediente_id' => $ing->id,
-                'nombre' => $prod->nombre ?? $ing->Nombre,
-                'unidad' => $prod->unidad ?? null,
-                'precio' => $prod->precio_unitario ?? null,
+                'almacen_producto_id' => $producto->id,
+                'nombre' => $producto->nombre,
             ];
         }
 
@@ -197,6 +190,23 @@ class RecetaController extends Controller
 
     private function validated(Request $request): array
     {
+        // Compatibilidad con formularios anteriores: traduce el ingrediente
+        // existente a su producto, sin aceptar ingredientes sin almacén.
+        $filas = $request->input('ingredientes');
+        if (is_array($filas)) {
+            foreach ($filas as $i => &$fila) {
+                if (is_array($fila) && empty($fila['almacen_producto_id']) && ! empty($fila['ingrediente_id']) && is_scalar($fila['ingrediente_id'])) {
+                    $ingrediente = Ingrediente::with('almacenProducto')->find($fila['ingrediente_id']);
+                    if (! $ingrediente?->almacenProducto) {
+                        throw ValidationException::withMessages(["ingredientes.{$i}.ingrediente_id" => 'Selecciona un producto activo del almacén.']);
+                    }
+                    $fila['almacen_producto_id'] = $ingrediente->almacen_producto_id;
+                }
+            }
+            unset($fila);
+            $request->merge(['ingredientes' => $filas]);
+        }
+
         $data = $request->validate([
             'porciones' => ['required', 'integer', 'min:1', 'max:1000'],
             'Nombre' => ['required', 'string', 'min:2', 'max:200'],
@@ -204,7 +214,8 @@ class RecetaController extends Controller
             'Procedimiento' => ['required', 'string', 'min:10'],
             'precio_platillo' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
             'ingredientes' => ['required', 'array', 'min:1'],
-            'ingredientes.*.ingrediente_id' => ['required', 'distinct', 'exists:ingredientes,id'],
+            'ingredientes.*' => ['array'],
+            'ingredientes.*.almacen_producto_id' => ['required', 'integer', 'distinct', Rule::exists('almacen_productos', 'id')->whereNull('deleted_at')],
             'ingredientes.*.cantidad' => ['nullable', 'string', 'max:100'],
             'ingredientes.*.cantidad_num' => ['required', 'numeric', 'gt:0', 'max:9999999.99'],
             'ingredientes.*.unidad' => ['required', 'string', 'max:20'],
@@ -214,61 +225,42 @@ class RecetaController extends Controller
             'eliminar_imagenes.*' => ['exists:receta_imagenes,id'],
         ]);
 
-        // Unidad compatible con el producto vinculado al ingrediente.
-        $filas = $data['ingredientes'] ?? [];
-        if (! empty($filas)) {
-            $ids = collect($filas)->pluck('ingrediente_id')->filter()->unique()->all();
-            $vinc = Ingrediente::whereIn('id', $ids)->with('almacenProducto')->get()->keyBy('id');
-
-            foreach ($filas as $i => $fila) {
-                $unidad = $fila['unidad'] ?? null;
-                if ($unidad === null || $unidad === '') {
-                    continue;
-                }
-                $ing = $vinc->get($fila['ingrediente_id'] ?? null);
-                if (! $ing?->almacenProducto) {
-                    throw ValidationException::withMessages([
-                        "ingredientes.{$i}.ingrediente_id" => 'Selecciona un ingrediente vinculado a un producto activo del almacén.',
-                    ]);
-                }
-                $compatibles = Receta::unidadesCompatibles($ing?->almacenProducto?->unidad);
-                if (! $ing?->almacenProducto || (! in_array($unidad, $compatibles, true) && ! in_array(strtolower($unidad), array_map('strtolower', $compatibles), true))) {
-                    throw ValidationException::withMessages([
-                        "ingredientes.{$i}.unidad" => ["Unidad '{$unidad}' no compatible con el producto de almacén."],
-                    ]);
-                }
+        $productos = AlmacenProducto::whereIn('id', collect($data['ingredientes'])->pluck('almacen_producto_id'))->get()->keyBy('id');
+        foreach ($data['ingredientes'] as $i => $fila) {
+            $producto = $productos->get($fila['almacen_producto_id']);
+            $compatibles = Receta::unidadesCompatibles($producto?->unidad);
+            if (! in_array(strtolower($fila['unidad']), array_map('strtolower', $compatibles), true)) {
+                throw ValidationException::withMessages([
+                    "ingredientes.{$i}.unidad" => 'La unidad no es compatible con el producto del almacén.',
+                ]);
             }
         }
 
         return $data;
     }
 
-    /**
-     * Sincroniza receta_ingrediente. Sin alta al vuelo: el ingrediente
-     * debe existir (se da de alta solo desde almacén vía observer).
-     * El vínculo ingrediente↔almacén es dato maestro y no se toca aquí.
-     */
+    /** Resuelve el ingrediente espejo al guardar, sin modificar existencias. */
     private function syncIngredientes(Receta $receta, array $filas): void
     {
         $sync = [];
-
-        foreach ($filas as $fila) {
-            if (empty($fila['ingrediente_id'])) {
-                continue;
+        foreach (collect($filas)->sortBy('almacen_producto_id') as $fila) {
+            $producto = AlmacenProducto::lockForUpdate()->findOrFail($fila['almacen_producto_id']);
+            $ingrediente = $receta->ingredientes()->where('almacen_producto_id', $producto->id)->first()
+                ?? $producto->ingredientes()->orderBy('id')->first();
+            if (! $ingrediente) {
+                $ingrediente = Ingrediente::where('Nombre', $producto->nombre)->whereNull('almacen_producto_id')->lockForUpdate()->first();
+                if ($ingrediente) {
+                    $ingrediente->update(['almacen_producto_id' => $producto->id]);
+                } else {
+                    $ingrediente = Ingrediente::create(['Nombre' => $producto->nombre, 'almacen_producto_id' => $producto->id]);
+                }
             }
-
-            $ingredienteId = (int) $fila['ingrediente_id'];
-            $cantidadNum = isset($fila['cantidad_num']) && $fila['cantidad_num'] !== ''
-                ? (float) $fila['cantidad_num']
-                : Receta::parseCantidad($fila['cantidad'] ?? null);
-
-            $sync[$ingredienteId] = [
+            $sync[$ingrediente->id] = [
                 'cantidad' => $fila['cantidad'] ?? null,
-                'cantidad_num' => $cantidadNum,
-                'unidad' => $fila['unidad'] ?? null ?: null,
+                'cantidad_num' => $fila['cantidad_num'],
+                'unidad' => $fila['unidad'],
             ];
         }
-
         $receta->ingredientes()->sync($sync);
     }
 

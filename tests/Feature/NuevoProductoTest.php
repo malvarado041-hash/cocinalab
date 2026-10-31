@@ -28,7 +28,7 @@ class NuevoProductoTest extends TestCase
         $p = $this->guardarProducto();
         $this->assertDatabaseHas('almacen_productos', ['id' => $p->id, 'stock' => 5]);
         $i = Ingrediente::where('almacen_producto_id', $p->id)->firstOrFail();
-        $this->get(route('admin.recetas.create'))->assertViewHas('opciones', fn ($opciones) => collect($opciones)->contains('ingrediente_id', $i->id));
+        $this->get(route('admin.recetas.create'))->assertViewHas('opciones', fn ($opciones) => collect($opciones)->contains('almacen_producto_id', $p->id));
         $this->assertDatabaseHas('movimientos_inventario', ['almacen_producto_id' => $p->id, 'tipo' => 'entrada', 'cantidad' => 5]);
     }
 

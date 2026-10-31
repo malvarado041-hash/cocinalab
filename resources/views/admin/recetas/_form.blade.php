@@ -2,9 +2,9 @@
     $isEdit = isset($receta);
     $val = fn($k, $d = '') => old($k, $isEdit ? $receta->$k : $d);
     $oldIngs = array_values(old('ingredientes', $isEdit ? $receta->ingredientes->map(fn($i) => [
-        'ingrediente_id' => $i->id, 'cantidad' => $i->pivot->cantidad,
+        'almacen_producto_id' => $i->almacen_producto_id, 'ingrediente_anterior' => $i->Nombre, 'cantidad' => $i->pivot->cantidad,
         'cantidad_num' => $i->pivot->cantidad_num, 'unidad' => $i->pivot->unidad,
-    ])->all() : [['ingrediente_id' => '', 'cantidad_num' => '', 'unidad' => '']]));
+    ])->all() : [['almacen_producto_id' => '', 'cantidad_num' => '', 'unidad' => '']]));
     $procTexto = old('Procedimiento', $isEdit ? implode("\n", $receta->pasos()) : '');
     $oldPasos = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $procTexto)))) ?: [''];
 @endphp
@@ -24,16 +24,16 @@
         </div>
     </section>
     <section class="recipe-panel" aria-labelledby="ingredientes-title">
-        <header class="recipe-section-heading"><span class="recipe-section-number">2</span><div><h3 id="ingredientes-title">Ingredientes</h3><p>Solo productos vinculados a un almacén activo.</p></div><span id="ingredientes-count" class="recipe-count">0 ingredientes</span></header>
+        <header class="recipe-section-heading"><span class="recipe-section-number">2</span><div><h3 id="ingredientes-title">Ingredientes</h3><p>Selecciona directamente los productos activos de tu almacén.</p></div><span id="ingredientes-count" class="recipe-count">0 ingredientes</span></header>
         @if(empty($opciones))
-            <div class="recipe-notice">Todavía no hay ingredientes disponibles. <a href="{{ route('admin.ingredientes.index') }}">Vincula un ingrediente con almacén</a> para comenzar.</div>
+            <div class="recipe-notice">Todavía no hay productos activos en el almacén. <a href="{{ route('admin.almacen.create') }}">Registra un producto</a> para comenzar.</div>
         @endif
         <div id="ings-wrap">
         @foreach($oldIngs as $idx => $fila)
             @include('admin.recetas._ingrediente', ['fila' => $fila, 'idx' => $idx])
         @endforeach
         </div>
-        <div class="recipe-section-footer"><button type="button" id="btn-add-ing" class="recipe-add" @disabled(empty($opciones))><i class="fas fa-plus" aria-hidden="true"></i> Agregar ingrediente</button><a href="{{ route('admin.ingredientes.index') }}" target="_blank" rel="noopener">¿Falta un ingrediente? Vincular con almacén <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></div>
+        <div class="recipe-section-footer"><button type="button" id="btn-add-ing" class="recipe-add" @disabled(empty($opciones))><i class="fas fa-plus" aria-hidden="true"></i> Agregar ingrediente</button><a href="{{ route('admin.almacen.create') }}" target="_blank" rel="noopener">¿Falta un ingrediente? Registrar producto <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></div>
         <p class="recipe-hint"><i class="fas fa-circle-info" aria-hidden="true"></i> Guardar la receta no descuenta existencias. El consumo se registra cuando cocina marca el platillo como listo.</p>
     </section>
     <section class="recipe-panel" aria-labelledby="pasos-title">
