@@ -1,4 +1,5 @@
 @extends('admin.layout')
+@section('title', 'Vincular ingredientes con almacén')
 @section('header-title', 'Vincular ingredientes con almacén')
 @section('content')
 <p class="mb-4">Vincular no descuenta stock. Después define cantidades y unidades en cada receta.</p>

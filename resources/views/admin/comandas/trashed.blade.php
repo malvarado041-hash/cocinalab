@@ -27,7 +27,7 @@
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 font-medium text-gray-800">{{ $c->mesa }} <span class="text-xs text-gray-500">({{ $c->tipo_label }})</span></td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $c->mesero->name ?? '—' }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">{{ $c->deleted_at->format('d/m/Y H:i') }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ \App\Models\Ajuste::fecha($c->deleted_at) }}</td>
                         <td class="px-6 py-4 text-center sticky-col">
                             <div class="flex items-center justify-center gap-2">
                                 <form action="{{ route('admin.comandas.restore', $c->id) }}" method="POST" class="inline">

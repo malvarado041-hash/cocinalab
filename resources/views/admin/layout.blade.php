@@ -77,6 +77,9 @@
                     </div>
                 @endif
 
+                @if($errors->any())
+                <div role="alert" class="bg-red-50 border border-red-200 text-red-800 rounded-xl p-4 mb-4"><strong>No se pudo guardar:</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+                @endif
                 @yield('content')
             </main>
         </div>

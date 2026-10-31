@@ -1,4 +1,5 @@
 @extends('admin.layout')
+@section('title', 'Caja y cobros')
 @section('header-title','Caja y cobros')
 @section('content')
 @if(!$caja)
@@ -18,5 +19,5 @@
 <button class="btn-primary p-2">Registrar pago y cerrar cuenta</button></form>
 @endif</section>
 @empty <p>No hay cuentas servidas pendientes de pago.</p> @endforelse
-<h3>Últimos cierres</h3><div class="bg-white rounded-xl p-4">@foreach($historial->whereNotNull('cerrada_at') as $h)<p>Caja #{{ $h->id }} · {{ $h->cerrada_at->format('d/m/Y H:i') }} · Esperado ${{ $h->efectivo_esperado }} · Contado ${{ $h->efectivo_contado }} · Diferencia ${{ $h->diferencia }}</p>@endforeach</div>
+<h3>Últimos cierres</h3><div class="bg-white rounded-xl p-4">@foreach($historial->whereNotNull('cerrada_at') as $h)<p>Caja #{{ $h->id }} · {{ \App\Models\Ajuste::fecha($h->cerrada_at) }} · Esperado ${{ $h->efectivo_esperado }} · Contado ${{ $h->efectivo_contado }} · Diferencia ${{ $h->diferencia }}</p>@endforeach</div>
 @endsection

@@ -10,7 +10,9 @@ class Receta extends Model
     use SoftDeletes;
 
     protected $table = 'recetas';
+
     public $timestamps = false;
+
     protected $guarded = [];
 
     public const TIPOS = ['Desayuno', 'Comida', 'Cena', 'Postre'];
@@ -34,7 +36,7 @@ class Receta extends Model
             : $this->imagenes()->first();
 
         if ($primera) {
-            return asset('storage/' . $primera->path);
+            return asset('storage/'.$primera->path);
         }
 
         if (! empty($this->Imagenes)) {
@@ -175,7 +177,9 @@ class Receta extends Model
         }
 
         $costo = $this->costoEstimado();
-        if (!$costo['completo']) { return ['margen' => null, 'porcentaje' => null]; }
+        if (! $costo['completo']) {
+            return ['margen' => null, 'porcentaje' => null];
+        }
         $gasto = $costo['total'] / max(1, (int) $this->porciones);
         $margen = round((float) $this->precio_platillo - $gasto, 2);
         $porcentaje = ((float) $this->precio_platillo) > 0

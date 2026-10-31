@@ -13,6 +13,8 @@
 @endsection
 
 @section('content')
+<a href="{{ route('admin.reportes.ventas') }}" class="btn-secondary inline-block p-3 mb-4">Ventas y operación</a>
+<a href="{{ route('admin.movimientos.index') }}" class="btn-secondary inline-block p-3 mb-4">Compras y caducidad de lotes</a>
 @php
     $money = fn ($v) => '$' . number_format((float) $v, 2);
     $catLabel = fn (string $key) => $categorias[$key] ?? ucfirst(str_replace('_', ' ', $key));

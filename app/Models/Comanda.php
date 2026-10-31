@@ -23,7 +23,7 @@ class Comanda extends Model
         'llevar' => 'Para llevar',
     ];
 
-    protected $casts = ['cerrada_at'=>'datetime','enviada_at'=>'datetime'];
+    protected $casts = ['cerrada_at' => 'datetime', 'enviada_at' => 'datetime'];
 
     protected $fillable = [
         'mesa_id', 'comensales', 'cerrada_at',
@@ -60,7 +60,10 @@ class Comanda extends Model
 
     public function getEstadoLabelAttribute(): string
     {
-        if ($this->cerrada_at) return 'Cerrada';
+        if ($this->cerrada_at) {
+            return 'Cerrada';
+        }
+
         return self::ESTADOS[$this->estado] ?? ucfirst($this->estado);
     }
 

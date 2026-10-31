@@ -136,7 +136,7 @@
                             {{ ucfirst($user->status) }}
                         </span>
                     </div>
-                    <time class="hidden md:block text-sm text-gray-400 whitespace-nowrap">{{ $user->created_at->format('d/m/Y H:i') }}</time>
+                    <time class="hidden md:block text-sm text-gray-400 whitespace-nowrap">{{ \App\Models\Ajuste::fecha($user->created_at) }}</time>
                 </div>
             @empty
                 <div class="px-6 py-12 text-center text-gray-500">

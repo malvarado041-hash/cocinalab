@@ -32,7 +32,7 @@
             <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-{{ $color }}-100 text-{{ $color }}-700">
                 {{ $comanda->estado_label }}
             </span>
-            <span class="text-sm text-gray-500">{{ $comanda->tipo_label }} · {{ $comanda->mesero->name ?? '—' }} · {{ $comanda->created_at->format('d/m/Y H:i') }}</span>
+            <span class="text-sm text-gray-500">{{ $comanda->tipo_label }} · {{ $comanda->mesero->name ?? '—' }} · {{ \App\Models\Ajuste::fecha($comanda->created_at) }}</span>
             <span class="ml-auto text-xl font-semibold text-gray-800">Total: ${{ number_format($comanda->total, 2) }}</span>
         </div>
         @if ($comanda->notas)
@@ -130,7 +130,7 @@
 @if(auth()->user()->isPrivileged() || auth()->user()->hasRole('cajero'))<a href="{{ route('admin.caja.index') }}" class="btn-primary inline-block p-2">Ir a caja</a>@endif
 <section class="bg-white p-4 rounded-xl"><h3>Historial de la cuenta</h3>
 @foreach(\App\Models\EventoOperacion::where('comanda_id',$comanda->id)->orderBy('id')->get() as $evento)
-<p>{{ $evento->created_at->format('d/m/Y H:i') }} · {{ $evento->accion }} · Usuario #{{ $evento->user_id }}</p>
+<p>{{ \App\Models\Ajuste::fecha($evento->created_at) }} · {{ $evento->accion }} · Usuario #{{ $evento->user_id }}</p>
 @endforeach</section>
 </div>
 @endsection

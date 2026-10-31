@@ -29,7 +29,7 @@
                         <td class="px-6 py-4 font-medium text-gray-800">{{ $p->nombre }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $p->categoria_label }} / {{ str_replace('_', ' ', $p->subcategoria) }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $p->motivo_baja ?? '—' }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">{{ $p->deleted_at->format('d/m/Y H:i') }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ \App\Models\Ajuste::fecha($p->deleted_at) }}</td>
                         <td class="px-6 py-4 text-center sticky-col">
                             <div class="flex items-center justify-center gap-2">
                                 <form action="{{ route('admin.almacen.restore', $p->id) }}" method="POST" class="inline">

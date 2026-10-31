@@ -73,7 +73,7 @@
             </div>
             <div class="text-right">
                 <p class="text-xs text-gray-500">Registrado</p>
-                <p class="text-sm font-medium text-gray-800">{{ $user->created_at->format('d/m/Y H:i') }}</p>
+                <p class="text-sm font-medium text-gray-800">{{ \App\Models\Ajuste::fecha($user->created_at) }}</p>
             </div>
         </div>
     </div>

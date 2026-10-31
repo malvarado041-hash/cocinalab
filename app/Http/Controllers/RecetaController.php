@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Ingrediente;
 use App\Models\Receta;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class RecetaController extends Controller
 {
@@ -84,6 +83,7 @@ class RecetaController extends Controller
             $buscar = trim($request->query('buscar'));
             $request->validate(['buscar' => 'required|string|max:100']);
             $recetas = Receta::with('imagenes')->where('Nombre', 'like', "%{$buscar}%")->orderBy('Nombre')->get();
+
             return view('recetas.buscar', compact('recetas', 'buscar'));
         } else {
             abort(400, 'ID de receta no proporcionado.');

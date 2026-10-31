@@ -128,3 +128,4 @@ html.dark .receta-card-nombre, html.dark .receta-card-ver { color:#fed7aa; }
 .receta-costo { overflow-x:auto; }
 .receta-pasos li { overflow-wrap:anywhere; }
 @media(max-width:600px) { .receta-detalle { padding:1rem; } .receta-costo { padding:.5rem; } }
+html.dark .receta-detalle p, html.dark .receta-costo th, html.dark .receta-costo td { color:#e2e8f0; }

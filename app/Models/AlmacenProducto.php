@@ -107,7 +107,7 @@ class AlmacenProducto extends Model
     /** Nombre completo de la unidad, en plural si la cantidad != 1. */
     public static function unidadLabel(string $unidad, $cantidad = null): string
     {
-        $nombres = self::UNIDADES[$unidad] ?? [ucfirst($unidad), ucfirst($unidad) . 's'];
+        $nombres = self::UNIDADES[$unidad] ?? [ucfirst($unidad), ucfirst($unidad).'s'];
 
         if ($cantidad === null) {
             return $nombres[0];
@@ -171,6 +171,6 @@ class AlmacenProducto extends Model
 
     public function ingredientes()
     {
-        return $this->hasMany(\App\Models\Ingrediente::class, 'almacen_producto_id');
+        return $this->hasMany(Ingrediente::class, 'almacen_producto_id');
     }
 }

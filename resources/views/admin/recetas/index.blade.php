@@ -43,7 +43,7 @@
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Receta</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Tipo</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Ingredientes</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Costo est.</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Costo por porción</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Precio / margen</th>
                     <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Acciones</th>
                 </tr>
@@ -61,7 +61,7 @@
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $r->TipoC }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $r->ingredientes->count() }}</td>
                         <td class="px-6 py-4 text-sm text-gray-800">
-                            ${{ number_format($c['total'], 2) }}
+                            {{ $c['completo'] ? '$'.number_format($c['por_porcion'],2) : 'Costo incompleto' }}
                             @unless($c['completo'])<span class="text-xs text-amber-600" title="Faltan precios o cantidades">*</span>@endunless
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-800">

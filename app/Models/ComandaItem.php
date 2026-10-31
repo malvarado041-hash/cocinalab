@@ -24,7 +24,8 @@ class ComandaItem extends Model
     ];
 
     protected $table = 'comanda_items';
-    protected $casts = ['iniciado_at'=>'datetime','listo_at'=>'datetime','consumido_at'=>'datetime'];
+
+    protected $casts = ['iniciado_at' => 'datetime', 'listo_at' => 'datetime', 'consumido_at' => 'datetime'];
 
     protected $fillable = [
         'comanda_id',

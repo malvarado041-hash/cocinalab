@@ -1,4 +1,4 @@
-<aside id="sidebar" class="w-64 bg-white shadow-lg h-screen fixed inset-y-0 left-0 z-10 sidebar-transition">
+<aside id="sidebar" class="w-64 flex flex-col bg-white shadow-lg h-screen fixed inset-y-0 left-0 z-10 sidebar-transition">
     <div class="p-4 flex items-center justify-between">
         <button id="sidebar-toggle" type="button" class="flex items-center gap-3 min-w-0 text-left focus:outline-none" aria-label="Colapsar sidebar">
             <div class="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center flex-shrink-0 transition hover:scale-105">
@@ -11,13 +11,7 @@
         </button>
     </div>
 
-    @if(auth()->user()->isPrivileged() || in_array(auth()->user()->role,['mesero','capitan','cajero']))
-<a href="{{ route('admin.mesas.index') }}" class="block px-4 py-3">Mesas</a>
-@endif
-@if(auth()->user()->isPrivileged() || auth()->user()->hasRole('cajero'))
-<a href="{{ route('admin.caja.index') }}" class="block px-4 py-3">Caja y cobros</a>
-@endif
-<nav class="p-4 flex-1 overflow-y-auto" id="sidebar-nav">
+<nav class="p-4 flex-1 min-h-0 overflow-y-auto" id="sidebar-nav">
         @php
             $rolActual = auth()->user()->role;
             $esPrivilegiado = auth()->user()->isPrivileged();
@@ -45,6 +39,7 @@
                     </a>
                 </li>
                 @endif
+                @if($esPrivilegiado || $rolActual==='almacen')
                 <li>
                     <a href="{{ route('admin.almacen.index') }}"
                         class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.almacen*') ? 'bg-primary-50 text-primary-600' : '' }}"
@@ -61,6 +56,7 @@
                         <span class="sidebar-text">Proveedores</span>
                     </a>
                 </li>
+                @endif
                 @if($esPrivilegiado)
                 <li>
                     <a href="{{ route('admin.recetas.index') }}"
@@ -70,6 +66,12 @@
                         <span class="sidebar-text">Recetas</span>
                     </a>
                 </li>
+                @endif
+                @if($esPrivilegiado || in_array($rolActual,['mesero','capitan','cajero']))
+                <li><a href="{{ route('admin.mesas.index') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50" data-tooltip="Mesas"><i class="fas fa-chair sidebar-icon w-6 text-center"></i><span class="sidebar-text">Mesas</span></a></li>
+                @endif
+                @if($esPrivilegiado || $rolActual==='cajero')
+                <li><a href="{{ route('admin.caja.index') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50" data-tooltip="Caja"><i class="fas fa-cash-register sidebar-icon w-6 text-center"></i><span class="sidebar-text">Caja y cobros</span></a></li>
                 @endif
                 @if($veComandas)
                 <li>
@@ -99,7 +101,7 @@
             <h3 class="sidebar-text text-xs font-semibold text-gray-400 uppercase tracking-wider">Sistema</h3>
             <ul class="space-y-1 mt-2" role="navigation" aria-label="Sistema">
                 <li>
-                    <a href="{{ route('admin.profile.edit') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200" data-tooltip="Configuración">
+                    <a href="{{ route('admin.configuracion.index') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200" data-tooltip="Configuración">
                         <i class="fas fa-cog sidebar-icon w-6 text-center text-lg"></i>
                         <span class="sidebar-text">Configuración</span>
                     </a>
@@ -117,7 +119,7 @@
         @endif
     </nav>
 
-    <div class="p-4 border-t sidebar-footer">
+    <div class="p-4 border-t sidebar-footer shrink-0">
         <div class="flex items-center gap-3 px-3 py-2">
             <div class="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-user-shield text-gray-600"></i>
@@ -327,25 +329,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Auto-hide flash messages after 5 seconds
-    setTimeout(function() {
-        document.querySelectorAll('[role="alert"]').forEach(function(el) {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(-10px)';
-            el.style.transition = 'all 0.3s ease';
-            setTimeout(() => el.remove(), 300);
-        });
-    }, 5000);
-
-    // Confirm delete
-    document.querySelectorAll('form[onsubmit]').forEach(function(form) {
-        form.addEventListener('submit', function(e) {
-            if (!confirm('¿Estás seguro de eliminar este usuario?')) {
-                e.preventDefault();
-            }
-        });
-    });
-
     // Drawer móvil: hamburguesa del header abre/cierra el sidebar.
     const mobileToggle = document.getElementById('sidebar-mobile-toggle');
     const mobileOverlay = document.getElementById('sidebar-mobile-overlay');

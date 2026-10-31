@@ -49,7 +49,7 @@
 
         <div class="border-t border-gray-100 pt-4">
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Fecha de registro</p>
-            <p class="text-sm text-gray-700">{{ $user->created_at->format('d/m/Y H:i') }}</p>
+            <p class="text-sm text-gray-700">{{ \App\Models\Ajuste::fecha($user->created_at) }}</p>
         </div>
 
         @if ($user->password_reset_requested_at)

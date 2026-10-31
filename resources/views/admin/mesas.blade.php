@@ -1,4 +1,5 @@
 @extends('admin.layout')
+@section('title', 'Mesas y servicio')
 @section('header-title','Mesas y servicio')
 @section('content')
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AlmacenProducto;
+use App\Models\MovimientoInventario;
 use App\Models\Proveedor;
+use App\Services\LotesInventario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class AlmacenController extends Controller
 {
@@ -37,7 +41,7 @@ class AlmacenController extends Controller
         }
 
         if ($request->filled('q')) {
-            $query->where('nombre', 'like', '%' . $request->q . '%');
+            $query->where('nombre', 'like', '%'.$request->q.'%');
         }
 
         $productos = $query->paginate(10)->withQueryString();
@@ -93,9 +97,11 @@ class AlmacenController extends Controller
             unset($data['entrada']);
         }
 
-        \Illuminate\Support\Facades\DB::transaction(function() use($data) {
-            $p=AlmacenProducto::create($data);
-            if($p->stock>0) \App\Models\MovimientoInventario::create(['almacen_producto_id'=>$p->id,'user_id'=>Auth::id(),'tipo'=>'entrada','cantidad'=>$p->stock,'stock_resultante'=>$p->stock,'costo_unitario'=>$p->precio_unitario??0,'motivo'=>'Stock inicial']);
+        DB::transaction(function () use ($data) {
+            $p = AlmacenProducto::create($data);
+            if ($p->stock > 0) {
+                MovimientoInventario::create(['almacen_producto_id' => $p->id, 'user_id' => Auth::id(), 'tipo' => 'entrada', 'cantidad' => $p->stock, 'stock_resultante' => $p->stock, 'costo_unitario' => $p->precio_unitario ?? 0, 'motivo' => 'Stock inicial']);
+            }
         });
 
         return redirect()->route('admin.almacen.index', $this->filtrosActivos($request))
@@ -117,20 +123,28 @@ class AlmacenController extends Controller
     {
         $data = $this->validated($request, $almacen->id);
 
-        \Illuminate\Support\Facades\DB::transaction(function() use($data,$almacen) {
-            $p=AlmacenProducto::lockForUpdate()->findOrFail($almacen->id);
-            $nuevo=Auth::user()->isAlmacen() ? (float)$p->stock+(float)($data['entrada']??0) : (float)$data['stock'];
-            if($data['unidad']!==$p->unidad && ((float)$p->stock>0 || \App\Models\MovimientoInventario::where('almacen_producto_id',$p->id)->exists())) {
-                throw \Illuminate\Validation\ValidationException::withMessages(['unidad'=>'No se puede cambiar la unidad de un producto con existencias o historial. Crea otro producto.']);
+        DB::transaction(function () use ($data, $almacen) {
+            $p = AlmacenProducto::lockForUpdate()->findOrFail($almacen->id);
+            $nuevo = Auth::user()->isAlmacen() ? (float) $p->stock + (float) ($data['entrada'] ?? 0) : (float) $data['stock'];
+            if ($data['unidad'] !== $p->unidad && ((float) $p->stock > 0 || MovimientoInventario::where('almacen_producto_id', $p->id)->exists())) {
+                throw ValidationException::withMessages(['unidad' => 'No se puede cambiar la unidad de un producto con existencias o historial. Crea otro producto.']);
             }
-            $delta=round($nuevo-$p->stock,6);
-            if(abs($delta)>0.0000001) {
-                $m=\App\Models\MovimientoInventario::create(['almacen_producto_id'=>$p->id,'user_id'=>Auth::id(),'tipo'=>Auth::user()->isAlmacen()?'entrada':'ajuste','cantidad'=>$delta,'stock_resultante'=>$nuevo,'costo_unitario'=>$p->precio_unitario??0,'motivo'=>'Actualización desde ficha de producto']);
-                if($delta<0) app(\App\Services\LotesInventario::class)->retirar($p,-$delta,$m,true);
+            $delta = round($nuevo - $p->stock, 6);
+            if (abs($delta) > 0.0000001) {
+                $m = MovimientoInventario::create(['almacen_producto_id' => $p->id, 'user_id' => Auth::id(), 'tipo' => Auth::user()->isAlmacen() ? 'entrada' : 'ajuste', 'cantidad' => $delta, 'stock_resultante' => $nuevo, 'costo_unitario' => $p->precio_unitario ?? 0, 'motivo' => 'Actualización desde ficha de producto']);
+                if ($delta < 0) {
+                    app(LotesInventario::class)->retirar($p, -$delta, $m, true);
+                }
+            }
+            if (isset($data['precio_unitario']) && (float) $data['precio_unitario'] !== (float) $p->precio_unitario) {
+                MovimientoInventario::create(['almacen_producto_id' => $p->id, 'user_id' => Auth::id(), 'tipo' => 'precio', 'cantidad' => 0, 'stock_resultante' => $nuevo, 'costo_unitario' => $data['precio_unitario'], 'precio_anterior' => $p->precio_unitario, 'motivo' => 'Cambio de precio de referencia desde ficha']);
             }
             unset($data['entrada']);
-            if(Auth::user()->isAlmacen()) unset($data['stock_minimo']);
-            $data['stock']=$nuevo; $p->update($data);
+            if (Auth::user()->isAlmacen()) {
+                unset($data['stock_minimo']);
+            }
+            $data['stock'] = $nuevo;
+            $p->update($data);
         });
 
         return redirect()->route('admin.almacen.index', $this->filtrosActivos($request))
@@ -156,7 +170,7 @@ class AlmacenController extends Controller
 
     public function trashed()
     {
-        if (!Auth::user()->isSistemas()) {
+        if (! Auth::user()->isSistemas()) {
             abort(403, 'Solo sistemas puede ver los productos dados de baja.');
         }
 
@@ -169,7 +183,7 @@ class AlmacenController extends Controller
 
     public function restore($id)
     {
-        if (!Auth::user()->isSistemas()) {
+        if (! Auth::user()->isSistemas()) {
             abort(403, 'Solo sistemas puede restaurar productos.');
         }
 
@@ -184,7 +198,7 @@ class AlmacenController extends Controller
 
     public function forceDestroy($id)
     {
-        if (!Auth::user()->isSistemas()) {
+        if (! Auth::user()->isSistemas()) {
             abort(403, 'Solo sistemas puede eliminar productos definitivamente.');
         }
 
@@ -249,7 +263,7 @@ class AlmacenController extends Controller
             unset($data['fecha_caducidad']);
         }
 
-        if (!$data['perecedero']) {
+        if (! $data['perecedero']) {
             $data['fecha_caducidad'] = null;
         }
 

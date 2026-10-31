@@ -115,7 +115,7 @@
                             @endif
                         </td>
                         <td class="hidden min-[1322px]:table-cell px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            {{ $user->created_at->format('d/m/Y H:i') }}
+                            {{ \App\Models\Ajuste::fecha($user->created_at) }}
                         </td>
                         <td class="px-3 py-4 text-center sticky-col">
                             <div class="flex items-center justify-center gap-2">
@@ -232,7 +232,7 @@
                 </div>
                 <div class="flex items-center justify-between text-xs text-gray-500">
                     <span>Aprobado por: <span class="text-gray-700">{{ $user->approver->name ?? '—' }}</span></span>
-                    <span>Registro: {{ $user->created_at->format('d/m/Y H:i') }}</span>
+                    <span>Registro: {{ \App\Models\Ajuste::fecha($user->created_at) }}</span>
                 </div>
                 <div class="flex items-center gap-2 pt-1">
                     <a href="{{ route('admin.users.edit', $user) }}"

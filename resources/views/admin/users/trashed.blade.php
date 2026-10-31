@@ -47,7 +47,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            {{ $user->deleted_at->format('d/m/Y H:i') }}
+                            {{ \App\Models\Ajuste::fecha($user->deleted_at) }}
                         </td>
                         <td class="px-6 py-4 text-center sticky-col">
                             <div class="flex items-center justify-center gap-2">

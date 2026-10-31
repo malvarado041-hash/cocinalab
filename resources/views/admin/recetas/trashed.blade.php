@@ -26,7 +26,7 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 font-medium text-gray-800">{{ $r->Nombre }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $r->TipoC }} ({{ $r->ingredientes_count }})</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">{{ $r->deleted_at->format('d/m/Y H:i') }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ \App\Models\Ajuste::fecha($r->deleted_at) }}</td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex items-center justify-center gap-2">
                                 <form action="{{ route('admin.recetas.restore', $r->id) }}" method="POST" class="inline">

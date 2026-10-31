@@ -164,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function initTomSelect(sel) {
         if (sel.tomselect) return sel.tomselect;
+        if (!window.TomSelect) { sel.addEventListener('change', () => { onIngredienteChange(sel.closest('.ing-row')); recalcular(); }); return null; }
         const ts = new TomSelect(sel, {
             create: false,          // no permite ingredientes inexistentes
             maxItems: 1,
@@ -181,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sel.disabled = opts.length === 0;
         if (current && opts.includes(current)) sel.value = current;
         else if (current) sel.value = '';
+        else if (unidadProd) sel.value = unidadProd;
     }
 
     function onIngredienteChange(row) {

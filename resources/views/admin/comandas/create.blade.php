@@ -24,7 +24,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Mesa / Cuenta *</label>
-                <input type="text" name="mesa" value="{{ old('mesa') }}" required maxlength="100"
+                <input type="text" name="mesa" value="{{ old('mesa') }}" maxlength="100"
                     placeholder="Ej. Mesa 5, Barra 2, Para llevar"
                     class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
             </div>
@@ -68,6 +68,10 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const mesaSelect = document.querySelector('select[name="mesa_id"]');
+    const mesaInput = document.querySelector('input[name="mesa"]');
+    const syncMesa = () => { mesaInput.required = !mesaSelect.value; if (mesaSelect.value) mesaInput.value = mesaSelect.selectedOptions[0].text; };
+    mesaSelect.addEventListener('change', syncMesa); syncMesa();
     const PLATILLOS = @json($platillos);
     const container = document.getElementById('items');
     const totalEl = document.getElementById('total-est');

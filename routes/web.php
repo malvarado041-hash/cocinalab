@@ -1,16 +1,24 @@
 <?php
 
 use App\Http\Controllers\Admin\AlmacenController;
+use App\Http\Controllers\Admin\CajaController;
 use App\Http\Controllers\Admin\CocinaController;
 use App\Http\Controllers\Admin\ComandaController;
+use App\Http\Controllers\Admin\ConfiguracionController;
+use App\Http\Controllers\Admin\IngredienteController;
+use App\Http\Controllers\Admin\MesaController;
+use App\Http\Controllers\Admin\MovimientoController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProveedorController;
 use App\Http\Controllers\Admin\RecetaController as AdminRecetaController;
 use App\Http\Controllers\Admin\ReporteController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VentasController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RecetaController;
+use App\Models\AlmacenProducto;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -37,16 +45,28 @@ Route::middleware(['auth', 'deny.almacen'])->group(function () {
 // Panel Admin (admin y sistemas; el rol almacen no entra)
 Route::middleware(['auth', 'deny.almacen', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', fn () => view('admin.dashboard', [
-        'totalUsers' => \App\Models\User::where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
-        'pendingUsers' => \App\Models\User::where('status', 'pendiente')->where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
-        'activeUsers' => \App\Models\User::where('status', 'activo')->where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->count(),
-        'recentUsers' => \App\Models\User::where(function ($q) { $q->where('role', '!=', 'sistemas')->orWhereNull('role'); })->latest()->take(5)->get(),
-        'bajoStockCount' => \App\Models\AlmacenProducto::bajoStock()->count(),
-        'totalProductos' => \App\Models\AlmacenProducto::count(),
+        'totalUsers' => User::where(function ($q) {
+            $q->where('role', '!=', 'sistemas')->orWhereNull('role');
+        })->count(),
+        'pendingUsers' => User::where('status', 'pendiente')->where(function ($q) {
+            $q->where('role', '!=', 'sistemas')->orWhereNull('role');
+        })->count(),
+        'activeUsers' => User::where('status', 'activo')->where(function ($q) {
+            $q->where('role', '!=', 'sistemas')->orWhereNull('role');
+        })->count(),
+        'recentUsers' => User::where(function ($q) {
+            $q->where('role', '!=', 'sistemas')->orWhereNull('role');
+        })->latest()->take(5)->get(),
+        'bajoStockCount' => AlmacenProducto::bajoStock()->count(),
+        'totalProductos' => AlmacenProducto::count(),
     ]))->name('dashboard');
-    
-    Route::get('ingredientes', [\App\Http\Controllers\Admin\IngredienteController::class, 'index'])->name('ingredientes.index');
-    Route::put('ingredientes/{ingrediente}', [\App\Http\Controllers\Admin\IngredienteController::class, 'update'])->name('ingredientes.update');
+
+    Route::get('configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
+    Route::put('configuracion', [ConfiguracionController::class, 'update'])->name('configuracion.update');
+    Route::get('auditoria', [ConfiguracionController::class, 'auditoria'])->name('auditoria');
+    Route::get('reportes/ventas', [VentasController::class, 'index'])->name('reportes.ventas');
+    Route::get('ingredientes', [IngredienteController::class, 'index'])->name('ingredientes.index');
+    Route::put('ingredientes/{ingrediente}', [IngredienteController::class, 'update'])->name('ingredientes.update');
     Route::get('reportes/inventario', [ReporteController::class, 'inventario'])->name('reportes.inventario');
     Route::get('reportes/inventario/csv', [ReporteController::class, 'inventarioCsv'])->name('reportes.inventario.csv');
 
@@ -67,8 +87,8 @@ Route::middleware(['auth', 'deny.almacen', 'role:admin'])->prefix('admin')->name
 // Módulos operativos: accesibles para admin, sistemas y rol almacen.
 // El rol almacen SOLO tiene acceso a almacén y proveedores.
 Route::middleware(['auth', 'role:almacen'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('movimientos',[\App\Http\Controllers\Admin\MovimientoController::class,'index'])->name('movimientos.index');
-    Route::post('movimientos',[\App\Http\Controllers\Admin\MovimientoController::class,'store'])->name('movimientos.store');
+    Route::get('movimientos', [MovimientoController::class, 'index'])->name('movimientos.index');
+    Route::post('movimientos', [MovimientoController::class, 'store'])->name('movimientos.store');
     Route::get('almacen/dados-de-baja', [AlmacenController::class, 'trashed'])->name('almacen.trashed');
     Route::put('almacen/{id}/restaurar', [AlmacenController::class, 'restore'])->name('almacen.restore');
     Route::delete('almacen/{id}/eliminar-definitivo', [AlmacenController::class, 'forceDestroy'])->name('almacen.forceDestroy');
@@ -99,17 +119,17 @@ Route::middleware(['auth', 'deny.almacen', 'role:mesero,cocinero,capitan,cajero'
         Route::resource('comandas', ComandaController::class);
     });
 
-Route::middleware(['auth','role:mesero,capitan,cajero'])->prefix('admin')->name('admin.')->group(function() {
- Route::get('mesas',[\App\Http\Controllers\Admin\MesaController::class,'index'])->name('mesas.index');
- Route::post('mesas',[\App\Http\Controllers\Admin\MesaController::class,'store'])->name('mesas.store');
- Route::put('mesas/comandas/{comanda}/asignar',[\App\Http\Controllers\Admin\MesaController::class,'asignar'])->name('mesas.asignar');
- Route::post('comandas/{comanda}/unir',[ComandaController::class,'unir'])->name('comandas.unir');
- Route::post('comandas/{comanda}/dividir',[ComandaController::class,'dividir'])->name('comandas.dividir');
+Route::middleware(['auth', 'role:mesero,capitan,cajero'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('mesas', [MesaController::class, 'index'])->name('mesas.index');
+    Route::post('mesas', [MesaController::class, 'store'])->name('mesas.store');
+    Route::put('mesas/comandas/{comanda}/asignar', [MesaController::class, 'asignar'])->name('mesas.asignar');
+    Route::post('comandas/{comanda}/unir', [ComandaController::class, 'unir'])->name('comandas.unir');
+    Route::post('comandas/{comanda}/dividir', [ComandaController::class, 'dividir'])->name('comandas.dividir');
 });
-Route::middleware(['auth','role:cajero'])->prefix('admin/caja')->name('admin.caja.')->group(function() {
- Route::get('/',[\App\Http\Controllers\Admin\CajaController::class,'index'])->name('index');
- Route::post('abrir',[\App\Http\Controllers\Admin\CajaController::class,'abrir'])->name('abrir');
- Route::put('{caja}/cerrar',[\App\Http\Controllers\Admin\CajaController::class,'cerrar'])->name('cerrar');
- Route::post('comandas/{comanda}/cobrar',[\App\Http\Controllers\Admin\CajaController::class,'cobrar'])->name('cobrar');
- Route::get('comandas/{comanda}/ticket',[\App\Http\Controllers\Admin\CajaController::class,'ticket'])->name('ticket');
+Route::middleware(['auth', 'role:cajero'])->prefix('admin/caja')->name('admin.caja.')->group(function () {
+    Route::get('/', [CajaController::class, 'index'])->name('index');
+    Route::post('abrir', [CajaController::class, 'abrir'])->name('abrir');
+    Route::put('{caja}/cerrar', [CajaController::class, 'cerrar'])->name('cerrar');
+    Route::post('comandas/{comanda}/cobrar', [CajaController::class, 'cobrar'])->name('cobrar');
+    Route::get('comandas/{comanda}/ticket', [CajaController::class, 'ticket'])->name('ticket');
 });

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class RecetaController extends Controller
 {
@@ -23,7 +24,7 @@ class RecetaController extends Controller
         ]);
 
         $recetas = Receta::with(['imagenes', 'ingredientes.almacenProducto'])
-            ->when($request->filled('q'), fn ($q) => $q->where('Nombre', 'like', '%' . $request->q . '%'))
+            ->when($request->filled('q'), fn ($q) => $q->where('Nombre', 'like', '%'.$request->q.'%'))
             ->when($request->filled('tipo'), fn ($q) => $q->where('TipoC', $request->tipo))
             ->orderBy('Nombre')
             ->paginate(10)
@@ -168,7 +169,7 @@ class RecetaController extends Controller
         // ingredientes vinculados a un producto (espejos creados por el
         // observer + backfill). Los legacy sin vínculo no se ofrecen.
         $items = Ingrediente::with('almacenProducto')
-            ->whereNotNull('almacen_producto_id')
+
             ->orderBy('Nombre')
             ->get();
 
@@ -247,8 +248,8 @@ class RecetaController extends Controller
                 }
                 $ing = $vinc->get($fila['ingrediente_id'] ?? null);
                 $compatibles = Receta::unidadesCompatibles($ing?->almacenProducto?->unidad);
-                if (!$ing?->almacenProducto || (! in_array($unidad, $compatibles, true) && ! in_array(strtolower($unidad), array_map('strtolower', $compatibles), true))) {
-                    throw \Illuminate\Validation\ValidationException::withMessages([
+                if (! $ing?->almacenProducto || (! in_array($unidad, $compatibles, true) && ! in_array(strtolower($unidad), array_map('strtolower', $compatibles), true))) {
+                    throw ValidationException::withMessages([
                         "ingredientes.{$i}.unidad" => ["Unidad '{$unidad}' no compatible con el producto de almacén."],
                     ]);
                 }
