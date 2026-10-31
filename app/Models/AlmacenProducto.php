@@ -27,7 +27,7 @@ class AlmacenProducto extends Model
     ];
 
     protected $casts = [
-        'stock' => 'decimal:2',
+        'stock' => 'decimal:6',
         'stock_minimo' => 'decimal:2',
         'precio_unitario' => 'decimal:2',
         'perecedero' => 'boolean',

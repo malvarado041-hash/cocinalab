@@ -27,7 +27,7 @@ class CocinaController extends Controller
 
         $items = ComandaItem::with(['comanda.mesero', 'receta'])
             ->whereIn('estado', ['pendiente', 'en_preparacion'])
-            ->whereHas('comanda', fn ($q) => $q->whereNotIn('estado', ['servida', 'cancelada']))
+            ->whereHas('comanda', fn ($q) => $q->where('estado', 'en_cocina'))
             ->orderBy('created_at')
             ->get()
             ->groupBy('comanda_id');
@@ -36,23 +36,24 @@ class CocinaController extends Controller
     }
 
     /** Avanza pendiente → en preparación → listo y recalcula la cuenta. */
-    public function avanzar(ComandaItem $item)
+    public function avanzar(\Illuminate\Http\Request $request, ComandaItem $item)
     {
         $this->exigirCocina();
-
-        if (!$item->puedeAvanzar()) {
-            abort(422, 'Este platillo ya no puede avanzar.');
-        }
-
-        if (in_array($item->comanda->estado, ['servida', 'cancelada'], true)) {
-            abort(422, 'La cuenta de este platillo ya está cerrada.');
-        }
-
-        $item->estado = ComandaItem::SIGUIENTE[$item->estado];
-        $item->save();
-
-        $item->comanda->actualizarEstadoDesdeItems();
-
+        $data = $request->validate(['estado_actual'=>'required|in:pendiente,en_preparacion']);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($item, $data) {
+            $cuenta = \App\Models\Comanda::lockForUpdate()->findOrFail($item->comanda_id);
+            $item = ComandaItem::lockForUpdate()->findOrFail($item->id);
+            if ($item->estado !== $data['estado_actual']) return;
+            abort_unless($cuenta->estado === 'en_cocina', 422, 'La cuenta no está en cocina.');
+            $item->estado = ComandaItem::SIGUIENTE[$item->estado];
+            if ($item->estado === 'listo') {
+                app(\App\Services\ConsumoInventario::class)->descontar($item);
+                $item->listo_at = now();
+            } else { $item->iniciado_at = now(); }
+            $item->save();
+            \App\Models\EventoOperacion::create(['user_id'=>Auth::id(),'comanda_id'=>$cuenta->id,'item_id'=>$item->id,'accion'=>$item->estado]);
+            $cuenta->actualizarEstadoDesdeItems();
+        });
         return back()->with('success', 'Platillo actualizado.');
     }
 }

@@ -44,14 +44,16 @@
                                     <p class="font-medium text-gray-800">{{ $item->cantidad }} × {{ $item->receta->Nombre ?? '—' }}</p>
                                     @if ($item->notas)
                                         <p class="text-xs text-amber-700 font-medium">{{ $item->notas }}</p>
-                                    @endif>
+                                    @endif
                                     <p class="text-xs text-gray-400">
-                                        {{ $item->estado === 'pendiente' ? 'Pendiente' : 'En preparación' }} ·
+                                        {{ $item->estado === 'pendiente' ? 'Pendiente' : 'En preparación' }} · {{ (int) $item->created_at->diffInMinutes(now()) }} min
+                                        @if($item->created_at->lt(now()->subMinutes(20))) <strong class="text-red-600">Retrasado</strong> @endif ·
                                         hace {{ $item->created_at->diffForHumans(null, true) }}
                                     </p>
                                 </div>
                                 <form action="{{ route('admin.cocina.avanzar', $item) }}" method="POST" class="flex-shrink-0">
                                     @csrf @method('PUT')
+                                    <input type="hidden" name="estado_actual" value="{{ $item->estado }}">
                                     <button type="submit" class="{{ $item->estado === 'pendiente' ? 'btn-secondary' : 'btn-primary' }} text-sm px-4 py-2">
                                         @if ($item->estado === 'pendiente')
                                             <i class="fas fa-fire mr-2"></i> Tomar
@@ -73,6 +75,6 @@
 @push('scripts')
 <script>
 // La pantalla se refresca sola cada 45 segundos.
-setTimeout(function() { location.reload(); }, 45000);
+setTimeout(function() { location.reload(); }, 15000);
 </script>
 @endpush

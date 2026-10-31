@@ -122,5 +122,9 @@
         </div>
         @endif
     </div>
+<section class="bg-white p-4 rounded-xl"><h3>Historial de la cuenta</h3>
+@foreach(\App\Models\EventoOperacion::where('comanda_id',$comanda->id)->orderBy('id')->get() as $evento)
+<p>{{ $evento->created_at->format('d/m/Y H:i') }} · {{ $evento->accion }} · Usuario #{{ $evento->user_id }}</p>
+@endforeach</section>
 </div>
 @endsection

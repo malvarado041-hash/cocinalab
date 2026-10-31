@@ -120,6 +120,7 @@ class ComandaController extends Controller
 
     public function edit(Comanda $comanda)
     {
+        $this->exigirVer($comanda);
         $this->exigirOperar();
         $this->exigirEditable($comanda);
 
@@ -131,6 +132,7 @@ class ComandaController extends Controller
 
     public function update(Request $request, Comanda $comanda)
     {
+        $this->exigirVer($comanda);
         $this->exigirOperar();
         $this->exigirEditable($comanda);
 
@@ -149,6 +151,7 @@ class ComandaController extends Controller
     /** Agrega un platillo a una cuenta abierta. */
     public function addItem(Request $request, Comanda $comanda)
     {
+        $this->exigirVer($comanda);
         $this->exigirOperar();
 
         if (!$comanda->esAbierta()) {
@@ -177,6 +180,7 @@ class ComandaController extends Controller
     /** Quita un platillo pendiente de una cuenta abierta. */
     public function removeItem(Comanda $comanda, ComandaItem $item)
     {
+        $this->exigirVer($comanda);
         $this->exigirOperar();
 
         if ($item->comanda_id !== $comanda->id) {
@@ -195,6 +199,7 @@ class ComandaController extends Controller
     /** Abierta → en cocina (requiere al menos un platillo). */
     public function enviarCocina(Comanda $comanda)
     {
+        $this->exigirVer($comanda);
         $this->exigirOperar();
 
         if (!$comanda->esAbierta()) {
@@ -205,8 +210,12 @@ class ComandaController extends Controller
             return back()->with('error', 'Agrega al menos un platillo antes de enviar a cocina.');
         }
 
-        $comanda->estado = 'en_cocina';
-        $comanda->save();
+        DB::transaction(function () use ($comanda) {
+            $comanda = Comanda::lockForUpdate()->findOrFail($comanda->id);
+            abort_unless($comanda->esAbierta(), 422, 'La cuenta ya fue enviada.');
+            $comanda->estado = 'en_cocina'; $comanda->enviada_at = now(); $comanda->save();
+            \App\Models\EventoOperacion::create(['user_id'=>Auth::id(),'comanda_id'=>$comanda->id,'accion'=>'enviada_cocina']);
+        });
 
         return back()->with('success', 'Cuenta enviada a cocina.');
     }
@@ -214,6 +223,7 @@ class ComandaController extends Controller
     /** Lista → servida (marca sus platillos listos como servidos). */
     public function marcarServida(Comanda $comanda)
     {
+        $this->exigirVer($comanda);
         $this->exigirOperar();
 
         if ($comanda->estado !== 'lista') {
@@ -221,6 +231,9 @@ class ComandaController extends Controller
         }
 
         DB::transaction(function () use ($comanda) {
+            $comanda = Comanda::lockForUpdate()->findOrFail($comanda->id);
+            abort_unless($comanda->estado === 'lista',422);
+            \App\Models\EventoOperacion::create(['user_id'=>Auth::id(),'comanda_id'=>$comanda->id,'accion'=>'servida']);
             $comanda->items()->where('estado', 'listo')->update(['estado' => 'servido']);
             $comanda->estado = 'servida';
             $comanda->save();
@@ -232,6 +245,7 @@ class ComandaController extends Controller
     /** Cancela la cuenta y sus platillos activos. */
     public function cancelar(Comanda $comanda)
     {
+        $this->exigirVer($comanda);
         $this->exigirOperar();
 
         if (in_array($comanda->estado, ['servida', 'cancelada'], true)) {
@@ -239,6 +253,12 @@ class ComandaController extends Controller
         }
 
         DB::transaction(function () use ($comanda) {
+            $comanda = Comanda::lockForUpdate()->findOrFail($comanda->id);
+            abort_if(in_array($comanda->estado,['servida','cancelada']),422);
+            foreach ($comanda->items()->whereNotNull('consumido_at')->get() as $item) {
+                \App\Models\MovimientoInventario::where('comanda_item_id',$item->id)->update(['tipo'=>'merma','motivo'=>'Cancelación de platillo preparado']);
+            }
+            \App\Models\EventoOperacion::create(['user_id'=>Auth::id(),'comanda_id'=>$comanda->id,'accion'=>'cancelada']);
             $comanda->items()->whereNotIn('estado', ['servido', 'cancelado'])
                 ->update(['estado' => 'cancelado']);
             $comanda->estado = 'cancelada';
@@ -251,11 +271,13 @@ class ComandaController extends Controller
 
     public function destroy(Comanda $comanda)
     {
+        $this->exigirVer($comanda);
         $u = Auth::user();
         if (!$u->isPrivileged() && !$u->hasRole('capitan')) {
             abort(403, 'Solo capitán, admin o sistemas pueden eliminar cuentas.');
         }
 
+        abort_unless(in_array($comanda->estado, ['servida','cancelada']), 422, 'Cancela o termina la cuenta antes de darla de baja.');
         $comanda->delete();
 
         return redirect()->route('admin.comandas.index')
