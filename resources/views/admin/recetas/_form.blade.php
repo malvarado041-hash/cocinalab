@@ -36,6 +36,9 @@
     </div>
 </div>
 
+<div class="mt-5"><label for="porciones">Porciones que rinde la receta *</label>
+<input id="porciones" name="porciones" type="number" min="1" max="1000" required value="{{ $val('porciones', 1) }}" class="border rounded p-2">
+<p>Las cantidades corresponden a la receta completa; el precio de venta es por porción.</p></div>
 <div class="mt-5">
     <div class="flex items-center justify-between mb-2">
         <label class="block text-sm font-medium text-gray-700">Procedimiento (pasos) *</label>
@@ -98,7 +101,7 @@
 
     <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
-            <p class="text-xs font-semibold uppercase tracking-wider text-amber-700">Gasto estimado (ingredientes)</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-amber-700">Costo estimado por porción</p>
             <p id="gasto-total" class="text-2xl font-bold text-gray-800 mt-1">$0.00</p>
             <p id="gasto-nota" class="text-xs text-amber-600 mt-1"></p>
         </div>
@@ -282,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function factorConversion(unidadReceta, unidadProd) {
         const r = (unidadReceta || '').toLowerCase();
         const p = (unidadProd || '').toLowerCase();
-        if (!r) return 1.0;               // sin unidad: misma del producto
+        if (!r) return null;               // sin unidad: misma del producto
         if (!p || r === p) return r === p ? 1.0 : null;
         const peso = { g: 1, kg: 1000 };
         const vol = { ml: 1, l: 1000 };
@@ -319,9 +322,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 line.textContent = row.querySelector('.ing-select').value ? 'Subtotal: — (' + motivo + ')' : '';
             }
         });
-        gastoTotal.textContent = fmt(Math.round(total * 100) / 100);
+        total = total / Math.max(1, Number(document.getElementById('porciones').value));
+        gastoTotal.textContent = parcial ? 'Costo incompleto' : fmt(Math.round(total * 100) / 100);
         gastoNota.textContent = parcial ? '* Parcial: vincula todo a almacén con cantidades numéricas.' : '';
-        actualizarMargen(Math.round(total * 100) / 100);
+        if (parcial) margenHint.textContent = 'Completa los ingredientes para calcular el margen.';
+        else actualizarMargen(Math.round(total * 100) / 100);
     }
 
     function actualizarMargen(gasto) {
@@ -334,8 +339,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (margen < 0) margenHint.textContent += ' — el precio no cubre el gasto';
     }
 
+    document.getElementById('porciones').addEventListener('input', recalcular);
     precioInput?.addEventListener('input', function() {
-        actualizarMargen(parseFloat(gastoTotal.textContent.replace('$', '')) || 0);
+        recalcular();
     });
 
     // ---------- Procedimiento por pasos ----------

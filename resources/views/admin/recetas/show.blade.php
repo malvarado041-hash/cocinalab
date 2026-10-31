@@ -88,10 +88,11 @@
                 </tbody>
             </table>
         </div>
-        <p class="mt-3 text-right font-bold text-gray-800">Total estimado: ${{ number_format($costo['total'], 2) }}</p>
+        <p class="mt-3 text-right font-bold text-gray-800">{{ $costo['completo'] ? 'Total estimado:' : 'Costo incompleto · subtotal conocido:' }} ${{ number_format($costo['total'], 2) }}</p>
         @unless($costo['completo'])
             <p class="mt-1 text-right text-xs text-amber-600">* Parcial: vincula todos los ingredientes a almacén y usa cantidades numéricas.</p>
         @endunless
     </div>
 </div>
+<p>Rinde {{ $receta->porciones }} porciones. Costo por porción: {{ $costo['completo'] ? '$'.number_format($costo['por_porcion'], 2) : 'Pendiente de completar' }}</p>
 @endsection

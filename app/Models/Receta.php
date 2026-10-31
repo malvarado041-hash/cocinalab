@@ -55,13 +55,14 @@ class Receta extends Model
     public function costoEstimado(): array
     {
         $total = 0.0;
-        $completo = true;
+        $completo = false;
         $lineas = [];
 
         $ingredientes = $this->relationLoaded('ingredientes')
             ? $this->ingredientes
             : $this->ingredientes()->with('almacenProducto')->get();
 
+        $completo = $ingredientes->isNotEmpty();
         foreach ($ingredientes as $ing) {
             // Prefiere columnas nuevas; cae al texto legacy.
             $cantidadNum = $ing->pivot->cantidad_num !== null
@@ -72,7 +73,7 @@ class Receta extends Model
             $unidadProd = $ing->almacenProducto->unidad ?? null;
             $subtotal = null;
 
-            if ($cantidadNum !== null && $precio !== null) {
+            if ($cantidadNum !== null && $cantidadNum > 0 && $precio !== null) {
                 $factor = self::factorConversion($unidadReceta, $unidadProd);
                 if ($factor !== null) {
                     $subtotal = round($cantidadNum * $factor * (float) $precio, 2);
@@ -95,7 +96,7 @@ class Receta extends Model
             ];
         }
 
-        return ['total' => round($total, 2), 'completo' => $completo, 'lineas' => $lineas];
+        return ['total' => round($total, 2), 'por_porcion' => round($total / max(1, (int) $this->porciones), 2), 'completo' => $completo, 'lineas' => $lineas];
     }
 
     /**
@@ -109,7 +110,7 @@ class Receta extends Model
 
         // Sin unidad en receta: se asume misma unidad del producto.
         if ($r === null || $r === '') {
-            return 1.0;
+            return null;
         }
         if ($p === null || $p === '') {
             return null;
@@ -173,7 +174,9 @@ class Receta extends Model
             return ['margen' => null, 'porcentaje' => null];
         }
 
-        $gasto = $this->costoEstimado()['total'];
+        $costo = $this->costoEstimado();
+        if (!$costo['completo']) { return ['margen' => null, 'porcentaje' => null]; }
+        $gasto = $costo['total'] / max(1, (int) $this->porciones);
         $margen = round((float) $this->precio_platillo - $gasto, 2);
         $porcentaje = ((float) $this->precio_platillo) > 0
             ? round($margen / (float) $this->precio_platillo * 100, 1)

@@ -53,7 +53,7 @@
                     @endforeach
                 </tbody>
             </table>
-            <p class="total">Total estimado: ${{ number_format($costo['total'], 2) }}</p>
+            <p class="total">{{ $costo['completo'] ? 'Total estimado:' : 'Costo incompleto · subtotal conocido:' }} ${{ number_format($costo['total'], 2) }}</p>
             @unless($costo['completo'])
                 <p><small>* Costo parcial: algunos ingredientes no tienen precio o cantidad numérica.</small></p>
             @endunless
@@ -62,4 +62,5 @@
 
     <a class="receta-volver" href="{{ route('recetas.index') }}">Volver a Recetas</a>
 </div>
+<p>Rinde {{ $receta->porciones }} porciones. Costo por porción: {{ $costo['completo'] ? '$'.number_format($costo['por_porcion'], 2) : 'Pendiente de completar' }}</p>
 @endsection

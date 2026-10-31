@@ -57,6 +57,7 @@ class RecetaController extends Controller
         $receta = DB::transaction(function () use ($data, $request) {
             $receta = Receta::create([
                 'Nombre' => $data['Nombre'],
+                'porciones' => $data['porciones'],
                 'Procedimiento' => $data['Procedimiento'],
                 'TipoC' => $data['TipoC'],
                 'precio_platillo' => $data['precio_platillo'] ?? null,
@@ -89,6 +90,7 @@ class RecetaController extends Controller
         DB::transaction(function () use ($data, $request, $receta) {
             $receta->update([
                 'Nombre' => $data['Nombre'],
+                'porciones' => $data['porciones'],
                 'Procedimiento' => $data['Procedimiento'],
                 'TipoC' => $data['TipoC'],
                 'precio_platillo' => $data['precio_platillo'] ?? null,
@@ -216,15 +218,16 @@ class RecetaController extends Controller
     private function validated(Request $request): array
     {
         $data = $request->validate([
+            'porciones' => ['required', 'integer', 'min:1', 'max:1000'],
             'Nombre' => ['required', 'string', 'min:2', 'max:200'],
             'TipoC' => ['required', Rule::in(Receta::TIPOS)],
             'Procedimiento' => ['required', 'string', 'min:10'],
             'precio_platillo' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
-            'ingredientes' => ['nullable', 'array'],
+            'ingredientes' => ['required', 'array', 'min:1'],
             'ingredientes.*.ingrediente_id' => ['required', 'distinct', 'exists:ingredientes,id'],
             'ingredientes.*.cantidad' => ['nullable', 'string', 'max:100'],
-            'ingredientes.*.cantidad_num' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
-            'ingredientes.*.unidad' => ['nullable', 'string', 'max:20'],
+            'ingredientes.*.cantidad_num' => ['required', 'numeric', 'gt:0', 'max:9999999.99'],
+            'ingredientes.*.unidad' => ['required', 'string', 'max:20'],
             'imagenes' => ['nullable', 'array', 'max:6'],
             'imagenes.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'eliminar_imagenes' => ['nullable', 'array'],
@@ -244,7 +247,7 @@ class RecetaController extends Controller
                 }
                 $ing = $vinc->get($fila['ingrediente_id'] ?? null);
                 $compatibles = Receta::unidadesCompatibles($ing?->almacenProducto?->unidad);
-                if (! in_array($unidad, $compatibles, true) && ! in_array(strtolower($unidad), array_map('strtolower', $compatibles), true)) {
+                if (!$ing?->almacenProducto || (! in_array($unidad, $compatibles, true) && ! in_array(strtolower($unidad), array_map('strtolower', $compatibles), true))) {
                     throw \Illuminate\Validation\ValidationException::withMessages([
                         "ingredientes.{$i}.unidad" => ["Unidad '{$unidad}' no compatible con el producto de almacén."],
                     ]);

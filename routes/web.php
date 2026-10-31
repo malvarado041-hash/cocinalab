@@ -45,6 +45,8 @@ Route::middleware(['auth', 'deny.almacen', 'role:admin'])->prefix('admin')->name
         'totalProductos' => \App\Models\AlmacenProducto::count(),
     ]))->name('dashboard');
     
+    Route::get('ingredientes', [\App\Http\Controllers\Admin\IngredienteController::class, 'index'])->name('ingredientes.index');
+    Route::put('ingredientes/{ingrediente}', [\App\Http\Controllers\Admin\IngredienteController::class, 'update'])->name('ingredientes.update');
     Route::get('reportes/inventario', [ReporteController::class, 'inventario'])->name('reportes.inventario');
     Route::get('reportes/inventario/csv', [ReporteController::class, 'inventarioCsv'])->name('reportes.inventario.csv');
 

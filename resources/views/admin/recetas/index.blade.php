@@ -4,6 +4,7 @@
 @section('header-title', 'Recetas')
 
 @section('content')
+<a class="btn-secondary px-4 py-2 inline-block mb-4" href="{{ route('admin.ingredientes.index') }}">Vincular ingredientes con almacén</a>
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in">
     <div class="px-4 sm:px-6 py-4 flex flex-col lg:flex-row lg:items-center gap-3 border-b border-gray-100">
         <form method="GET" action="{{ route('admin.recetas.index') }}" class="flex-[1_1_auto] grid grid-cols-1 sm:grid-cols-3 gap-3">
