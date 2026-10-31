@@ -14,12 +14,16 @@ class AlmacenProductoObserver
 {
     public function created(AlmacenProducto $producto): void
     {
-        $existente = Ingrediente::where('Nombre', $producto->nombre)->first();
+        // Reutiliza únicamente un ingrediente libre; nunca modifica el vínculo
+        // de un ingrediente que ya pertenece a otro producto.
+        $existente = Ingrediente::where('Nombre', $producto->nombre)
+            ->whereNull('almacen_producto_id')
+            ->lockForUpdate()
+            ->first();
 
         if ($existente) {
-            if ($existente->almacen_producto_id === null) {
-                $existente->update(['almacen_producto_id' => $producto->id]);
-            }
+            $existente->update(['almacen_producto_id' => $producto->id]);
+
             return;
         }
 
