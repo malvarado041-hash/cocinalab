@@ -122,6 +122,12 @@
         </div>
         @endif
     </div>
+@if(($puedeOperar ?? false) && $comanda->esAbierta())
+<section class="bg-white rounded-xl p-4 space-y-4"><h3>Unir o dividir cuenta abierta</h3>
+<form method="POST" action="{{ route('admin.comandas.unir',$comanda) }}">@csrf<label>Cuenta destino # <input name="destino_id" type="number" min="1" required class="border rounded p-2"></label><button class="btn-secondary p-2">Unir cuentas</button></form>
+<form method="POST" action="{{ route('admin.comandas.dividir',$comanda) }}">@csrf<select name="item_id" class="border rounded p-2">@foreach($comanda->items as $i)<option value="{{ $i->id }}">{{ $i->receta?->Nombre }} ({{ $i->cantidad }})</option>@endforeach</select><label>Porciones a separar <input type="number" name="cantidad" min="1" max="99" required class="border rounded p-2"></label><button class="btn-secondary p-2">Dividir cuenta</button></form></section>
+@endif
+@if(auth()->user()->isPrivileged() || auth()->user()->hasRole('cajero'))<a href="{{ route('admin.caja.index') }}" class="btn-primary inline-block p-2">Ir a caja</a>@endif
 <section class="bg-white p-4 rounded-xl"><h3>Historial de la cuenta</h3>
 @foreach(\App\Models\EventoOperacion::where('comanda_id',$comanda->id)->orderBy('id')->get() as $evento)
 <p>{{ $evento->created_at->format('d/m/Y H:i') }} · {{ $evento->accion }} · Usuario #{{ $evento->user_id }}</p>

@@ -102,8 +102,16 @@ class ComandaController extends Controller
         $data = $this->validated($request);
 
         $comanda = DB::transaction(function () use ($data) {
+            if (!empty($data['mesa_id'])) {
+                $mesa = \App\Models\Mesa::lockForUpdate()->where('activa',true)->findOrFail($data['mesa_id']);
+                abort_if(Comanda::where('mesa_id',$mesa->id)->whereNull('cerrada_at')->where('estado','!=','cancelada')->exists(),422,'La mesa está ocupada.');
+                abort_if(($data['comensales']??1)>$mesa->capacidad,422,'Se excede la capacidad de la mesa.');
+                $data['mesa']=$mesa->nombre;
+            }
             $comanda = Comanda::create([
                 'mesa' => $data['mesa'],
+                'mesa_id' => $data['mesa_id'] ?? null,
+                'comensales' => $data['comensales'] ?? 1,
                 'tipo' => $data['tipo'],
                 'mesero_id' => Auth::id(),
                 'notas' => $data['notas'] ?? null,
@@ -137,11 +145,14 @@ class ComandaController extends Controller
         $this->exigirEditable($comanda);
 
         $data = $request->validate([
+            'mesa_id' => ['nullable','integer','exists:mesas,id'],
+            'comensales' => ['required','integer','min:1','max:100'],
             'mesa' => ['required', 'string', 'max:100'],
             'tipo' => ['required', Rule::in(array_keys(Comanda::TIPOS))],
             'notas' => ['nullable', 'string', 'max:500'],
         ]);
 
+        unset($data['mesa_id']);
         $comanda->update($data);
 
         return redirect()->route('admin.comandas.show', $comanda)
@@ -284,6 +295,40 @@ class ComandaController extends Controller
             ->with('success', 'Cuenta dada de baja correctamente.');
     }
 
+    public function unir(Request $request, Comanda $comanda) {
+        $this->exigirOperar(); $this->exigirVer($comanda);
+        $d=$request->validate(['destino_id'=>'required|integer|different:origen_id|exists:comandas,id']);
+        abort_if($comanda->id==(int)$d['destino_id'],422);
+        DB::transaction(function() use($comanda,$d) {
+            $cuentas=Comanda::whereIn('id',[$comanda->id,$d['destino_id']])->orderBy('id')->lockForUpdate()->get()->keyBy('id');
+            $origen=$cuentas[$comanda->id]; $destino=$cuentas[$d['destino_id']];
+            $this->exigirVer($destino);
+            abort_unless($origen->esAbierta() && $destino->esAbierta() && !$origen->cerrada_at && !$destino->cerrada_at,422,'Solo se unen cuentas abiertas.');
+            $origen->items()->update(['comanda_id'=>$destino->id]);
+            $destino->comensales += $origen->comensales; $destino->save();
+            $origen->update(['estado'=>'cancelada','cerrada_at'=>now()]);
+            \App\Models\EventoOperacion::create(['user_id'=>Auth::id(),'comanda_id'=>$destino->id,'accion'=>'cuentas_unidas','detalle'=>(string)$origen->id]);
+        });
+        return redirect()->route('admin.comandas.show',$d['destino_id'])->with('success','Cuentas unidas.');
+    }
+    public function dividir(Request $request, Comanda $comanda) {
+        $this->exigirOperar(); $this->exigirVer($comanda);
+        $d=$request->validate(['item_id'=>'required|integer','cantidad'=>'required|integer|min:1|max:99']);
+        $nueva=DB::transaction(function() use($comanda,$d) {
+            $c=Comanda::lockForUpdate()->findOrFail($comanda->id);
+            abort_unless($c->esAbierta() && !$c->cerrada_at,422,'Solo se dividen cuentas abiertas.');
+            $item=$c->items()->lockForUpdate()->findOrFail($d['item_id']);
+            abort_unless($item->estado==='pendiente' && $d['cantidad']<=$item->cantidad,422);
+            abort_if($c->items()->count()===1 && $item->cantidad===$d['cantidad'],422,'Debe quedar al menos un platillo en la cuenta original.');
+            $n=Comanda::create(['mesa'=>$c->mesa.' (dividida)','mesa_id'=>$c->mesa_id,'tipo'=>$c->tipo,'mesero_id'=>$c->mesero_id,'comensales'=>1]);
+            $n->items()->create(['receta_id'=>$item->receta_id,'cantidad'=>$d['cantidad'],'precio_unitario'=>$item->precio_unitario,'notas'=>$item->notas]);
+            if($d['cantidad']===$item->cantidad) $item->delete(); else { $item->cantidad-=$d['cantidad']; $item->save(); }
+            \App\Models\EventoOperacion::create(['user_id'=>Auth::id(),'comanda_id'=>$c->id,'accion'=>'cuenta_dividida','detalle'=>(string)$n->id]);
+            return $n;
+        });
+        return redirect()->route('admin.comandas.show',$nueva)->with('success','Cuenta dividida.');
+    }
+
     public function trashed()
     {
         if (!Auth::user()->isSistemas()) {
@@ -348,6 +393,8 @@ class ComandaController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
+            'mesa_id' => ['nullable','integer','exists:mesas,id'],
+            'comensales' => ['required','integer','min:1','max:100'],
             'mesa' => ['required', 'string', 'max:100'],
             'tipo' => ['required', Rule::in(array_keys(Comanda::TIPOS))],
             'notas' => ['nullable', 'string', 'max:500'],

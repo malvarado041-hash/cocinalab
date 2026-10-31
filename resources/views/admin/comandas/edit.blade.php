@@ -18,6 +18,7 @@
     @endif
     <form action="{{ route('admin.comandas.update', $comanda) }}" method="POST">
         @csrf
+<div class="mb-4"><label>Comensales <input name="comensales" type="number" min="1" max="100" required value="{{ old('comensales', $comanda->comensales ?? 1) }}" class="border rounded p-2"></label></div>
         @method('PUT')
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div>

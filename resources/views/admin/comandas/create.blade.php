@@ -19,6 +19,8 @@
 
     <form action="{{ route('admin.comandas.store') }}" method="POST" id="form-comanda">
         @csrf
+<div class="mb-4"><label>Mesa registrada <select name="mesa_id" class="border rounded p-2"><option value="">Sin mesa registrada / para llevar</option>@foreach(\App\Models\Mesa::where('activa',true)->orderBy('nombre')->get() as $m)<option value="{{ $m->id }}" @selected(old('mesa_id',request('mesa_id')) == $m->id)>{{ $m->nombre }}</option>@endforeach</select></label></div>
+<div class="mb-4"><label>Comensales <input name="comensales" type="number" min="1" max="100" required value="{{ old('comensales', $comanda->comensales ?? 1) }}" class="border rounded p-2"></label></div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Mesa / Cuenta *</label>

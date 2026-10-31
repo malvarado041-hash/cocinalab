@@ -11,7 +11,13 @@
         </button>
     </div>
 
-    <nav class="p-4 flex-1 overflow-y-auto" id="sidebar-nav">
+    @if(auth()->user()->isPrivileged() || in_array(auth()->user()->role,['mesero','capitan','cajero']))
+<a href="{{ route('admin.mesas.index') }}" class="block px-4 py-3">Mesas</a>
+@endif
+@if(auth()->user()->isPrivileged() || auth()->user()->hasRole('cajero'))
+<a href="{{ route('admin.caja.index') }}" class="block px-4 py-3">Caja y cobros</a>
+@endif
+<nav class="p-4 flex-1 overflow-y-auto" id="sidebar-nav">
         @php
             $rolActual = auth()->user()->role;
             $esPrivilegiado = auth()->user()->isPrivileged();

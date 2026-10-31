@@ -96,3 +96,18 @@ Route::middleware(['auth', 'deny.almacen', 'role:mesero,cocinero,capitan,cajero'
         Route::delete('comandas/{comanda}/items/{item}', [ComandaController::class, 'removeItem'])->name('comandas.items.destroy');
         Route::resource('comandas', ComandaController::class);
     });
+
+Route::middleware(['auth','role:mesero,capitan,cajero'])->prefix('admin')->name('admin.')->group(function() {
+ Route::get('mesas',[\App\Http\Controllers\Admin\MesaController::class,'index'])->name('mesas.index');
+ Route::post('mesas',[\App\Http\Controllers\Admin\MesaController::class,'store'])->name('mesas.store');
+ Route::put('mesas/comandas/{comanda}/asignar',[\App\Http\Controllers\Admin\MesaController::class,'asignar'])->name('mesas.asignar');
+ Route::post('comandas/{comanda}/unir',[ComandaController::class,'unir'])->name('comandas.unir');
+ Route::post('comandas/{comanda}/dividir',[ComandaController::class,'dividir'])->name('comandas.dividir');
+});
+Route::middleware(['auth','role:cajero'])->prefix('admin/caja')->name('admin.caja.')->group(function() {
+ Route::get('/',[\App\Http\Controllers\Admin\CajaController::class,'index'])->name('index');
+ Route::post('abrir',[\App\Http\Controllers\Admin\CajaController::class,'abrir'])->name('abrir');
+ Route::put('{caja}/cerrar',[\App\Http\Controllers\Admin\CajaController::class,'cerrar'])->name('cerrar');
+ Route::post('comandas/{comanda}/cobrar',[\App\Http\Controllers\Admin\CajaController::class,'cobrar'])->name('cobrar');
+ Route::get('comandas/{comanda}/ticket',[\App\Http\Controllers\Admin\CajaController::class,'ticket'])->name('ticket');
+});

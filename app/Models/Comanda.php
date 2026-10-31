@@ -23,7 +23,10 @@ class Comanda extends Model
         'llevar' => 'Para llevar',
     ];
 
+    protected $casts = ['cerrada_at'=>'datetime','enviada_at'=>'datetime'];
+
     protected $fillable = [
+        'mesa_id', 'comensales', 'cerrada_at',
         'mesa',
         'tipo',
         'mesero_id',
@@ -57,6 +60,7 @@ class Comanda extends Model
 
     public function getEstadoLabelAttribute(): string
     {
+        if ($this->cerrada_at) return 'Cerrada';
         return self::ESTADOS[$this->estado] ?? ucfirst($this->estado);
     }
 
@@ -113,6 +117,6 @@ class Comanda extends Model
 
     public function scopeAbiertas($query)
     {
-        return $query->whereNotIn('estado', ['servida', 'cancelada']);
+        return $query->whereNull('cerrada_at')->where('estado', '!=', 'cancelada');
     }
 }
