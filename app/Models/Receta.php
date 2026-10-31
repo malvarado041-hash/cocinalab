@@ -186,7 +186,7 @@ class Receta extends Model
     public function pasos(): array
     {
         return array_values(array_filter(
-            array_map('trim', preg_split('/\r\n|\r|\n/', (string) ($this->Procedimiento ?? ''))),
+            array_map(fn ($paso) => preg_replace('/^\s*(?:\d+[.)]\s*)+/', '', trim($paso)), preg_split('/\r\n|\r|\n/', (string) ($this->Procedimiento ?? ''))),
             fn ($p) => $p !== ''
         ));
     }

@@ -117,3 +117,14 @@ html.dark a { color: #fdba74; }
 body, .boton, .gen-card, .content > div, .panel, .window-notice .content {
     transition: background-color .25s ease, border-color .25s ease, color .25s ease;
 }
+
+/* Detalles y resultados conservan contraste en ambos temas. */
+html.dark .receta-detalle, html.dark .recetas-resultado { background:#1e293b; color:#f1f5f9; }
+html.dark .receta-detalle h2, html.dark .receta-detalle h3 { color:#fed7aa; }
+html.dark .receta-pasos li, html.dark .receta-card { background:#334155; color:#f1f5f9; }
+html.dark .receta-costo { background:#263449; border-color:#64748b; color:#f1f5f9; overflow-x:auto; }
+html.dark .receta-card-nombre, html.dark .receta-card-ver { color:#fed7aa; }
+.resultados-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:1rem; }
+.receta-costo { overflow-x:auto; }
+.receta-pasos li { overflow-wrap:anywhere; }
+@media(max-width:600px) { .receta-detalle { padding:1rem; } .receta-costo { padding:.5rem; } }

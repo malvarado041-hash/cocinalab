@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=3">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}?v=6">
     <link rel="stylesheet" href="{{ asset('css/genericos.css') }}?v=2">
-    <link rel="stylesheet" href="{{ asset('css/site-dark.css') }}?v=1">
+    <link rel="stylesheet" href="{{ asset('css/site-dark.css') }}?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         (function() {

@@ -93,7 +93,7 @@
             <h3 class="sidebar-text text-xs font-semibold text-gray-400 uppercase tracking-wider">Sistema</h3>
             <ul class="space-y-1 mt-2" role="navigation" aria-label="Sistema">
                 <li>
-                    <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200" data-tooltip="Configuración">
+                    <a href="{{ route('admin.profile.edit') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200" data-tooltip="Configuración">
                         <i class="fas fa-cog sidebar-icon w-6 text-center text-lg"></i>
                         <span class="sidebar-text">Configuración</span>
                     </a>

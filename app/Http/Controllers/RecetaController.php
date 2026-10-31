@@ -82,7 +82,9 @@ class RecetaController extends Controller
             $receta = Receta::with(['imagenes', 'ingredientes.almacenProducto'])->find((int) $request->query('id'));
         } elseif ($request->filled('buscar') && trim($request->query('buscar')) !== '') {
             $buscar = trim($request->query('buscar'));
-            $receta = Receta::with(['imagenes', 'ingredientes.almacenProducto'])->where('Nombre', 'like', "%{$buscar}%")->first();
+            $request->validate(['buscar' => 'required|string|max:100']);
+            $recetas = Receta::with('imagenes')->where('Nombre', 'like', "%{$buscar}%")->orderBy('Nombre')->get();
+            return view('recetas.buscar', compact('recetas', 'buscar'));
         } else {
             abort(400, 'ID de receta no proporcionado.');
         }
