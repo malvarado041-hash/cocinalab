@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AlmacenProducto;
 use App\Models\Ingrediente;
 use App\Models\Receta;
 use App\Models\RecetaImagen;
@@ -163,13 +162,8 @@ class RecetaController extends Controller
 
     private function formData(): array
     {
-        $productos = AlmacenProducto::orderBy('nombre')->get(['id', 'nombre', 'precio_unitario', 'unidad']);
-
-        // La lista de ingredientes sale ÚNICAMENTE de almacén: solo
-        // ingredientes vinculados a un producto (espejos creados por el
-        // observer + backfill). Los legacy sin vínculo no se ofrecen.
-        $items = Ingrediente::with('almacenProducto')
-
+        // Solo ingredientes cuyo producto vinculado sigue activo (no dado de baja).
+        $items = Ingrediente::with('almacenProducto')->whereHas('almacenProducto')
             ->orderBy('Nombre')
             ->get();
 
@@ -177,7 +171,6 @@ class RecetaController extends Controller
         // (Precalculados aquí: los closures dentro de @json() en Blade
         // rompen el compilador con "Unclosed '[' does not match ')'").
         $mapaVinculos = [];
-        $ingOpts = [];
         $opciones = [];
         foreach ($items as $ing) {
             $prod = $ing->almacenProducto;
@@ -187,7 +180,6 @@ class RecetaController extends Controller
                 'precio' => $prod->precio_unitario ?? null,
                 'nombre' => $prod->nombre ?? $ing->Nombre,
             ];
-            $ingOpts[] = ['id' => $ing->id, 'nombre' => $prod->nombre ?? $ing->Nombre];
             $opciones[] = [
                 'ingrediente_id' => $ing->id,
                 'nombre' => $prod->nombre ?? $ing->Nombre,
@@ -196,23 +188,10 @@ class RecetaController extends Controller
             ];
         }
 
-        $prodSugerencias = [];
-        foreach ($productos as $p) {
-            $prodSugerencias[mb_strtolower($p->nombre)] = [
-                'id' => $p->id,
-                'nombre' => $p->nombre,
-                'unidad' => $p->unidad,
-                'precio' => $p->precio_unitario,
-            ];
-        }
-
         return [
             'tipos' => Receta::TIPOS,
             'opciones' => $opciones,
-            'productos' => $productos,
             'mapaVinculos' => $mapaVinculos,
-            'ingOpts' => $ingOpts,
-            'prodSugerencias' => $prodSugerencias,
         ];
     }
 
@@ -247,6 +226,11 @@ class RecetaController extends Controller
                     continue;
                 }
                 $ing = $vinc->get($fila['ingrediente_id'] ?? null);
+                if (! $ing?->almacenProducto) {
+                    throw ValidationException::withMessages([
+                        "ingredientes.{$i}.ingrediente_id" => 'Selecciona un ingrediente vinculado a un producto activo del almacén.',
+                    ]);
+                }
                 $compatibles = Receta::unidadesCompatibles($ing?->almacenProducto?->unidad);
                 if (! $ing?->almacenProducto || (! in_array($unidad, $compatibles, true) && ! in_array(strtolower($unidad), array_map('strtolower', $compatibles), true))) {
                     throw ValidationException::withMessages([
