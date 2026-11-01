@@ -23,7 +23,7 @@
     </div>
 
     <div class="p-6 space-y-4">
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Rol</p>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">

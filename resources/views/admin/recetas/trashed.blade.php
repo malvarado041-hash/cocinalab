@@ -12,7 +12,7 @@
         </a>
     </div>
     <div class="overflow-x-auto">
-        <table class="w-full min-w-[640px]">
+        <div class="table-scroll" role="region" aria-label="Tabla de datos, desliza para ver más columnas" tabindex="0"><table class="w-full min-w-[640px]">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Receta</th>
@@ -48,7 +48,7 @@
                     <tr><td colspan="4" class="px-6 py-16 text-center text-gray-500">No hay recetas dadas de baja</td></tr>
                 @endforelse
             </tbody>
-        </table>
+        </table></div>
     </div>
     <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-4">
         <div class="text-sm text-gray-500">Mostrando {{ $recetas->firstItem() ?? 0 }} a {{ $recetas->lastItem() ?? 0 }} de {{ $recetas->total() }}</div>

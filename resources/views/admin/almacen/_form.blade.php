@@ -78,7 +78,7 @@
             @endif
         </div>
     @else
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Stock actual *</label>
             <input type="number" name="stock" value="{{ $old('stock', '0') }}" required min="0" step="0.01"

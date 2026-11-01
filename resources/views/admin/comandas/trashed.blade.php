@@ -13,7 +13,7 @@
         </a>
     </div>
     <div class="overflow-x-auto">
-        <table class="w-full min-w-[640px] admin-table">
+        <div class="table-scroll" role="region" aria-label="Tabla de datos, desliza para ver más columnas" tabindex="0"><table class="w-full min-w-[640px] admin-table">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Cuenta</th>
@@ -55,7 +55,7 @@
                     </tr>
                 @endforelse
             </tbody>
-        </table>
+        </table></div>
     </div>
     <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-4">
         <div class="text-sm text-gray-500">

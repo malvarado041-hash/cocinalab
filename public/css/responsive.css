@@ -55,3 +55,24 @@ img, video { max-width: 100%; }
     .ticket-print { color: black !important; background: white !important; box-shadow: none !important; max-width: 100%; }
     html.dark main .ticket-print, html.dark main .ticket-print * { color: black !important; background: white !important; }
 }
+
+/* Local table scrolling also covers detail, archived and report views. */
+.table-scroll { max-width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-x: contain; }
+.table-scroll table { width: 100%; }
+.table-scroll :is(th,td) { padding: .75rem; text-align: left; vertical-align: top; }
+@media (max-width: 639.98px) {
+    .table-scroll table { min-width: 640px; }
+    .table-scroll:has(> table.hidden) { display: none; }
+    .admin-shell main form :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea) { width: 100%; min-height: 44px; }
+    .admin-shell main form label { max-width: 100%; }
+    .admin-shell main form > label { display: block; margin-block: .5rem; }
+    .admin-shell main form > :is(button,.btn-secondary,.btn-primary) { margin-block: .25rem; }
+    .admin-shell main :is(.p-6,.p-8) { padding: 1rem; }
+    .admin-shell main .flex:not(.flex-col):has(> .btn-primary):has(> .btn-secondary),
+    .admin-shell main .flex:not(.flex-col):has(> .btn-danger) { flex-wrap: wrap; }
+    .admin-shell main [id^="modal-"] { overflow-y: auto; align-items: safe center; }
+    .admin-shell main [id^="modal-"] > .bg-white { max-height: calc(100dvh - 2rem); overflow-y: auto; }
+    .admin-shell main code { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .admin-shell main nav[aria-label] { max-width: 100%; }
+    .admin-shell main nav[aria-label] a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
+}

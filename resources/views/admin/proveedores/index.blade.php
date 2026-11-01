@@ -27,7 +27,7 @@
     </div>
 
     <div class="hidden md:block">
-        <table class="w-full admin-table">
+        <div class="table-scroll" role="region" aria-label="Tabla de datos, desliza para ver más columnas" tabindex="0"><table class="w-full admin-table">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nombre</th>
@@ -75,7 +75,7 @@
                     </tr>
                 @endforelse
             </tbody>
-        </table>
+        </table></div>
     </div>
 
     <div class="md:hidden divide-y divide-gray-100">

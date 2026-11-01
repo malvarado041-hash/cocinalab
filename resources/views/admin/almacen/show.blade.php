@@ -37,7 +37,7 @@ $unidadPlural = $unidades[$producto->unidad][1] ?? ucfirst($producto->unidad) . 
     </div>
 
     <div class="p-6 space-y-4">
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Stock</p>
                 <p class="text-lg font-semibold {{ $producto->esBajoStock() ? 'text-red-600' : 'text-gray-800' }}">

@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="overflow-x-auto users-table-fixed">
-        <table class="w-full min-w-[680px] table-fixed-users admin-table" id="users-table">
+        <div class="table-scroll" role="region" aria-label="Tabla de datos, desliza para ver más columnas" tabindex="0"><table class="w-full min-w-[680px] table-fixed-users admin-table" id="users-table">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</th>
@@ -87,7 +87,7 @@
                     </tr>
                 @endforelse
             </tbody>
-        </table>
+        </table></div>
     </div>
 
     <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-4">

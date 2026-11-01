@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="hidden md:block users-table-fixed">
-        <table class="w-full table-auto admin-table" id="users-table">
+        <div class="table-scroll" role="region" aria-label="Tabla de datos, desliza para ver más columnas" tabindex="0"><table class="w-full table-auto admin-table" id="users-table">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-3 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</th>
@@ -157,7 +157,7 @@
                     </tr>
                 @endforelse
             </tbody>
-        </table>
+        </table></div>
     </div>
 
     <div class="md:hidden divide-y divide-gray-100">

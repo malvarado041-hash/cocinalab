@@ -56,7 +56,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <h4 class="font-semibold text-gray-800 mb-3">Ingredientes y costo estimado</h4>
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[560px] text-sm">
+            <div class="table-scroll" role="region" aria-label="Tabla de datos, desliza para ver más columnas" tabindex="0"><table class="w-full min-w-[560px] text-sm">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-4 py-2 text-left text-xs uppercase text-gray-500">Ingrediente</th>
@@ -86,7 +86,7 @@
                         <tr><td colspan="4" class="px-4 py-6 text-center text-gray-500">Sin ingredientes.</td></tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></div>
         </div>
         <p class="mt-3 text-right font-bold text-gray-800">{{ $costo['completo'] ? 'Total estimado:' : 'Costo incompleto · subtotal conocido:' }} ${{ number_format($costo['total'], 2) }}</p>
         @unless($costo['completo'])
