@@ -76,3 +76,29 @@ img, video { max-width: 100%; }
     .admin-shell main nav[aria-label] { max-width: 100%; }
     .admin-shell main nav[aria-label] a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
 }
+
+/* Public catalogue, authentication and recipe editor. */
+.receta-detalle, .ingredients-menu, .recetas-carousel-section { min-width: 0; overflow-wrap: anywhere; }
+.recetas-carousel-track { overscroll-behavior-x: contain; scroll-snap-type: x proximity; }
+.receta-card { scroll-snap-align: start; }
+.receta-costo { max-width: 100%; }
+.receta-costo table { min-width: 480px; }
+@media (max-width: 639.98px) {
+    html { font-size: 16px; }
+    .window-notice { padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom)); height: 100dvh; align-items: flex-start; }
+    .window-notice .content { max-height: none; overflow: visible; margin-block: auto; flex-shrink: 0; }
+    .auth-toast { max-width: calc(100vw - 2rem); }
+    .receta-detalle, .ingredients-menu { width: calc(100% - 2rem); margin-inline: auto; }
+    .receta-galeria { grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); }
+    .receta-pasos { padding-left: 1.5rem; }
+    .receta-volver, .ingredient-type, .ingredient-list a { min-height: 44px; }
+    .receta-card { flex-basis: min(80vw, 280px); min-width: 0; }
+    .recetas-carousel-btn { width: 44px; height: 44px; }
+    .recipe-ingredient-fields { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px; }
+    .recipe-step-fields { min-width: 0; }
+    .recipe-summary { position: static; }
+    .nav-link { white-space: normal; overflow-wrap: anywhere; }
+    .nav-overlay, .btnlist { max-height: 100dvh; }
+    .gen-alert, [role="alert"] { overflow-wrap: anywhere; }
+    [role="alert"].fixed { min-width: 0; max-width: calc(100vw - 2rem); }
+}

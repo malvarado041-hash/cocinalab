@@ -4,7 +4,7 @@
 <div class="recetas-carousel-section" aria-label="{{ $titulo }}">
     <h2 class="recetas-carousel-title">{{ $titulo }}</h2>
     <div class="recetas-carousel" id="{{ $carruselId }}" role="region" aria-roledescription="carousel" aria-label="{{ $titulo }}">
-        <div class="recetas-carousel-track" data-track>
+        <div class="recetas-carousel-track" tabindex="0" aria-label="Recetas: {{ $titulo }}" data-track>
             @foreach ($recetas as $r)
                 <article class="receta-card">
                     <a href="{{ route('recetas.show', ['id' => $r->id]) }}" class="receta-card-link">

@@ -27,7 +27,7 @@
     </ol>
 
     @if (($costo['lineas'] ?? []) !== [])
-        <div class="receta-costo">
+        <div class="receta-costo" role="region" tabindex="0" aria-label="Ingredientes y costos, desliza para ver más columnas">
             <h3>Ingredientes y costo estimado</h3>
             <table>
                 <thead>
@@ -61,6 +61,6 @@
     @endif
 
     <a class="receta-volver" href="{{ route('recetas.index') }}">Volver a Recetas</a>
-</div>
 <p>Rinde {{ $receta->porciones }} porciones. Costo por porción: {{ $costo['completo'] ? '$'.number_format($costo['por_porcion'], 2) : 'Pendiente de completar' }}</p>
+</div>
 @endsection
