@@ -1,4 +1,4 @@
-<aside id="sidebar" class="w-64 flex flex-col bg-white shadow-lg h-screen fixed inset-y-0 left-0 z-10 sidebar-transition">
+<aside id="sidebar" class="w-64 flex flex-col bg-white shadow-lg h-screen fixed inset-y-0 left-0 z-40 sidebar-transition">
     <div class="p-4 flex items-center justify-between">
         <button id="sidebar-toggle" type="button" class="flex items-center gap-3 min-w-0 text-left focus:outline-none" aria-label="Colapsar sidebar">
             <div class="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center flex-shrink-0 transition hover:scale-105">
@@ -11,6 +11,7 @@
         </button>
     </div>
 
+<button type="button" id="sidebar-mobile-close" class="min-[1090px]:hidden mx-4 mb-2 btn-secondary" aria-label="Cerrar menú">Cerrar menú</button>
 <nav class="p-4 flex-1 min-h-0 overflow-y-auto" id="sidebar-nav">
         @php
             $rolActual = auth()->user()->role;
@@ -151,7 +152,7 @@
 <div id="sidebar-tooltip" class="fixed z-50 hidden px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg pointer-events-none"></div>
 
 <!-- Overlay solo móvil -->
-<div id="sidebar-mobile-overlay" class="fixed inset-0 z-[5] hidden bg-gray-900/50 min-[1090px]:hidden"></div>
+<div id="sidebar-mobile-overlay" class="fixed inset-0 z-30 hidden bg-gray-900/50 min-[1090px]:hidden"></div>
 
 <style>
     /* ---------- Drawer en móvil (< lg): sidebar fuera de pantalla ---------- */
@@ -174,7 +175,7 @@
         }
     }
 
-<style>
+
     .sidebar-transition { 
         transition: none; 
     }
@@ -352,6 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isMobileOpen() ? closeMobile() : openMobile();
         });
     }
+    document.getElementById('sidebar-mobile-close')?.addEventListener('click', closeMobile);
     if (mobileOverlay) {
         mobileOverlay.addEventListener('click', closeMobile);
     }

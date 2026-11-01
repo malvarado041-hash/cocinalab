@@ -54,8 +54,9 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}?v=1">
 </head>
-<body class="bg-gray-50 h-screen overflow-hidden">
+<body class="admin-shell bg-gray-50 h-screen overflow-hidden">
     <div class="flex h-full">
         @include('admin.partials.sidebar')
 
@@ -88,5 +89,6 @@
     <script src="{{ asset('js/theme.js') }}?v=2"></script>
     <script src="{{ asset('js/password-toggle.js') }}?v=1"></script>
     @stack('scripts')
+<script src="{{ asset('js/mobile-navigation.js') }}?v=1"></script>
 </body>
 </html>

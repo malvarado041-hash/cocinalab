@@ -1,7 +1,7 @@
 <header class="bg-white shadow-sm sticky top-0 z-20">
     <div class="flex items-center justify-between gap-2 flex-wrap px-4 sm:px-6 py-3 sm:py-4">
         <div class="flex items-center gap-2 sm:gap-4 min-w-0">
-            <button type="button" id="sidebar-mobile-toggle" aria-expanded="false" aria-label="Abrir menú"
+            <button type="button" id="sidebar-mobile-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menú"
                     class="min-[1090px]:hidden w-10 h-10 rounded-xl flex items-center justify-center text-gray-600 hover:bg-gray-100 transition flex-shrink-0">
                 <i class="fas fa-bars text-lg"></i>
             </button>

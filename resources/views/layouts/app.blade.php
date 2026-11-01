@@ -25,6 +25,7 @@
             } catch (error) {}
         })();
     </script>
+    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}?v=1">
 </head>
 <body style="background-color:#B9B9B9;">
 <div class="contenedor">
@@ -159,5 +160,6 @@
         });
     })();
 </script>
+<script src="{{ asset('js/mobile-navigation.js') }}?v=1"></script>
 </body>
 </html>
