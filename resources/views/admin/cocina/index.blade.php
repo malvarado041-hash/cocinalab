@@ -39,7 +39,7 @@
                     </div>
                     <div class="divide-y divide-gray-100">
                         @foreach ($grupo as $item)
-                            <div class="px-5 py-3 flex items-center gap-3 {{ $item->estado === 'en_preparacion' ? 'bg-amber-50' : '' }}">
+                            <div class="kitchen-item px-5 py-3 flex items-center gap-3 {{ $item->estado === 'en_preparacion' ? 'bg-amber-50' : '' }}">
                                 <div class="min-w-0 flex-1">
                                     <p class="font-medium text-gray-800">{{ $item->cantidad }} × {{ $item->receta->Nombre ?? '—' }}</p>
                                     @if ($item->notas)

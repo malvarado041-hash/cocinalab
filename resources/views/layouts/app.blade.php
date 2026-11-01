@@ -27,7 +27,7 @@
     </script>
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}?v=1">
 </head>
-<body style="background-color:#B9B9B9;">
+<body @if(request()->routeIs('login', 'register', 'password.forgot')) class="auth-page" @endif style="background-color:#B9B9B9;">
 <div class="contenedor">
     <header class="site-header">
         <div class="header-brand">

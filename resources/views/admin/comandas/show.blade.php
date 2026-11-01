@@ -116,7 +116,7 @@
                     @endforeach
                 </select>
                 <input aria-label="Cantidad" type="number" name="cantidad" value="1" required min="1" max="99" class="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
-                <input type="text" name="notas" placeholder="Notas" maxlength="255" class="col-span-3 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <input aria-label="Notas del platillo" type="text" name="notas" placeholder="Notas" maxlength="255" class="col-span-3 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <button type="submit" class="col-span-1 btn-primary text-sm px-3 py-2" aria-label="Agregar platillo" title="Agregar"><i class="fas fa-plus"></i></button>
             </form>
         </div>

@@ -61,6 +61,6 @@
     @endif
 
     <a class="receta-volver" href="{{ route('recetas.index') }}">Volver a Recetas</a>
-<p>Rinde {{ $receta->porciones }} porciones. Costo por porción: {{ $costo['completo'] ? '$'.number_format($costo['por_porcion'], 2) : 'Pendiente de completar' }}</p>
+    <p>Rinde {{ $receta->porciones }} porciones. Costo por porción: {{ $costo['completo'] ? '$'.number_format($costo['por_porcion'], 2) : 'Pendiente de completar' }}</p>
 </div>
 @endsection

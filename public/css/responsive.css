@@ -23,7 +23,7 @@ img, video { max-width: 100%; }
     .admin-shell main { padding: 1rem; scroll-padding-block: 1rem; }
     .admin-shell main :is(h1,h2,h3,h4,p,label,a,td,dd) { overflow-wrap: anywhere; }
     .admin-shell header h2 { white-space: normal; overflow-wrap: anywhere; }
-    .admin-shell header > div > div:first-child { flex: 1 1 100%; flex-wrap: wrap; }
+    .admin-shell header > div > div:first-child { flex: 1 1 0%; flex-wrap: wrap; }
     .admin-shell header > div > div:first-child h2 { flex: 1; }
     .admin-shell header > div > div:first-child > .btn-secondary { margin-left: auto; }
 }
@@ -37,7 +37,7 @@ img, video { max-width: 100%; }
 .operation-mobile :is(input,select) { width: 100%; min-height: 44px; }
 .operation-mobile section { overflow-wrap: anywhere; }
 @media (max-width: 639.98px) {
-    .comanda-item-grid { grid-template-columns: minmax(0, 1fr) 44px; align-items: stretch; }
+    .admin-shell .comanda-item-grid { grid-template-columns: minmax(0, 1fr) 44px; align-items: stretch; }
     .comanda-item-grid > :is(select,input) { grid-column: 1 / -1; width: 100%; }
     .comanda-item-grid > button { grid-column: 2; }
     .operation-mobile form { display: flex; flex-direction: column; align-items: stretch; }
@@ -101,4 +101,19 @@ img, video { max-width: 100%; }
     .nav-overlay, .btnlist { max-height: 100dvh; }
     .gen-alert, [role="alert"] { overflow-wrap: anywhere; }
     [role="alert"].fixed { min-width: 0; max-width: calc(100vw - 2rem); }
+}
+
+/* Authentication has its own full-screen navigation; hide covered controls. */
+.auth-page > .contenedor, .auth-page > .carousel-section { display: none; }
+@media (max-width: 639.98px) {
+    .admin-shell .kitchen-item { flex-direction: column; align-items: stretch; }
+    .kitchen-item form button { width: 100%; }
+    .paso-row { grid-template-columns: 26px minmax(0, 1fr) 44px; }
+    .admin-shell main a[title], .admin-shell header a[title] { min-height: 44px; min-width: 44px; }
+}
+
+@media (max-width: 639.98px) {
+    .table-scroll th, .table-scroll td { min-width: 8rem; overflow-wrap: normal; }
+    .table-scroll th:first-child, .table-scroll td:first-child { min-width: 12rem; }
+    .table-scroll td :is(a,p,span) { overflow-wrap: break-word; }
 }
