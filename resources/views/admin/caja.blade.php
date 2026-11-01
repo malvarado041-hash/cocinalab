@@ -2,6 +2,7 @@
 @section('title', 'Caja y cobros')
 @section('header-title','Caja y cobros')
 @section('content')
+<div class="operation-mobile">
 @if(!$caja)
 <form action="{{ route('admin.caja.abrir') }}" method="POST" class="bg-white rounded-xl p-5">@csrf<label>Fondo inicial ($) <input type="number" step="0.01" min="0" name="fondo" required class="border rounded p-2"></label><button class="btn-primary p-2">Abrir caja</button></form>
 @else
@@ -20,4 +21,5 @@
 @endif</section>
 @empty <p>No hay cuentas servidas pendientes de pago.</p> @endforelse
 <h3>Últimos cierres</h3><div class="bg-white rounded-xl p-4">@foreach($historial->whereNotNull('cerrada_at') as $h)<p>Caja #{{ $h->id }} · {{ \App\Models\Ajuste::fecha($h->cerrada_at) }} · Esperado ${{ $h->efectivo_esperado }} · Contado ${{ $h->efectivo_contado }} · Diferencia ${{ $h->diferencia }}</p>@endforeach</div>
+</div>
 @endsection

@@ -94,7 +94,7 @@
                     @if (($puedeOperar ?? false) && $comanda->esAbierta() && $item->estado === 'pendiente')
                         <form action="{{ route('admin.comandas.items.destroy', [$comanda, $item]) }}" method="POST" class="inline">
                             @csrf @method('DELETE')
-                            <button type="submit" class="text-red-500 hover:text-red-700 text-sm px-2 py-1" title="Quitar">
+                            <button type="submit" class="text-red-500 hover:text-red-700 text-sm px-2 py-1" aria-label="Quitar platillo" title="Quitar">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>
@@ -107,17 +107,17 @@
 
         @if (($puedeOperar ?? false) && $comanda->esAbierta())
         <div class="px-6 py-4 border-t border-gray-100">
-            <form action="{{ route('admin.comandas.items.store', $comanda) }}" method="POST" class="grid grid-cols-12 gap-2 items-center">
+            <form action="{{ route('admin.comandas.items.store', $comanda) }}" method="POST" class="comanda-item-grid grid grid-cols-12 gap-2 items-center">
                 @csrf
-                <select name="receta_id" required class="col-span-6 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <select aria-label="Platillo" name="receta_id" required class="col-span-6 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
                     <option value="">Agregar platillo…</option>
                     @foreach (\App\Models\Receta::whereNotNull('precio_platillo')->orderBy('Nombre')->get(['id', 'Nombre', 'precio_platillo']) as $r)
                         <option value="{{ $r->id }}">{{ $r->Nombre }} — ${{ number_format($r->precio_platillo, 2) }}</option>
                     @endforeach
                 </select>
-                <input type="number" name="cantidad" value="1" required min="1" max="99" class="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <input aria-label="Cantidad" type="number" name="cantidad" value="1" required min="1" max="99" class="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <input type="text" name="notas" placeholder="Notas" maxlength="255" class="col-span-3 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
-                <button type="submit" class="col-span-1 btn-primary text-sm px-3 py-2" title="Agregar"><i class="fas fa-plus"></i></button>
+                <button type="submit" class="col-span-1 btn-primary text-sm px-3 py-2" aria-label="Agregar platillo" title="Agregar"><i class="fas fa-plus"></i></button>
             </form>
         </div>
         @endif
@@ -125,7 +125,7 @@
 @if(($puedeOperar ?? false) && $comanda->esAbierta())
 <section class="bg-white rounded-xl p-4 space-y-4"><h3>Unir o dividir cuenta abierta</h3>
 <form method="POST" action="{{ route('admin.comandas.unir',$comanda) }}">@csrf<label>Cuenta destino # <input name="destino_id" type="number" min="1" required class="border rounded p-2"></label><button class="btn-secondary p-2">Unir cuentas</button></form>
-<form method="POST" action="{{ route('admin.comandas.dividir',$comanda) }}">@csrf<select name="item_id" class="border rounded p-2">@foreach($comanda->items as $i)<option value="{{ $i->id }}">{{ $i->receta?->Nombre }} ({{ $i->cantidad }})</option>@endforeach</select><label>Porciones a separar <input type="number" name="cantidad" min="1" max="99" required class="border rounded p-2"></label><button class="btn-secondary p-2">Dividir cuenta</button></form></section>
+<form method="POST" action="{{ route('admin.comandas.dividir',$comanda) }}">@csrf<select name="item_id" class="border rounded p-2">@foreach($comanda->items as $i)<option value="{{ $i->id }}">{{ $i->receta?->Nombre }} ({{ $i->cantidad }})</option>@endforeach</select><label>Porciones a separar <input aria-label="Cantidad" type="number" name="cantidad" min="1" max="99" required class="border rounded p-2"></label><button class="btn-secondary p-2">Dividir cuenta</button></form></section>
 @endif
 @if(auth()->user()->isPrivileged() || auth()->user()->hasRole('cajero'))<a href="{{ route('admin.caja.index') }}" class="btn-primary inline-block p-2">Ir a caja</a>@endif
 <section class="bg-white p-4 rounded-xl"><h3>Historial de la cuenta</h3>

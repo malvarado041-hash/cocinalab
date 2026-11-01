@@ -30,3 +30,28 @@ img, video { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Restaurant workflows: keep each item and payment readable on a narrow screen. */
+.operation-mobile label { display: flex; flex-direction: column; gap: .375rem; min-width: 0; }
+.operation-mobile form { gap: .75rem; }
+.operation-mobile :is(input,select) { width: 100%; min-height: 44px; }
+.operation-mobile section { overflow-wrap: anywhere; }
+@media (max-width: 639.98px) {
+    .comanda-item-grid { grid-template-columns: minmax(0, 1fr) 44px; align-items: stretch; }
+    .comanda-item-grid > :is(select,input) { grid-column: 1 / -1; width: 100%; }
+    .comanda-item-grid > button { grid-column: 2; }
+    .operation-mobile form { display: flex; flex-direction: column; align-items: stretch; }
+    .operation-mobile form > div { display: flex; flex-direction: column; }
+    .operation-mobile form label { width: 100%; }
+    #form-comanda > .flex { flex-wrap: wrap; }
+    #form-comanda > .flex > :is(button,a) { flex: 1 1 100%; text-align: center; }
+    #kds form button { min-width: 44px; }
+    #kds .truncate { white-space: normal; }
+}
+@media print {
+    .admin-shell { height: auto !important; overflow: visible !important; background: white !important; }
+    .admin-shell #sidebar, .admin-shell header, #sidebar-mobile-overlay, .ticket-print button { display: none !important; }
+    .admin-shell > div, .admin-shell #main-content, .admin-shell main { display: block !important; height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
+    .ticket-print { color: black !important; background: white !important; box-shadow: none !important; max-width: 100%; }
+    html.dark main .ticket-print, html.dark main .ticket-print * { color: black !important; background: white !important; }
+}

@@ -101,12 +101,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function agregarItem(selected, cantidad) {
         const row = document.createElement('div');
-        row.className = 'item-row grid grid-cols-12 gap-2 items-center';
+        row.className = 'item-row comanda-item-grid grid grid-cols-12 gap-2 items-center';
         row.innerHTML =
-            '<select name="items[' + idx + '][receta_id]" required class="col-span-6 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">' + opciones(selected) + '</select>' +
-            '<input type="number" name="items[' + idx + '][cantidad]" value="' + (cantidad || 1) + '" required min="1" max="99" class="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">' +
+            '<select aria-label="Platillo" name="items[' + idx + '][receta_id]" required class="col-span-6 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">' + opciones(selected) + '</select>' +
+            '<input aria-label="Cantidad" type="number" name="items[' + idx + '][cantidad]" value="' + (cantidad || 1) + '" required min="1" max="99" class="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">' +
             '<input type="text" name="items[' + idx + '][notas]" placeholder="Notas" maxlength="255" class="col-span-3 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">' +
-            '<button type="button" class="col-span-1 text-red-500 hover:text-red-700 btn-quitar" title="Quitar"><i class="fas fa-trash"></i></button>';
+            '<button type="button" class="col-span-1 text-red-500 hover:text-red-700 btn-quitar" aria-label="Quitar platillo" title="Quitar"><i class="fas fa-trash"></i></button>';
         idx++;
         container.appendChild(row);
         row.querySelector('select').addEventListener('change', recalcular);
